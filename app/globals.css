@@ -1,107 +1,45 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
-
 @custom-variant dark (&:is(.dark *));
-
 @theme inline {
-  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-mono), ui-monospace, 'SF Mono', monospace;
-
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
-  --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
+  --font-sans: var(--font-body); --font-mono: var(--font-code);
+  --color-ring: var(--ring); --color-input: var(--input); --color-border: var(--border);
+  --color-accent: var(--accent); --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted-bg); --color-muted-foreground: var(--muted);
+  --color-primary: var(--accent); --color-primary-foreground: var(--background);
+  --color-card: var(--panel); --color-card-foreground: var(--text);
+  --color-foreground: var(--text); --color-background: var(--background);
 }
-
 :root {
-  color-scheme: dark;
-  --radius: 0.75rem;
-
-  --background: #00080b;
-  --foreground: #f0f6fa;
-
-  --card: #020f15;
-  --card-foreground: #f0f6fa;
-
-  --popover: #020f15;
-  --popover-foreground: #f0f6fa;
-
-  --primary: #cdff00;
-  --primary-foreground: #00080b;
-
-  --secondary: #0a1519;
-  --secondary-foreground: #f0f6fa;
-
-  --muted: #0a1519;
-  --muted-foreground: #aab3b7;
-
-  --accent: #cdff00;
-  --accent-foreground: #00080b;
-
-  --destructive: #ff5c33;
-
-  --border: #16242b;
-  --input: #16242b;
-  --ring: #cdff00;
+  color-scheme: dark; --radius: .75rem;
+  --accent: #4169E1; --accent-bright: #6C8EFF; --accent-light: #A8BAFF;
+  --accent-soft: rgba(65,105,225,.35); --accent-glow: rgba(65,105,225,.65); --accent-faint: rgba(65,105,225,.10);
+  --background: #02090D; --panel: #061217; --border: rgba(108,142,255,.18); --text: #F5F7FA; --muted: #8B969D;
+  --muted-bg: #0a151a; --input: rgba(108,142,255,.18); --ring: #6C8EFF; --accent-foreground: #02090D;
+  --font-body: Arial, Helvetica, sans-serif; --font-code: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
 }
-
-.dark {
-  color-scheme: dark;
-  --background: #00080b;
-  --foreground: #f0f6fa;
-  --card: #020f15;
-  --card-foreground: #f0f6fa;
-  --popover: #020f15;
-  --popover-foreground: #f0f6fa;
-  --primary: #cdff00;
-  --primary-foreground: #00080b;
-  --secondary: #0a1519;
-  --secondary-foreground: #f0f6fa;
-  --muted: #0a1519;
-  --muted-foreground: #aab3b7;
-  --accent: #cdff00;
-  --accent-foreground: #00080b;
-  --destructive: #ff5c33;
-  --border: #16242b;
-  --input: #16242b;
-  --ring: #cdff00;
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
-/* Dotted grid used inside feature/section containers */
-.dotted-frame {
-  background-image: radial-gradient(
-    circle at 1px 1px,
-    rgba(240, 246, 250, 0.06) 1px,
-    transparent 0
-  );
-  background-size: 22px 22px;
-}
+* { border-color: var(--border); }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body { margin: 0; background: var(--background); color: var(--text); overflow-x: hidden; }
+a, button, summary { outline-offset: 4px; }
+a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent-bright); }
+::selection { background: var(--accent); color: white; }
+.dotted-frame { background-image: radial-gradient(circle at 1px 1px, rgba(168,186,255,.1) 1px, transparent 0); background-size: 22px 22px; }
+.section-halo { position: relative; }
+.section-halo::before { content:""; position:absolute; z-index:-1; inset:-8rem 10% auto; height:28rem; background:radial-gradient(ellipse,rgba(65,105,225,.16),transparent 68%); filter:blur(24px); pointer-events:none; }
+.glass-panel { background: linear-gradient(145deg,rgba(9,27,35,.96),rgba(3,12,17,.92)); border:1px solid var(--border); box-shadow: inset 0 1px rgba(168,186,255,.09), 0 0 12px rgba(65,105,225,.16), 0 0 40px rgba(65,105,225,.10), 0 28px 80px rgba(0,0,0,.42); }
+.blue-text-glow { text-shadow:0 0 16px rgba(65,105,225,.45),0 0 50px rgba(65,105,225,.18); }
+.blue-glow { box-shadow:0 0 12px rgba(65,105,225,.55),0 0 40px rgba(65,105,225,.30),0 0 100px rgba(65,105,225,.18); }
+.node { box-shadow:0 0 8px var(--accent-glow),0 0 24px var(--accent-soft); }
+.scanline { background:linear-gradient(90deg,transparent,var(--accent-bright),transparent); animation:scan 3.6s ease-in-out infinite; }
+.flow-line { stroke-dasharray:7 12; animation:flow 2s linear infinite; }
+.flow-dot { animation:travel 3s ease-in-out infinite; }
+.core-pulse { transform-origin:center; animation:pulse 3.4s ease-in-out infinite; }
+.reveal-letter { display:inline-block; opacity:0; transform:translateY(9px); animation:letter-in .45s forwards; }
+@keyframes letter-in { to { opacity:1; transform:none; } }
+@keyframes scan { 0%,100%{transform:translateX(-80%);opacity:0} 45%,55%{opacity:1} 100%{transform:translateX(80%)} }
+@keyframes flow { to { stroke-dashoffset:-38; } }
+@keyframes travel { 0%{transform:translateY(-25px);opacity:0} 30%,70%{opacity:1} 100%{transform:translateY(145px);opacity:0} }
+@keyframes pulse { 0%,100%{transform:scale(.92);opacity:.65} 50%{transform:scale(1.08);opacity:1} }
+@media (prefers-reduced-motion: reduce) { html{scroll-behavior:auto} *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important} .reveal-letter{opacity:1;transform:none} }
