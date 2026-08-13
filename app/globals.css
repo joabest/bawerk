@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-mono), ui-monospace, 'SF Mono', monospace;
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
 
   --color-ring: var(--ring);
   --color-input: var(--input);
@@ -46,7 +46,7 @@
   --popover: #020f15;
   --popover-foreground: #f0f6fa;
 
-  --primary: #cdff00;
+  --primary: #4169e1;
   --primary-foreground: #00080b;
 
   --secondary: #0a1519;
@@ -55,14 +55,14 @@
   --muted: #0a1519;
   --muted-foreground: #aab3b7;
 
-  --accent: #cdff00;
+  --accent: #4169e1;
   --accent-foreground: #00080b;
 
   --destructive: #ff5c33;
 
   --border: #16242b;
   --input: #16242b;
-  --ring: #cdff00;
+  --ring: #4169e1;
 }
 
 .dark {
@@ -73,18 +73,18 @@
   --card-foreground: #f0f6fa;
   --popover: #020f15;
   --popover-foreground: #f0f6fa;
-  --primary: #cdff00;
+  --primary: #4169e1;
   --primary-foreground: #00080b;
   --secondary: #0a1519;
   --secondary-foreground: #f0f6fa;
   --muted: #0a1519;
   --muted-foreground: #aab3b7;
-  --accent: #cdff00;
+  --accent: #4169e1;
   --accent-foreground: #00080b;
   --destructive: #ff5c33;
   --border: #16242b;
   --input: #16242b;
-  --ring: #cdff00;
+  --ring: #4169e1;
 }
 
 @layer base {

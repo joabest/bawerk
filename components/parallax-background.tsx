@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react"
 
 /**
  * Camada de fundo fixa (fixed inset-0) sobre a qual o conteúdo rola,
- * criando a sensação de profundidade/parallax do xbow.com.
- * Contém uma grade sutil e um brilho verde-limão que reage levemente ao scroll.
+ * criando a sensação de profundidade/parallax da BAWERK SOLUTIONS.
+ * Contém uma grade sutil e um brilho azul royal que reage levemente ao scroll.
  */
 export function ParallaxBackground() {
   const glowRef = useRef<HTMLDivElement>(null)
