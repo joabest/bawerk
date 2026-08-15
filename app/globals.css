@@ -23,7 +23,7 @@
 html { scroll-behavior: smooth; overflow-x: hidden; }
 body { margin: 0; background: var(--background); color: var(--text); overflow-x: hidden; }
 body::before { content:""; position:fixed; inset:0; z-index:-2; pointer-events:none; background:radial-gradient(circle at 50% 0,rgba(65,105,225,.12),transparent 32%),linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px); background-size:auto,64px 64px,64px 64px; }
-.galaxy-canvas { position:absolute; inset:0; width:100%; height:100%; opacity:.78; mask-image:linear-gradient(to bottom,black 0%,rgba(0,0,0,.92) 68%,rgba(0,0,0,.55) 100%); }
+.galaxy-canvas { position:absolute; inset:0; width:100%; height:100%; }
 a, button, summary { outline-offset: 4px; }
 a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent-bright); }
 ::selection { background: var(--accent); color: white; }
