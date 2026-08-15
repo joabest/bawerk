@@ -1,0 +1,5 @@
+import { SiteShell } from "@/components/site-shell"
+import { PageHero } from "@/components/page-hero"
+import { ContactForm } from "@/components/contact-form"
+export const metadata={title:"Contato | BAWERK SOLUTIONS"}
+export default function Page(){return <SiteShell><PageHero eyebrow="Vamos conversar" title="SUA IDEIA PODE" accent="COMEÇAR AGORA." body="Conte o que sua empresa precisa. As mensagens chegam diretamente ao painel administrativo da BAWERK."/><section className="px-4 pb-24"><div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[.7fr_1.3fr]"><aside className="space-y-7 rounded-2xl border p-8"><div><p className="font-mono text-xs text-primary">WHATSAPP</p><a className="mt-2 block text-xl" href="https://wa.me/5511992779039">(11) 99277-9039</a></div><div><p className="font-mono text-xs text-primary">ENDEREÇO</p><p className="mt-2 leading-7 text-muted-foreground">R. Pechi, 115 — Sala 01<br/>Vila Pierina · São Paulo — SP</p></div><div><p className="font-mono text-xs text-primary">ATENDIMENTO</p><p className="mt-2 text-muted-foreground">Projetos em todo o Brasil.</p></div></aside><ContactForm/></div></section></SiteShell>}

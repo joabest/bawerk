@@ -22,6 +22,7 @@
 * { border-color: var(--border); }
 html { scroll-behavior: smooth; overflow-x: hidden; }
 body { margin: 0; background: var(--background); color: var(--text); overflow-x: hidden; }
+body::before { content:""; position:fixed; inset:0; z-index:-2; pointer-events:none; background:radial-gradient(circle at 50% 0,rgba(65,105,225,.12),transparent 32%),linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px); background-size:auto,64px 64px,64px 64px; }
 a, button, summary { outline-offset: 4px; }
 a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent-bright); }
 ::selection { background: var(--accent); color: white; }
@@ -37,6 +38,12 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 .flow-dot { animation:travel 3s ease-in-out infinite; }
 .core-pulse { transform-origin:center; animation:pulse 3.4s ease-in-out infinite; }
 .reveal-letter { display:inline-block; opacity:0; transform:translateY(9px); animation:letter-in .45s forwards; }
+.page-enter { animation:page-enter .85s cubic-bezier(.2,.7,.2,1) both; }
+.blur-word { display:inline-block; animation:focus-in .9s cubic-bezier(.2,.7,.2,1) both; }
+.float-slow { animation:float 7s ease-in-out infinite; }
+@keyframes page-enter { from{opacity:0;transform:translateY(24px);filter:blur(12px)} to{opacity:1;transform:none;filter:none} }
+@keyframes focus-in { from{opacity:0;filter:blur(18px);transform:translateY(18px)} to{opacity:1;filter:none;transform:none} }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-16px)} }
 @keyframes letter-in { to { opacity:1; transform:none; } }
 @keyframes scan { 0%,100%{transform:translateX(-80%);opacity:0} 45%,55%{opacity:1} 100%{transform:translateX(80%)} }
 @keyframes flow { to { stroke-dashoffset:-38; } }

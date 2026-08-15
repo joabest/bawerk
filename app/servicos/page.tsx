@@ -1,0 +1,7 @@
+import { Blocks, Code2, Megaphone, Palette, ShoppingBag, Sparkles } from "lucide-react"
+import { SiteShell } from "@/components/site-shell"
+import { PageHero } from "@/components/page-hero"
+import { FeatureGrid } from "@/components/feature-grid"
+export const metadata={title:"Serviços | BAWERK SOLUTIONS"}
+const items=[{icon:Palette,code:"UI/UX",title:"Design de interfaces",body:"Experiências digitais claras, intuitivas e alinhadas à identidade da sua marca."},{icon:Code2,code:"WEB",title:"Sites e sistemas",body:"Websites, landing pages e sistemas responsivos, rápidos e preparados para crescer."},{icon:Blocks,code:"SOFTWARE",title:"Software personalizado",body:"Soluções sob medida para regras e processos específicos da sua operação."},{icon:ShoppingBag,code:"COMMERCE",title:"E-commerce",body:"Lojas e experiências personalizadas para Shopify, Tray e projetos próprios."},{icon:Megaphone,code:"GROWTH",title:"Tráfego pago",body:"Campanhas no Google e Meta para ampliar visibilidade e gerar oportunidades."},{icon:Sparkles,code:"BRAND",title:"Identidade visual",body:"Sistemas visuais consistentes para sua empresa se apresentar com autoridade."}]
+export default function Page(){return <SiteShell><PageHero eyebrow="Soluções digitais" title="TECNOLOGIA QUE" accent="MOVE NEGÓCIOS." body="Estratégia, design e engenharia trabalhando juntos para transformar necessidades reais em produtos digitais."/><FeatureGrid items={items}/></SiteShell>}
