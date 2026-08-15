@@ -4,13 +4,19 @@ import './globals.css'
 import { I18nProvider } from '@/lib/i18n'
 
 export const metadata: Metadata = {
-  title: 'BAWERK SOLUTIONS | Software, websites, design e crescimento',
-  description: 'Transformamos ideias em realidade digital por meio do desenvolvimento de software, websites, experiências digitais e estratégias de crescimento.',
+  title: 'BAWERK SOLUTIONS | Software, APIs e experiências digitais',
+  description: 'A Bawerk Solutions desenvolve softwares, websites, APIs personalizadas, integrações, automações e experiências digitais criadas para cada empresa.',
+  openGraph: {
+    title: 'BAWERK SOLUTIONS | Software, APIs e experiências digitais',
+    description: 'Software, websites, APIs personalizadas, integrações e experiências digitais sob medida.',
+    locale: 'pt_BR',
+    type: 'website',
+  },
 }
 
 export const viewport: Viewport = {
   colorScheme: 'dark',
-  themeColor: '#00080b',
+  themeColor: '#02090D',
 }
 
 export default function RootLayout({
