@@ -9,7 +9,7 @@ import type { Points as ThreePoints } from "three"
 function StarField() {
   const pointsRef = useRef<ThreePoints | null>(null)
   const [sphere] = useState(() =>
-    random.inSphere(new Float32Array(5000), { radius: 1.2 }),
+    random.inSphere(new Float32Array(1200), { radius: 1.2 }),
   )
 
   useFrame((_state, delta) => {
@@ -29,7 +29,7 @@ function StarField() {
         <PointMaterial
           transparent
           color="#fff"
-          size={0.002}
+          size={0.0024}
           sizeAttenuation
           depthWrite={false}
         />
@@ -41,7 +41,11 @@ function StarField() {
 export function GalaxyBackground() {
   return (
     <div className="galaxy-canvas" aria-hidden="true">
-      <Canvas camera={{ position: [0, 0, 1] }}>
+      <Canvas
+        camera={{ position: [0, 0, 1] }}
+        dpr={[1, 1.25]}
+        gl={{ antialias: false, alpha: true, powerPreference: "low-power" }}
+      >
         <Suspense fallback={null}>
           <StarField />
         </Suspense>
