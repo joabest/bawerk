@@ -1,0 +1,4 @@
+import { SiteShell } from "@/components/site-shell"
+import { PageHero } from "@/components/page-hero"
+export const metadata={title:"Sobre | BAWERK SOLUTIONS"}
+export default function Page(){return <SiteShell><PageHero eyebrow="BAWERK SOLUTIONS" title="CONSTRUÍMOS O QUE" accent="AINDA NÃO EXISTE." body="Uma empresa de tecnologia de São Paulo dedicada a software, APIs, integrações e experiências digitais sob medida."/><section className="px-4 py-20"><div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-3">{[["Estratégia","Entendemos o problema antes de escolher a tecnologia."],["Engenharia","Criamos bases sólidas, seguras e preparadas para evoluir."],["Parceria","Trabalhamos com transparência e proximidade em cada decisão."]].map(([t,b])=><article className="glass-panel rounded-2xl p-8" key={t}><h2 className="font-mono text-2xl text-primary">{t}</h2><p className="mt-5 leading-7 text-muted-foreground">{b}</p></article>)}</div></section></SiteShell>}
