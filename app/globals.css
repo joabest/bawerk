@@ -15,7 +15,7 @@
   color-scheme: dark; --radius: .75rem;
   --accent: #4169E1; --accent-bright: #6C8EFF; --accent-light: #A8BAFF;
   --accent-soft: rgba(65,105,225,.35); --accent-glow: rgba(65,105,225,.65); --accent-faint: rgba(65,105,225,.10);
-  --background: #02090D; --panel: #061217; --border: rgba(108,142,255,.18); --text: #F5F7FA; --muted: #8B969D;
+  --background: #02090D; --panel: #061217; --border: rgba(108,142,255,.18); --text: #F5F7FA; --muted: #B8C2C9;
   --muted-bg: #0a151a; --input: rgba(108,142,255,.18); --ring: #6C8EFF; --accent-foreground: #02090D;
   --font-body: Arial, Helvetica, sans-serif; --font-code: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
 }
