@@ -5,6 +5,7 @@ import dynamic from "next/dynamic"
 import { useEffect, useRef, useState } from "react"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import * as THREE from "three"
+import ExperienceNavbar from "./experience-navbar"
 import { ArrowDown, ArrowUpRight, Code2, Network, Workflow, Zap } from "lucide-react"
 
 const WHATSAPP = "https://wa.me/5511992779039?text=Ol%C3%A1%2C%20quero%20conversar%20sobre%20um%20projeto%20com%20a%20Bawerk."
@@ -212,10 +213,7 @@ export default function Experience3D() {
     <main className="bw3d" ref={root}>
       <div className="bw3d-atmosphere" aria-hidden="true" />
       {webgl && !motion.current.reduced ? <Scene motion={motion} isMobile={isMobile} /> : <div className="bw3d-static-orb" aria-hidden="true" />}
-      <header className="bw3d-nav">
-        <Link href="/" className="bw3d-wordmark" aria-label="Bawerk Solutions — página inicial">BAWERK<span>.</span><small>SOLUTIONS</small></Link>
-        <div className="bw3d-nav-right"><span className="bw3d-experiment">LAB / EXPERIENCE 001</span><Link className="bw3d-nav-cta" href="/contato">INICIAR PROJETO <ArrowUpRight size={14} /></Link></div>
-      </header>
+      <ExperienceNavbar />
       <aside className="bw3d-progress" aria-label="Seções da experiência">
         {SECTION_IDS.map((id, i) => (
           <a href={`#${id}`} key={id} className={active === i ? "is-active" : ""} aria-label={`Ir para seção ${i + 1}`}><span>0{i + 1}</span><i /></a>
