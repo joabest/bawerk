@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from './PublicLink'
 import {ArrowUpRight,Code2,Globe2,Layers3,Palette,Search,Settings2,TrendingUp,Zap} from 'lucide-react'
 
 const services=[
