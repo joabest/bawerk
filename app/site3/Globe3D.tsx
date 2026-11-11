@@ -96,7 +96,40 @@ const CONNECTIONS: ReadonlyArray<readonly [number, number]> = [
   [12.97, 77.59], [25.20, 55.27], [22.54, 114.06],
 ]
 
-function Network({ reduceMotion }: { reduceMotion: boolean }) {
+function ConnectionRoutes({ origin }: { origin: [number, number] }) {
+  const start = useMemo(() => spherical(origin[0], origin[1], 1).normalize(), [origin[0], origin[1]])
+  const routes = useMemo(() => CONNECTIONS.map(([lat, lon]) => {
+    const end = spherical(lat, lon, 1).normalize()
+    const angle = start.angleTo(end)
+    if (angle < 0.018) return null
+    const waypoints: THREE.Vector3[] = []
+    for (let i = 0; i <= 52; i++) {
+      const t = i / 52
+      const normal = start.clone().lerp(end, t).normalize()
+      const elevation = Math.sin(Math.PI * t) * (0.11 + 0.28 * angle / Math.PI)
+      waypoints.push(normal.multiplyScalar(2.046 + elevation))
+    }
+    const curve = new THREE.CatmullRomCurve3(waypoints)
+    return {
+      core: new THREE.TubeGeometry(curve, 72, 0.011, 5, false),
+      glow: new THREE.TubeGeometry(curve, 72, 0.025, 5, false),
+    }
+  }).filter((r): r is { core: THREE.TubeGeometry; glow: THREE.TubeGeometry } => r !== null), [start])
+
+  useEffect(() => () => routes.forEach(r => { r.core.dispose(); r.glow.dispose() }), [routes])
+  return <group>
+    {routes.map((route, index) => <group key={index}>
+      <mesh geometry={route.glow}>
+        <meshBasicMaterial color="#1a78e0" transparent opacity={.18} depthWrite={false} blending={THREE.AdditiveBlending} />
+      </mesh>
+      <mesh geometry={route.core}>
+        <meshBasicMaterial color="#76c8ff" transparent opacity={.79} depthWrite={false} blending={THREE.AdditiveBlending} />
+      </mesh>
+    </group>)}
+  </group>
+}
+
+function NetworkBeaconPoints({ reduceMotion }: { reduceMotion: boolean }) {
   const geometry = useMemo(() => {
     const positions: number[] = []
     const phases: number[] = []
@@ -217,7 +250,8 @@ function World({ location, reduceMotion }: GlobeProps) {
           <span className="site3-live-dot" />{location.city.toLocaleUpperCase('pt-BR')}
         </div>
       </Html>}
-      <Network reduceMotion={reduceMotion} />
+      <ConnectionRoutes origin={origin} />
+      <NetworkBeaconPoints reduceMotion={reduceMotion} />
       <mesh ref={markerAnchor} position={[marker.x, marker.y, marker.z]}>
         <sphereGeometry args={[.036, 10, 10]} />
         <meshBasicMaterial color="#b6ecff" />
