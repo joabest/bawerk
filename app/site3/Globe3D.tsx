@@ -22,36 +22,54 @@ function seededRandom(seed: number) {
 }
 
 function countryDots() {
-  const decoded = Uint8Array.from(atob(LAND_MASK), c => c.charCodeAt(0))
-  const isLand = (row: number, col: number) => {
-    const index = row * MASK_WIDTH + col
-    return (decoded[index >> 3] & (1 << (index & 7))) !== 0
+  // Dense and evenly spaced points recreate a fine dotted Earth without remote textures.
+  const decoded = Uint8Array.from(atob(LAND_MASK), ch => ch.charCodeAt(0))
+  const read = (row: number, col: number) => {
+    const r = Math.min(MASK_HEIGHT - 1, Math.max(0, row))
+    const w = ((col % MASK_WIDTH) + MASK_WIDTH) % MASK_WIDTH
+    const index = r * MASK_WIDTH + w
+    return (decoded[index >> 3] & (1 << (index & 7))) ? 1 : 0
   }
-  const random = seededRandom(329771)
-  const positions: number[] = []
-  const colors: number[] = []
-  const brighter = new THREE.Color('#ced6e0')
-  const brilliant = new THREE.Color('#ffffff')
-  const muted = new THREE.Color('#1e2a35')
-  for (let row = 1; row < MASK_HEIGHT - 1; row++) {
-    const lat = -90 + row * MASK_STEP
-    for (let col = 0; col < MASK_WIDTH; col++) {
-      const lon = -180 + col * MASK_STEP
-      const land = isLand(row, col)
-      if (!land && random() > .042) continue
-      const repetitions = land ? 2 : 1
-      for (let d = 0; d < repetitions; d++) {
-        const p = spherical(lat + (random() - .5) * MASK_STEP * .83, lon + (random() - .5) * MASK_STEP * .83, 2.015 + random() * .019)
-        positions.push(p.x, p.y, p.z)
-        const c = land ? brighter.clone().lerp(brilliant, random() * .72) : muted
-        const factor = land ? (.6 + random() * .4) : .33
-        colors.push(c.r * factor, c.g * factor, c.b * factor)
+  const landProbability = (lat: number, lon: number) => {
+    const row = (lat + 90) / MASK_STEP, col = (lon + 180) / MASK_STEP
+    const r = Math.floor(row), cc = Math.floor(col)
+    const fy = row - r, fx = col - cc
+    const a = read(r, cc) * (1 - fx) + read(r, cc + 1) * fx
+    const b = read(r + 1, cc) * (1 - fx) + read(r + 1, cc + 1) * fx
+    return a * (1 - fy) + b * fy
+  }
+
+  const rand = seededRandom(839211)
+  const pos: number[] = []
+  const rgb: number[] = []
+  const bright = new THREE.Color('#f2f5f8')
+  const soft = new THREE.Color('#919aa5')
+  const ocean = new THREE.Color('#222a34')
+  const latStep = .65
+  for (let lat = -89.3, row = 0; lat < 89.3; lat += latStep, row++) {
+    const cos = Math.cos(lat * Math.PI / 180)
+    const perRow = Math.max(12, Math.round((360 * cos) / latStep))
+    for (let col = 0; col < perRow; col++) {
+      const lon = -180 + (col + (row % 2) * .5) * 360 / perRow
+      const probability = landProbability(lat, lon)
+      const land = rand() < probability
+      if (!land && rand() > .055) continue
+      const p = spherical(lat + (rand() - .5) * .18, lon + (rand() - .5) * .18, 2.016)
+      pos.push(p.x, p.y, p.z)
+      if (land) {
+        const factor = .58 + rand() * .42
+        const colr = bright.clone().lerp(soft, rand() * .36)
+        rgb.push(colr.r * factor, colr.g * factor, colr.b * factor)
+      } else {
+        const factor = .30 + rand() * .40
+        rgb.push(ocean.r * factor, ocean.g * factor, ocean.b * factor)
       }
     }
   }
   const geometry = new THREE.BufferGeometry()
-  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
-  geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3))
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  geometry.setAttribute('color', new THREE.Float32BufferAttribute(rgb, 3))
+  geometry.computeBoundingSphere()
   return geometry
 }
 
@@ -84,7 +102,7 @@ function FlightArc({ from, to, color = '#4f94c1' }: { from: [number, number]; to
     g.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
     return g
   }, [from, to])
-  const line = useMemo(() => new THREE.Line(geometry, new THREE.LineBasicMaterial({ color, transparent: true, opacity: .28, depthWrite: false })), [geometry, color])
+  const line = useMemo(() => new THREE.Line(geometry, new THREE.LineBasicMaterial({ color, transparent: true, opacity: .24, depthWrite: false })), [geometry, color])
   useEffect(() => () => { geometry.dispose(); (line.material as THREE.Material).dispose() }, [geometry, line])
   return <primitive object={line} />
 }
@@ -112,7 +130,7 @@ function World({ location, reduceMotion }: GlobeProps) {
   const pivot = useRef<THREE.Group>(null)
   const marker = location ? spherical(location.latitude, location.longitude, 2.23) : spherical(-23.55, -46.63, 2.23)
   const targetQuaternion = useMemo(() =>
-    new THREE.Quaternion().setFromUnitVectors(marker.clone().normalize(), new THREE.Vector3(0.32, 0.38, 0.867).normalize()),
+    new THREE.Quaternion().setFromUnitVectors(marker.clone().normalize(), new THREE.Vector3(0.36, -0.24, 0.90).normalize()),
     [marker.x, marker.y, marker.z])
   useFrame((state, delta) => {
     if (pivot.current) pivot.current.quaternion.slerp(targetQuaternion, 1 - Math.exp(-delta * 2.4))
@@ -125,18 +143,18 @@ function World({ location, reduceMotion }: GlobeProps) {
       <group ref={shell}>
       <mesh>
         <sphereGeometry args={[2.002, 80, 80]} />
-        <meshBasicMaterial color="#090d12" transparent opacity={.98} />
+        <meshBasicMaterial color="#090a0c" />
       </mesh>
       <mesh>
         <sphereGeometry args={[2.05, 48, 32]} />
-        <meshBasicMaterial color="#778b99" transparent opacity={.09} side={THREE.BackSide} depthWrite={false} />
+        <meshBasicMaterial color="#e1ebf4" transparent opacity={.055} side={THREE.BackSide} depthWrite={false} />
       </mesh>
       <mesh>
         <sphereGeometry args={[2.022, 36, 24]} />
-        <meshBasicMaterial wireframe color="#667488" transparent opacity={.022} depthWrite={false} />
+        <meshBasicMaterial wireframe color="#5e6972" transparent opacity={.012} depthWrite={false} />
       </mesh>
       <points geometry={globeDots}>
-        <pointsMaterial vertexColors transparent opacity={1} size={.016} sizeAttenuation depthWrite={false} />
+        <shaderMaterial transparent depthWrite={false} depthTest vertexShader={"attribute vec3 color;\nvarying vec3 vColor;\nvarying float vFacing;\nvoid main() {\n  vColor = color;\n  vec4 mv = modelViewMatrix * vec4(position, 1.0);\n  gl_Position = projectionMatrix * mv;\n  vec3 n = normalize(mat3(modelViewMatrix) * position);\n  vFacing = smoothstep(0.04, 0.90, max(0.0, n.z));\n  gl_PointSize = clamp(11.0 / -mv.z, 1.15, 2.9);\n}"} fragmentShader={"varying vec3 vColor;\nvarying float vFacing;\nvoid main() {\n  vec2 pt = gl_PointCoord - vec2(0.5);\n  float softCircle = 1.0 - smoothstep(0.30, 0.52, length(pt));\n  if (softCircle < 0.02) discard;\n  gl_FragColor = vec4(vColor, softCircle * (0.22 + 0.78 * vFacing));\n}"} />
       </points>
       <FlightArc from={[-23.55, -46.63]} to={[40.71, -74.0]} />
       <FlightArc from={[-23.55, -46.63]} to={[51.5, -.13]} color="#647f97" />
