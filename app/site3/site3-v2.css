@@ -83,3 +83,37 @@
 @media(max-width:1080px){.b3-nav-links{display:none}.b3-menu-toggle{display:grid}.b3-home-hero{grid-template-columns:1fr}.b3-home-globe{height:550px;min-height:0;order:-1}.b3-cols4{grid-template-columns:repeat(2,minmax(0,1fr))}.b3-cols3,.b3-blog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.b3-service-stack{grid-template-columns:1fr}.b3-contact-grid{gap:25px}.b3-home-hero h1{font-size:clamp(55px,9vw,92px)}}
 @media(max-width:700px){.b3-container{width:min(100% - 34px,1260px)}.b3-header{top:12px;padding:0 10px}.b3-nav{height:64px;padding:0 12px 0 16px}.b3-brand strong{font-size:17px}.b3-brand small{font-size:8px}.b3-contact-pill{display:none}.b3-main{padding-top:105px}.b3-page-head{padding:48px 0}.b3-page-head h1{font-size:clamp(41px,11vw,62px)}.b3-section{padding:58px 0}.b3-cols3,.b3-cols4,.b3-cols2,.b3-blog-grid,.b3-service-stack,.b3-contact-grid,.b3-field-grid{grid-template-columns:1fr}.b3-home-globe{height:420px}.b3-home-hero{padding-bottom:45px}.b3-home-hero h1{font-size:clamp(49px,12vw,72px)}.b3-home-stats{gap:19px;flex-wrap:wrap}.b3-blog-card-body{min-height:200px}.b3-footer{width:calc(100% - 34px);padding-top:60px}.b3-footer-top,.b3-footer-grid{grid-template-columns:1fr 1fr;gap:25px}.b3-footer-top{grid-template-columns:1fr}.b3-footer-top h2{font-size:45px}.b3-footer-bottom{flex-direction:column}.b3-blog-list .b3-blog-card{grid-template-columns:1fr}.b3-blog-list .b3-thumb{height:195px}.b3-tools input{width:155px}.b3-article .b3-thumb{height:250px}}
 @media(prefers-reduced-motion:reduce){.b3-root *, .b3-root *::before,.b3-root *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Reference-inspired centered particulate Earth: central globe, editorial title below. */
+.b3-home-hero{
+ display:block; position:relative; min-height:865px; padding-top:550px; padding-bottom:70px; isolation:isolate;
+}
+.b3-home-hero>div:first-child{position:relative;z-index:2;width:100%}
+.b3-home-hero h1{font-family:'DM Mono',monospace;font-size:clamp(60px,8vw,128px);line-height:.94;letter-spacing:-.09em;max-width:1180px;text-shadow:0 12px 40px #000a}
+.b3-home-hero h1 em{color:#53c4f5}
+.b3-home-hero>div:first-child>p{max-width:560px}
+.b3-home-globe{position:absolute;z-index:1;top:-40px;left:50%;transform:translateX(-50%);width:min(810px,74vw);height:min(810px,74vw);min-height:0;pointer-events:auto}
+.b3-home-globe::before{content:'';position:absolute;inset:10% 9%;border-radius:50%;background:radial-gradient(circle,#23384913,#07090d00 70%);pointer-events:none}
+.b3-home-globe .b3-overline{color:#7d8a96}
+.site3-globe-marker{position:relative;margin-left:126px;margin-top:-108px;border-color:#35414d;background:#11151be8;color:#ecf3fa;font-size:10px}
+.site3-globe-marker:before{content:'';position:absolute;width:1px;height:88px;left:-35px;top:41px;background:linear-gradient(#2a7ca5,#7b8b9a00);transform:rotate(44deg);transform-origin:top}
+.b3-root .b3-card,.b3-root .b3-blog-card,.b3-root .b3-contact-pill,.b3-root .b3-nav-links a{transition:transform .25s,border-color .25s,color .25s,background .25s,box-shadow .25s}
+.b3-root .b3-card:hover,.b3-root .b3-blog-card:hover{border-color:#24b0ef;background:linear-gradient(145deg,#0d2b47,#162f38 45%,#13171d 80%);box-shadow:0 0 25px #0c6bd51a}
+.b3-root .b3-blog-card:hover .b3-thumb-symbol{color:#9ee9ff;text-shadow:0 0 55px #1195ef}
+.b3-root .b3-contact-pill:hover,.b3-root .b3-primary:hover,.b3-root .b3-secondary:hover{background:linear-gradient(115deg,#055ccf,#2dbddb);color:#fff;box-shadow:0 7px 29px #0d94ef40}
+.b3-root .b3-chip:hover{background:linear-gradient(100deg,#09498a,#125d75)}
+.b3-root .b3-home-globe canvas{max-width:100%}
+@media(max-width:1080px){
+ .b3-home-hero{min-height:850px;padding-top:510px}
+ .b3-home-globe{width:min(760px,88vw);height:min(760px,88vw);top:-8px}
+ .b3-home-hero h1{font-size:clamp(55px,9.5vw,98px)}
+}
+@media(max-width:700px){
+ .b3-home-hero{min-height:740px;padding-top:min(95vw,430px);padding-bottom:65px}
+ .b3-home-globe{top:-22px;width:96vw;height:96vw}
+ .b3-home-hero h1{font-size:clamp(42px,10.5vw,68px)}
+ .b3-home-hero>div:first-child>p{font-size:14px}
+ .b3-home-hero .b3-cta-row{gap:9px}
+ .b3-home-stats{margin-top:30px}
+ .site3-globe-marker{margin-left:45px;margin-top:-70px;transform:scale(.8);transform-origin:center}
+}
