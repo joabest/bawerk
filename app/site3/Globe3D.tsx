@@ -127,7 +127,7 @@ function Network({ reduceMotion }: { reduceMotion: boolean }) {
       '  vPulse = 0.18 + 0.82 * pow(0.5 + 0.5 * sin(uTime * 2.8 + phase), 3.0);',
       '  gl_PointSize = clamp(43.0 / max(1.0, -view.z), 5.0, 13.0);',
       '}',
-    ].join('\\n'),
+    ].join('\n'),
     fragmentShader: [
       'varying float vPulse;',
       'void main() {',
@@ -136,7 +136,7 @@ function Network({ reduceMotion }: { reduceMotion: boolean }) {
       '  if (halo < 0.015) discard;',
       '  gl_FragColor = vec4(0.04, 0.57, 1.0, halo * vPulse * 0.85);',
       '}',
-    ].join('\\n'),
+    ].join('\n'),
   }), [])
 
   useFrame(state => {
