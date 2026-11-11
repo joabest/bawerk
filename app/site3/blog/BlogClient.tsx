@@ -1,6 +1,6 @@
 'use client'
 import {useMemo,useState} from 'react'
-import Link from 'next/link'
+import Link from '../PublicLink'
 import {ArrowUpRight,Grid2X2,List,Search} from 'lucide-react'
 import {categories,posts} from '../blog-data'
 import type {BlogPost} from '../blog-data'
