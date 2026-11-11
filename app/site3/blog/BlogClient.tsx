@@ -35,12 +35,12 @@ export default function BlogClient(){
  const visible=filtered.slice(0,limit)
  return <div className="b3-container">
   <header className="b3-page-head"><span className="b3-overline">[ BLOG / BAWERK SOLUTIONS ]</span>
-   <h1>Notas do nosso<br/>universo <em>digital.</em></h1>
+   <h1>Notas do nosso<br/>universo <em>digital<span className="b3-dot-white">.</span></em></h1>
    <p>Ideias, análises e práticas sobre engenharia de software, inteligência artificial, marketing, CRM e experiências digitais. Sem complicação, com propósito.</p>
   </header>
   <section className="b3-section" style={{paddingTop:30}}>
    <span className="b3-overline">[ EXPLORE POR CATEGORIA ]</span>
-   <h2 className="b3-category-heading">Escolha um tema.<br/>Explore o conteúdo.</h2>
+   <h2 className="b3-category-heading">Escolha um tema<span className="b3-dot-blue">.</span><br/>Explore o conteúdo<span className="b3-dot-blue">.</span></h2>
    <div className="b3-blog-controls">
     <div className="b3-chips" role="group" aria-label="Filtrar categorias">
      {categories.map(cat=><button key={cat} className={'b3-chip'+(category===cat?' b3-selected':'')} aria-pressed={category===cat} onClick={()=>{setCategory(cat);setLimit(9)}}>{cat} <small>{cat==='TODOS'?posts.length:posts.filter(p=>p.category===cat).length}</small></button>)}
