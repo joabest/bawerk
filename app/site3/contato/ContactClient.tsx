@@ -1,6 +1,6 @@
 'use client'
 import {useEffect,useRef,useState} from 'react'
-import Link from 'next/link'
+import Link from '../PublicLink'
 import {ArrowUpRight,CheckCircle2,Mail,MapPin,Phone,Send} from 'lucide-react'
 
 type Status='idle'|'sending'|'sent'|'error'
