@@ -121,17 +121,17 @@ export default function HomeClient(){
   </section>
   <section className="b3-container b3-section">
    <div className="b3-section-top"><span className="b3-overline">[ O QUE FAZEMOS ]</span><Link href="/site3/servicos" className="b3-forward">Todos os serviços <ArrowUpRight size={15}/></Link></div>
-   <h2>Soluções digitais.<br/><span className="b3-electric">Resultados reais.</span></h2>
+   <h2>Soluções digitais<span className="b3-dot-blue">.</span><br/><span className="b3-electric">Resultados reais<span className="b3-dot-white">.</span></span></h2>
    <div className="b3-cols4">{services.map(s=><Link className="b3-card" href="/site3/servicos" key={s.n}><span className="b3-card-index">{s.n} / BAWERK</span><h3 className="b3-card-title">{s.name}</h3><p className="b3-card-copy">{s.text}</p><span className="b3-forward">Descobrir <ArrowUpRight size={15}/></span></Link>)}</div>
   </section>
   <section ref={stageRef} className="b3-container b3-section">
    <div className="b3-section-top"><span className="b3-overline">[ NOSSO MÉTODO ]</span><Link href="/site3/metodo" className="b3-forward">Conhecer o método <ArrowUpRight size={16}/></Link></div>
-   <h2>Do primeiro desafio<br/><span className="b3-electric">à evolução contínua.</span></h2>
+   <h2>Do primeiro desafio<br/><span className="b3-electric">à evolução contínua<span className="b3-dot-white">.</span></span></h2>
    <div className="b3-cols4 b3-steps">{steps.map((step,i)=>{const Icon=step.icon;return <div key={step.name} className={'b3-card'+(stepCount>i?' b3-step-on':'')}><span className="b3-card-index">{String(i+1).padStart(2,'0')} / 04</span><div className="b3-step-ico"><Icon size={27}/></div><h3 className="b3-card-title">{step.name}</h3><p className="b3-card-copy">{step.description}</p></div>})}</div>
   </section>
   <section className="b3-container b3-section">
    <div className="b3-section-top"><span className="b3-overline">[ CONTEÚDO & IDEIAS ]</span><Link href="/site3/blog" className="b3-forward">Acessar o blog <ArrowUpRight size={16}/></Link></div>
-   <h2>Conhecimento que<br/><span className="b3-electric">move negócios.</span></h2>
+   <h2>Conhecimento que<br/><span className="b3-electric">move negócios<span className="b3-dot-white">.</span></span></h2>
    <p className="b3-section-lead">Artigos sobre inteligência artificial, desenvolvimento, CRM, design, automação e decisões melhores com tecnologia.</p>
    <div className="b3-cta-row"><Link href="/site3/blog" className="b3-secondary">Explorar todos os artigos <ArrowUpRight size={16}/></Link><Link href="/site3/sobre" className="b3-secondary">Conhecer a Bawerk <ArrowRight size={16}/></Link></div>
   </section>
