@@ -117,3 +117,36 @@
  .b3-home-stats{margin-top:30px}
  .site3-globe-marker{margin-left:45px;margin-top:-70px;transform:scale(.8);transform-origin:center}
 }
+
+
+/* Nine original editorial cover illustrations built without stock imagery. */
+.b3-thumb:before{opacity:.26}.b3-thumb:after{opacity:.24}
+.b3-thumb-display{position:relative;z-index:2;width:90%;height:85%;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 20px 30px #0006)}
+.b3-audit-row{display:flex;justify-content:center;align-items:center;gap:10px;transform:perspective(550px) rotateX(12deg);width:100%}
+.b3-audit-card{width:28%;height:108px;border:1px solid #3f586c;background:linear-gradient(170deg,#181d28,#11131b);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:9px;box-shadow:0 10px 25px #0008}
+.b3-audit-card:nth-child(3){border-color:#0d9dff;box-shadow:0 0 24px #0d87ff2f}
+.b3-audit-card>span{font:30px 'DM Mono',monospace;color:#bfd7eb}.b3-audit-card>small{font:8px 'DM Mono',monospace;letter-spacing:.08em;color:#8ea6b6}
+.b3-audit-card i{height:3px;width:40%;background:#2c80b8;border-radius:9px}
+.b3-app-grid{width:72%;display:grid;grid-template-columns:repeat(3,1fr);gap:9px;transform:perspective(400px) rotateX(7deg)}
+.b3-app-grid>div{height:43px;border:1px solid #343c49;background:linear-gradient(135deg,#1d2433,#0e111a);border-radius:9px;display:grid;place-items:center;color:#b9c7d8;font-size:21px}
+.b3-app-grid .b3-app-hot{color:#fff;border-color:#148bc4;background:linear-gradient(135deg,#132f54,#164064);box-shadow:0 0 22px #1389ff55}
+.b3-speed{width:70%;height:75%;display:flex;flex-direction:column;align-items:center;color:#f0f7ff}
+.b3-speed strong{font:700 77px 'DM Mono',monospace;letter-spacing:-.12em;line-height:1;margin-top:2px}
+.b3-speed span,.b3-data-art>span{font:9px 'DM Mono',monospace;letter-spacing:.08em;color:#a7d3f2}
+.b3-speed-bars,.b3-data-chart{width:100%;height:54px;display:flex;align-items:end;justify-content:space-around;gap:4px;margin-top:auto}
+.b3-speed-bars i,.b3-data-chart i{flex:1;background:linear-gradient(0deg,#13518c,#4ed1ff);border-radius:3px 3px 0 0;opacity:.8}
+.b3-search-art,.b3-browser-art,.b3-crm-art{width:83%;border:1px solid #41596d;background:#101923ed;border-radius:12px;box-shadow:0 12px 34px #0008;overflow:hidden}
+.b3-search-top,.b3-browser-top{padding:11px 12px;border-bottom:1px solid #354b5f;background:#1b2531;font:10px 'DM Mono',monospace;color:#d3eafa}
+.b3-search-top span{float:right}
+.b3-search-lines{padding:18px 16px;display:grid;gap:10px}.b3-search-lines i{display:block;width:88%;height:7px;background:#31506a;border-radius:6px}.b3-search-lines i:nth-child(2){width:70%;background:#2877ac}.b3-search-lines i:nth-child(3){width:56%}
+.b3-search-badge{font:700 20px 'DM Mono',monospace;letter-spacing:-.05em;color:#56c6ff;text-align:right;padding:0 17px 12px}
+.b3-crm-art{padding:13px}.b3-crm-title{font:9px 'DM Mono',monospace;letter-spacing:.12em;color:#d8edff;margin-bottom:11px}
+.b3-crm-columns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.b3-crm-columns>div{background:#1d2933;border:1px solid #35536b;border-radius:7px;padding:7px;display:flex;flex-direction:column;gap:7px}
+.b3-crm-columns small{font:7px 'DM Mono',monospace;color:#a4c0d2}.b3-crm-columns>div>span{height:19px;border-radius:4px;background:linear-gradient(90deg,#345777,#203244)}
+.b3-crm-columns>div:nth-child(3){border-color:#117bd7}
+.b3-flow-art{display:flex;align-items:center;gap:7px;transform:rotate(-7deg)}.b3-flow-art>span{font-size:22px;color:#79caff}.b3-node{padding:12px 8px;border:1px solid #49708b;background:#142334;border-radius:10px;color:#d7eefe;font:8px 'DM Mono',monospace;white-space:nowrap}
+.b3-node:nth-of-type(2){border-color:#19afe7;box-shadow:0 0 20px #0b88f744}
+.b3-brand-art{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;color:#e7f9ff}.b3-brand-art>span{font-size:75px;line-height:1;color:#78d8ff}.b3-brand-art strong{font:700 26px 'DM Mono',monospace;letter-spacing:-.08em}.b3-brand-art small{font:8px 'DM Mono',monospace;letter-spacing:.12em;color:#acd0e8}
+.b3-browser-art{height:118px}.b3-browser-top{font-size:8px;padding:8px 10px;color:#64b9ed}.b3-browser-top span{float:right;color:#9faebb}.b3-browser-heading{font:700 14px 'DM Mono',monospace;letter-spacing:-.06em;margin:17px 12px 12px;color:#dff5ff}
+.b3-browser-blocks{display:flex;gap:7px;margin:0 12px}.b3-browser-blocks i{height:23px;flex:1;border-radius:4px;background:linear-gradient(100deg,#1764a1,#63ccfa44)}
+.b3-data-art{width:72%;display:flex;flex-direction:column;align-items:center;justify-content:center}.b3-data-art strong{font:700 49px 'DM Mono',monospace;letter-spacing:-.08em;color:#b7efff}.b3-data-chart{height:63px}
