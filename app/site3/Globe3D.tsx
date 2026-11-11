@@ -138,7 +138,7 @@ function World({ location, reduceMotion }: GlobeProps) {
       <FlightArc from={[-23.55, -46.63]} to={[51.5, -.13]} color="#7bbaff" />
       <FlightArc from={[35.68, 139.69]} to={[1.35, 103.82]} color="#2383eb" />
       <Html position={[marker.x, marker.y, marker.z]} center distanceFactor={8.2} occlude zIndexRange={[20, 0]}>
-        <div className="site3-globe-marker" aria-label={location ? `Online: ${location.city}` : 'Global network online'}>
+        <div className="site3-globe-marker" aria-label={location ? `Conectado: ${location.city}` : 'Rede global conectada'}>
           <span className="site3-live-dot" />ONLINE <span className="site3-marker-sep">·</span> {(location?.city || 'GLOBAL').toUpperCase()}
         </div>
       </Html>
@@ -154,7 +154,7 @@ function World({ location, reduceMotion }: GlobeProps) {
 }
 
 export default function Globe3D(props: GlobeProps) {
-  return <div className="site3-canvas-frame" role="img" aria-label="Interactive particle Earth, drag to rotate and explore global connections">
+  return <div className="site3-canvas-frame" role="img" aria-label="Globo terrestre 3D de partículas interativo. Arraste para girar e explorar conexões globais.">
     <Canvas dpr={[1, 1.65]} gl={{ antialias: false, alpha: false, powerPreference: 'high-performance' }} camera={{ fov: 43, near: .1, far: 100, position: [0, 0, 6.65] }} style={{ touchAction: 'pan-y' }}>
       <World {...props} />
     </Canvas>
