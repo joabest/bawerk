@@ -60,7 +60,7 @@ export default function HomeClient(){
        try{sessionStorage.setItem('b3-loc',JSON.stringify(loc))}catch{}
      }
    }).catch(()=>{}).finally(()=>window.clearTimeout(timeout))
-   const w=window as Window&{requestIdleCallback?:(cb:()=>void,o?:{timeout:number})=>number;cancelIdleCallback?:(id:number)=>void}
+   const w=window as unknown as {requestIdleCallback?:(cb:()=>void,o?:{timeout:number})=>number;cancelIdleCallback?:(id:number)=>void}
    const idle=w.requestIdleCallback?w.requestIdleCallback(run,{timeout:2000}):window.setTimeout(run,600)
    return ()=>{controller.abort();window.clearTimeout(timeout);if(w.cancelIdleCallback&&w.requestIdleCallback)w.cancelIdleCallback(idle);else window.clearTimeout(idle)}
  },[])

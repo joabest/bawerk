@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import {usePathname} from 'next/navigation'
 import {useCallback,useEffect,useMemo,useState} from 'react'
-import {ArrowUpRight,ChevronDown,Menu,Search,X, Instagram, Facebook, MessageCircle, MapPin} from 'lucide-react'
+import {ArrowUpRight,ChevronDown,Menu,Search,X, Camera, Users, MessageCircle, MapPin} from 'lucide-react'
 
 type MenuName = 'services'|'tools'|'more'
 const phone='https://wa.me/5511992779039'
@@ -111,8 +111,8 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
    <div className="b3-footer-follow">
     <span className="b3-overline">[ ACOMPANHE ]</span>
     <div className="b3-footer-social-links">
-     <a href="https://www.instagram.com/Bawerksolutions/" target="_blank" rel="noopener noreferrer"><Instagram size={16}/> Instagram <ArrowUpRight size={13}/></a>
-     <a href="https://www.facebook.com/Bawerksolutions/" target="_blank" rel="noopener noreferrer"><Facebook size={16}/> Facebook <ArrowUpRight size={13}/></a>
+     <a href="https://www.instagram.com/Bawerksolutions/" target="_blank" rel="noopener noreferrer"><Camera size={16}/> Instagram <ArrowUpRight size={13}/></a>
+     <a href="https://www.facebook.com/Bawerksolutions/" target="_blank" rel="noopener noreferrer"><Users size={16}/> Facebook <ArrowUpRight size={13}/></a>
      <a href={phone} target="_blank" rel="noopener noreferrer"><MessageCircle size={16}/> WhatsApp <ArrowUpRight size={13}/></a>
     </div>
    </div>
