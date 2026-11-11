@@ -166,3 +166,86 @@
  .site3-globe-marker{margin:0;transform:scale(.74) translate(0,-6px);transform-origin:left center;font-size:9px}
  .b3-home-globe{height:96vw}
 }
+
+
+/* Restore original Site 3 capsule and expandable menus across separate pages. */
+.b3-root .site3-header{position:fixed;z-index:90;top:26px;left:50%;transform:translateX(-50%);width:min(1200px,calc(100% - 70px))}
+.b3-root .site3-nav{height:66px;width:100%;display:flex;align-items:center;justify-content:space-between;gap:24px;border:1px solid #3a4148a0;background:#111318ed;backdrop-filter:blur(22px);border-radius:100px;padding:0 15px 0 25px;box-shadow:0 13px 55px #0007}
+.b3-root .site3-logo{display:flex;gap:10px;align-items:center;flex-shrink:0;white-space:nowrap;color:#f9fafc;line-height:1}
+.b3-root .site3-logo svg{flex:0 0 auto;filter:drop-shadow(0 0 9px #037bfd25)}
+.b3-root .site3-logo-type{display:flex;flex-direction:column;gap:5px}
+.b3-root .site3-logo-type strong{font-family:'Space Grotesk',sans-serif;font-size:19px;letter-spacing:.05em;font-weight:700}
+.b3-root .site3-logo-type small{font:8px 'DM Mono',monospace;letter-spacing:.085em;color:#b2b9c3}
+.b3-root .site3-desktop-nav,.b3-root .site3-nav-actions{display:flex;align-items:center;gap:2px}
+.b3-root .site3-desktop-nav{margin-left:auto;gap:10px}
+.b3-root .site3-nav-item{display:flex;align-items:center;gap:5px;border:0;background:transparent;padding:15px 10px;border-radius:20px;color:#c7ced7;font:10px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.08em;transition:color .25s,background .25s;white-space:nowrap}
+.b3-root .site3-nav-item:hover,.b3-root .site3-nav-active{color:white;background:#202630}
+.b3-root .site3-nav-actions{gap:8px}
+.b3-root .site3-icon-button,.b3-root .site3-mobile-toggle{width:37px;height:37px;display:grid;place-items:center;border:0;border-radius:50%;background:transparent;color:#cbd5df;transition:background .2s}
+.b3-root .site3-icon-button:hover,.b3-root .site3-mobile-toggle:hover{background:#253140}
+.b3-root .site3-mobile-toggle{display:none}
+.b3-root .site3-message-button{display:flex;gap:9px;align-items:center;justify-content:center;white-space:nowrap;border:1px solid #3a424b;border-radius:40px;height:40px;padding:0 14px;color:#f1f7ff;font:10px 'DM Mono',monospace;letter-spacing:.01em;transition:background .2s,border-color .2s}
+.b3-root .site3-message-button:hover{background:#123059;border-color:#188bff}
+.b3-root .site3-live-dot{width:7px;height:7px;display:inline-block;flex-shrink:0;background:#009dff;border-radius:50%;box-shadow:0 0 0 4px #128efa25,0 0 10px #079bff;animation:site3-pulse 2.4s infinite}
+.b3-root .site3-mega-menu{position:absolute;top:77px;right:0;width:min(850px,100%);border-radius:22px;border:1px solid #343b44;background:#14171bf5;padding:22px;box-shadow:0 24px 90px #000c;backdrop-filter:blur(24px);animation:site3-menu-in .25s ease both}
+.b3-root .site3-mega-eyebrow{font:10px 'DM Mono',monospace;color:#f0f1f4;letter-spacing:.14em;margin-bottom:18px}
+.b3-root .site3-mega-eyebrow span{color:#7c8590}
+.b3-root .site3-mega-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.b3-root .site3-mega-card{position:relative;display:flex;flex-direction:column;gap:10px;min-height:145px;border-radius:12px;background:#1d2128;border:1px solid #333b45;padding:17px;overflow:hidden;transition:border-color .25s,transform .25s,background .25s}
+.b3-root .site3-mega-card:hover{transform:translateY(-3px);border-color:#147ee5;background:#1d2837}
+.b3-root .site3-mega-index{font:9px 'DM Mono',monospace;letter-spacing:.04em;color:#8594a2;position:relative;z-index:1}
+.b3-root .site3-mega-title{font:600 17px/1.13 'Space Grotesk',sans-serif;max-width:85%;position:relative;z-index:1}
+.b3-root .site3-mega-title svg{vertical-align:middle;margin-left:3px;color:#3caaff}
+.b3-root .site3-mega-desc{position:relative;z-index:1;font-size:11px;line-height:1.6;color:#acb4bd;max-width:80%}
+.b3-root .site3-mega-glyph{position:absolute;right:-8px;bottom:-34px;font-size:118px;line-height:1;color:#057dff24;text-shadow:0 0 40px #237ef936}
+.b3-root .site3-mega-card:hover .site3-mega-glyph{color:#0a92ff54}
+.b3-root .site3-mobile-panel{display:none}
+.b3-root .site3-header{top:26px}
+.b3-root .site3-nav-free{color:#43bcff;font-size:8px;letter-spacing:.03em}
+.b3-root .site3-logo .site3-logo-type{display:flex;flex-direction:column;gap:4px}
+.b3-root .site3-logo .site3-logo-type strong{font-size:17px;letter-spacing:.04em}
+.b3-root .site3-logo .site3-logo-type small{font-size:7.5px;letter-spacing:.08em}
+.b3-root .site3-logo img{object-fit:contain;flex-shrink:0;border-radius:6px}
+.b3-root .site3-blue{color:#148dff}
+.b3-root .site3-nav-actions{margin-left:20px}
+.b3-root .site3-nav-item:focus-visible{outline:2px solid #159cff;outline-offset:2px}
+.b3-root .site3-mega-menu{overflow-y:auto;max-height:calc(100vh - 120px)}
+.b3-root .site3-mega-grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.b3-root .site3-mega-card::after{content:'';position:absolute;right:-40px;bottom:-35px;width:120px;height:120px;background:radial-gradient(circle,#026cfb2b,transparent 65%);pointer-events:none}
+.b3-root .site3-mega-card:hover{border-color:#50d9ff;background:linear-gradient(120deg,#1d2c40,#16222f)}
+.b3-root .site3-mega-title svg{display:inline-block}
+.b3-root .site3-mobile-panel{display:none}
+@keyframes site3-pulse{50%{box-shadow:0 0 0 7px #128efa08,0 0 16px #079bff}}
+@keyframes site3-menu-in{from{opacity:0;transform:translateY(-9px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:1250px){
+ .b3-root .site3-header{width:calc(100% - 46px)}
+ .b3-root .site3-nav{padding-left:18px}
+ .b3-root .site3-desktop-nav{gap:3px}
+ .b3-root .site3-nav-item{padding-inline:7px;font-size:9px}
+ .b3-root .site3-logo-type small{display:none}
+}
+@media(max-width:1050px){
+ .b3-root .site3-header{width:calc(100% - 38px);top:16px}
+ .b3-root .site3-desktop-nav{display:none}
+ .b3-root .site3-mobile-toggle{display:grid;place-items:center}
+ .b3-root .site3-nav-actions{margin-left:auto}
+ .b3-root .site3-mobile-panel{display:flex;flex-direction:column;position:absolute;left:0;right:0;top:76px;border:1px solid #3b5065;border-radius:17px;padding:12px;background:#141921f8;box-shadow:0 18px 65px #000b;backdrop-filter:blur(22px)}
+ .b3-root .site3-mobile-panel a{padding:13px 18px;border-bottom:1px solid #273645;display:flex;justify-content:space-between;align-items:center;font-size:13px}
+ .b3-root .site3-mobile-panel a:last-child{border-bottom:0;color:#65baff}
+ .b3-root .site3-mega-menu{display:none}
+}
+@media(max-width:760px){
+ .b3-root .site3-header{width:calc(100% - 26px);top:12px}
+ .b3-root .site3-nav{height:60px;padding-left:12px}
+ .b3-root .site3-message-button{height:36px;padding:0 9px;font-size:9px}
+ .b3-root .site3-logo-type strong{font-size:16px}
+ .b3-root .site3-logo img{width:28px;height:28px}
+ .b3-root .site3-nav-actions{gap:3px}
+}
+@media(max-width:440px){
+ .b3-root .site3-nav{gap:8px;padding:0 9px 0 10px}
+ .b3-root .site3-logo-type small{display:none}
+ .b3-root .site3-message-button{font-size:0;gap:5px}
+ .b3-root .site3-message-button svg{width:14px;height:14px}
+ .b3-root .site3-logo img{width:27px;height:27px}
+}
