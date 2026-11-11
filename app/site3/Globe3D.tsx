@@ -109,16 +109,21 @@ function StarField() {
 function World({ location, reduceMotion }: GlobeProps) {
   const globeDots = useMemo(countryDots, [])
   const shell = useRef<THREE.Group>(null)
-  const marker = location ? spherical(location.latitude, location.longitude, 2.23) : spherical(0, -38, 2.23)
-  useFrame((state) => {
-    if (!shell.current || reduceMotion) return
-    shell.current.rotation.z = Math.sin(state.clock.elapsedTime * .13) * .013
+  const pivot = useRef<THREE.Group>(null)
+  const marker = location ? spherical(location.latitude, location.longitude, 2.23) : spherical(-23.55, -46.63, 2.23)
+  const targetQuaternion = useMemo(() =>
+    new THREE.Quaternion().setFromUnitVectors(marker.clone().normalize(), new THREE.Vector3(0, 0, 1)),
+    [marker.x, marker.y, marker.z])
+  useFrame((state, delta) => {
+    if (pivot.current) pivot.current.quaternion.slerp(targetQuaternion, 1 - Math.exp(-delta * 2.4))
+    if (shell.current && !reduceMotion) shell.current.rotation.z = Math.sin(state.clock.elapsedTime * .13) * .013
   })
   return <>
     <color attach="background" args={['#080b12']} />
     <ambientLight intensity={.8} />
     <StarField />
-    <group ref={shell}>
+    <group ref={pivot}>
+      <group ref={shell}>
       <mesh>
         <sphereGeometry args={[2.002, 80, 80]} />
         <meshBasicMaterial color="#071728" transparent opacity={.92} />
@@ -146,10 +151,11 @@ function World({ location, reduceMotion }: GlobeProps) {
         <sphereGeometry args={[.036, 10, 10]} />
         <meshBasicMaterial color="#b6ecff" />
       </mesh>
+      </group>
     </group>
     <OrbitRing tilt={[.42, .2, .2]} speed={reduceMotion ? 0 : .009} />
     <OrbitRing tilt={[-.32, 1.12, -.33]} radius={2.75} color="#153e6d" speed={reduceMotion ? 0 : -.007} />
-    <OrbitControls autoRotate={!reduceMotion} autoRotateSpeed={.33} enableZoom={false} enablePan={false} enableDamping dampingFactor={.045} minPolarAngle={.35} maxPolarAngle={Math.PI - .35} />
+    <OrbitControls autoRotate={false} enableZoom={false} enablePan={false} enableDamping dampingFactor={.045} minPolarAngle={.35} maxPolarAngle={Math.PI - .35} />
   </>
 }
 
