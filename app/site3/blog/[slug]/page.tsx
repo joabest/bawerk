@@ -1,5 +1,5 @@
 import type {Metadata} from 'next'
-import Link from 'next/link'
+import Link from '../../PublicLink'
 import {ArrowLeft,ArrowUpRight} from 'lucide-react'
 import {notFound} from 'next/navigation'
 import {getPost,posts} from '../../blog-data'
