@@ -1,71 +1,117 @@
 'use client'
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
-import { useState } from 'react'
-import { ArrowUpRight, Menu, Search, X } from 'lucide-react'
+import {usePathname} from 'next/navigation'
+import {useCallback,useEffect,useMemo,useState} from 'react'
+import {ArrowUpRight,ChevronDown,Menu,Search,X} from 'lucide-react'
 
-const links = [
-  { label: 'Início', href: '/site3' },
-  { label: 'Serviços', href: '/site3/servicos' },
-  { label: 'Método', href: '/site3/metodo' },
-  { label: 'Projetos', href: '/site3/projetos' },
-  { label: 'Blog', href: '/site3/blog' },
-  { label: 'Sobre', href: '/site3/sobre' },
-  { label: 'Contato', href: '/site3/contato' },
+type MenuName = 'services'|'tools'|'more'
+const phone='https://wa.me/5511992779039'
+const siteLinks=[
+ {label:'Início',href:'/site3'},
+ {label:'Serviços',href:'/site3/servicos'},
+ {label:'Método',href:'/site3/metodo'},
+ {label:'Projetos',href:'/site3/projetos'},
+ {label:'Blog',href:'/site3/blog'},
+ {label:'Sobre',href:'/site3/sobre'},
+ {label:'Contato',href:'/site3/contato'},
 ]
-const phone = 'https://wa.me/5511992779039'
+const serviceCards=[
+ {index:'01',cat:'EXPERIÊNCIAS DIGITAIS',title:'Desenvolvimento web',desc:'Sites de alto desempenho, interfaces e experiências digitais.',symbol:'◈',href:'/site3/servicos'},
+ {index:'02',cat:'ENGENHARIA',title:'Software sob medida',desc:'Plataformas e sistemas criados para o seu negócio.',symbol:'⌘',href:'/site3/servicos'},
+ {index:'03',cat:'INTELIGÊNCIA',title:'IA e automação',desc:'Fluxos inteligentes e integrações que poupam tempo.',symbol:'✳',href:'/site3/servicos'},
+ {index:'04',cat:'NEGÓCIOS',title:'CRM e operações',desc:'Leads, funis de vendas, atendimento e painéis.',symbol:'◎',href:'/site3/servicos'},
+ {index:'05',cat:'INFRAESTRUTURA',title:'Nuvem e APIs',desc:'Integração de sistemas, dados e serviços.',symbol:'▦',href:'/site3/servicos'},
+ {index:'06',cat:'CRIAÇÃO',title:'Marca e design',desc:'Identidades visuais e interfaces marcantes.',symbol:'✦',href:'/site3/servicos'},
+]
+const toolCards=[
+ {index:'01',cat:'ESTRATÉGIA',title:'Planejador de projetos',desc:'Preencha um briefing completo para a equipe Bawerk.',symbol:'◎',href:'/site3/contato'},
+ {index:'02',cat:'DIAGNÓSTICO',title:'Identifique seu desafio',desc:'Descubra o que está dificultando seu crescimento.',symbol:'✳',href:'/site3/#diagnostico'},
+ {index:'03',cat:'PROCESSO',title:'Metodologia de desenvolvimento',desc:'Conheça nossas quatro etapas de trabalho.',symbol:'◈',href:'/site3/metodo'},
+]
+const moreCards=[
+ {index:'01',cat:'EMPRESA',title:'Sobre a Bawerk',desc:'Nossa visão, essência e forma de construir.',symbol:'◉',href:'/site3/sobre'},
+ {index:'02',cat:'CONTEÚDO',title:'Blog e artigos',desc:'Tecnologia, design, IA e tendências digitais.',symbol:'▤',href:'/site3/blog'},
+ {index:'03',cat:'PORTFÓLIO',title:'Projetos',desc:'Conheça algumas experiências desenvolvidas.',symbol:'↗',href:'/site3/projetos'},
+]
 
-function Brand() {
-  return <Link className="b3-brand" href="/site3" aria-label="Bawerk Solutions — início">
-    <Image src="/icon.svg" alt="" width={38} height={38} />
-    <span><strong>BAWERK<span className="b3-electric">.</span></strong><small>SOLUTIONS</small></span>
-  </Link>
+function Brand(){
+ return <Link className="site3-logo" href="/site3" aria-label="Bawerk Solutions — página inicial">
+  <Image src="/icon.svg" alt="" width={35} height={35} />
+  <span className="site3-logo-type"><strong>BAWERK<span className="site3-blue">.</span></strong><small>SOLUTIONS / ENGENHARIA DIGITAL</small></span>
+ </Link>
 }
-export default function Site3Chrome({children}:{children:React.ReactNode}) {
-  const pathname=usePathname()
-  const [mobile,setMobile]=useState(false)
-  const [search,setSearch]=useState(false)
-  const [query,setQuery]=useState('')
-  const matching=links.filter(item=>item.label.toLocaleLowerCase('pt-BR').includes(query.toLocaleLowerCase('pt-BR')))
-  return <div className="b3-root">
-    <div className="b3-dotworld" aria-hidden="true" />
-    <header className="b3-header">
-      <nav className="b3-nav" aria-label="Navegação principal">
-        <Brand />
-        <div className="b3-nav-links">
-          {links.map(item=><Link key={item.href} href={item.href}
-            className={pathname===item.href || (item.href==='/site3/blog' && pathname.startsWith('/site3/blog/')) ? 'b3-active' : ''}
-            aria-current={pathname===item.href ? 'page':undefined}>{item.label}</Link>)}
-        </div>
-        <div className="b3-header-actions">
-          <button className="b3-icon-action" onClick={()=>setSearch(true)} aria-label="Pesquisar no site"><Search size={18}/></button>
-          <a className="b3-contact-pill" href={phone} target="_blank" rel="noreferrer"><span className="b3-live"/> Fale conosco <ArrowUpRight size={15}/></a>
-          <button className="b3-menu-toggle" onClick={()=>setMobile(v=>!v)} aria-label={mobile?'Fechar menu':'Abrir menu'} aria-expanded={mobile}>{mobile?<X size={21}/>:<Menu size={21}/>}</button>
-        </div>
-      </nav>
-      {mobile&&<div className="b3-mobile-menu">{links.map(item=><Link key={item.href} href={item.href} onClick={()=>setMobile(false)}>{item.label} <ArrowUpRight size={16}/></Link>)}</div>}
-    </header>
-    <main className="b3-main">{children}</main>
-    <footer className="b3-footer">
-      <div className="b3-footer-top">
-        <div><span className="b3-overline">[ CONTATO ]</span><h2>Toda empresa merece <em>evoluir.</em></h2><p>Bawerk Solutions — você pode ir além do que imagina.</p></div>
-        <div className="b3-footer-actions">
-          <a href="mailto:contato@bawerk.solutions">E-mail <ArrowUpRight size={16}/></a>
-          <a href={phone} target="_blank" rel="noreferrer">WhatsApp <ArrowUpRight size={16}/></a>
-        </div>
-      </div>
-      <div className="b3-footer-grid">
-        <div><span className="b3-overline">SERVIÇOS</span><Link href="/site3/servicos">Sites e software</Link><Link href="/site3/servicos">CRM e automação</Link><Link href="/site3/servicos">Marketing e design</Link></div>
-        <div><span className="b3-overline">EMPRESA</span><Link href="/site3/sobre">Sobre a Bawerk</Link><Link href="/site3/metodo">Nosso método</Link><Link href="/site3/projetos">Projetos</Link></div>
-        <div><span className="b3-overline">EXPLORAR</span><Link href="/site3/blog">Blog</Link><Link href="/site3/contato">Solicitar orçamento</Link><Link href="/site3">Voltar ao início</Link></div>
-        <div className="b3-footer-location"><span className="b3-overline">LOCALIZAÇÃO</span><strong>São Paulo · Brasil</strong><p>Projetos digitais para todo o Brasil.</p></div>
-      </div>
-      <div className="b3-footer-bottom"><span>© {new Date().getFullYear()} BAWERK SOLUTIONS · TODOS OS DIREITOS RESERVADOS</span><span>VOCÊ PODE IR ALÉM DO QUE IMAGINA.</span></div>
-    </footer>
-    {search&&<div className="b3-search-mask" role="presentation" onClick={()=>setSearch(false)}><section className="b3-search-dialog" role="dialog" aria-modal="true" aria-label="Pesquisar páginas" onClick={e=>e.stopPropagation()}>
-      <div className="b3-search-input"><Search size={20}/><input value={query} onChange={e=>setQuery(e.target.value)} autoFocus placeholder="Pesquisar páginas..." aria-label="Pesquisar"/><button onClick={()=>setSearch(false)} aria-label="Fechar pesquisa"><X size={19}/></button></div>
-      <div className="b3-search-list">{matching.length?matching.map(item=><Link href={item.href} key={item.href} onClick={()=>{setSearch(false);setQuery('')}}>{item.label}<ArrowUpRight size={15}/></Link>):<p>Nenhuma página encontrada.</p>}</div>
-    </section></div>}
-  </div>
+export default function Site3Chrome({children}:{children:React.ReactNode}){
+ const pathname=usePathname()
+ const [menu,setMenu]=useState<MenuName|null>(null)
+ const [mobileMenu,setMobileMenu]=useState(false)
+ const [searchOpen,setSearchOpen]=useState(false)
+ const [query,setQuery]=useState('')
+ const closeNav=useCallback(()=>{setMenu(null);setMobileMenu(false)},[])
+ const searchResults=useMemo(()=>siteLinks.filter(item=>item.label.toLocaleLowerCase('pt-BR').includes(query.toLocaleLowerCase('pt-BR'))),[query])
+ useEffect(()=>{
+   const onKey=(e:KeyboardEvent)=>{
+     if(e.key==='Escape'){setMenu(null);setMobileMenu(false);setSearchOpen(false)}
+     if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();setSearchOpen(open=>!open)}
+   }
+   document.addEventListener('keydown',onKey)
+   return()=>document.removeEventListener('keydown',onKey)
+ },[])
+ const entries=menu==='services'?serviceCards:menu==='tools'?toolCards:moreCards
+ return <div className="b3-root">
+  <div className="b3-dotworld" aria-hidden="true"/>
+  <header className="site3-header" onMouseLeave={()=>setMenu(null)}>
+   <nav className="site3-nav" aria-label="Navegação principal">
+    <Brand/>
+    <div className="site3-desktop-nav">
+     <button className={'site3-nav-item'+(menu==='services'?' site3-nav-active':'')} onMouseEnter={()=>setMenu('services')} onFocus={()=>setMenu('services')} onClick={()=>setMenu(menu==='services'?null:'services')} aria-expanded={menu==='services'}>Serviços <ChevronDown size={11}/></button>
+     <Link className="site3-nav-item" href="/site3/metodo" onMouseEnter={()=>setMenu(null)} onClick={closeNav}>Método</Link>
+     <Link className="site3-nav-item" href="/site3/projetos" onMouseEnter={()=>setMenu(null)} onClick={closeNav}>Projetos</Link>
+     <button className={'site3-nav-item'+(menu==='tools'?' site3-nav-active':'')} onMouseEnter={()=>setMenu('tools')} onFocus={()=>setMenu('tools')} onClick={()=>setMenu(menu==='tools'?null:'tools')} aria-expanded={menu==='tools'}>Ferramentas <span className="site3-nav-free">GRÁTIS</span><ChevronDown size={11}/></button>
+     <button className={'site3-nav-item'+(menu==='more'?' site3-nav-active':'')} onMouseEnter={()=>setMenu('more')} onFocus={()=>setMenu('more')} onClick={()=>setMenu(menu==='more'?null:'more')} aria-expanded={menu==='more'}>Mais <ChevronDown size={11}/></button>
+     <Link className="site3-nav-item" href="/site3/contato" onMouseEnter={()=>setMenu(null)} onClick={closeNav}>Contato</Link>
+    </div>
+    <div className="site3-nav-actions">
+     <button className="site3-icon-button" aria-label="Pesquisar no site" onClick={()=>{setSearchOpen(true);setMenu(null)}}><Search size={18}/></button>
+     <a className="site3-message-button" href={phone} target="_blank" rel="noopener noreferrer"><span className="site3-live-dot"/> fale conosco <ArrowUpRight size={15}/></a>
+     <button className="site3-mobile-toggle" aria-label={mobileMenu?'Fechar menu':'Abrir menu'} aria-expanded={mobileMenu} onClick={()=>{setMobileMenu(p=>!p);setMenu(null)}}>{mobileMenu?<X size={22}/>:<Menu size={22}/>}</button>
+    </div>
+   </nav>
+   {menu&&<div className={'site3-mega-menu site3-mega-'+menu} onMouseEnter={()=>setMenu(menu)}>
+    <div className="site3-mega-eyebrow">{menu==='services'?'SERVIÇOS':menu==='tools'?'FERRAMENTAS GRATUITAS':'CONHEÇA A BAWERK'} <span>— {menu==='services'?'ENGENHARIA COM PROPÓSITO':menu==='tools'?'NAVEGUE SEM CADASTRO':'OUTRAS PÁGINAS'}</span></div>
+    <div className={'site3-mega-grid'+(menu==='services'?'':' site3-mega-grid-3')}>
+     {entries.map(item=><Link href={item.href} key={item.index} className="site3-mega-card" onClick={closeNav}>
+       <span className="site3-mega-index">{item.index} / {item.cat}</span>
+       <span className="site3-mega-title">{item.title} <ArrowUpRight size={15}/></span>
+       <span className="site3-mega-desc">{item.desc}</span>
+       <span className="site3-mega-glyph" aria-hidden="true">{item.symbol}</span>
+     </Link>)}
+    </div>
+   </div>}
+   {mobileMenu&&<div className="site3-mobile-panel">
+    {siteLinks.map(item=><Link key={item.href} href={item.href} onClick={closeNav}>{item.label}<ArrowUpRight size={14}/></Link>)}
+    <a href={phone} target="_blank" rel="noopener noreferrer" onClick={closeNav}>WhatsApp <ArrowUpRight size={14}/></a>
+   </div>}
+  </header>
+  <main className="b3-main">{children}</main>
+  <footer className="b3-footer">
+   <div className="b3-footer-top">
+    <div><span className="b3-overline">[ FALE CONOSCO ]</span><h2>Toda empresa merece <em>evoluir.</em></h2><p>Bawerk Solutions — você pode ir além do que imagina.</p></div>
+    <div className="b3-footer-actions"><a href="mailto:contato@bawerk.solutions">E-mail <ArrowUpRight size={16}/></a><a href={phone} target="_blank" rel="noopener noreferrer">WhatsApp <ArrowUpRight size={16}/></a></div>
+   </div>
+   <div className="b3-footer-grid">
+    <div><span className="b3-overline">SERVIÇOS</span><Link href="/site3/servicos">Sites e software</Link><Link href="/site3/servicos">CRM e automação</Link><Link href="/site3/servicos">Marketing e design</Link></div>
+    <div><span className="b3-overline">EMPRESA</span><Link href="/site3/sobre">Sobre a Bawerk</Link><Link href="/site3/metodo">Nosso método</Link><Link href="/site3/projetos">Projetos</Link></div>
+    <div><span className="b3-overline">EXPLORAR</span><Link href="/site3/blog">Blog</Link><Link href="/site3/contato">Solicitar orçamento</Link><Link href="/site3">Voltar ao início</Link></div>
+    <div className="b3-footer-location"><span className="b3-overline">LOCALIZAÇÃO</span><strong>São Paulo · Brasil</strong><p>Projetos em todo o Brasil.</p></div>
+   </div>
+   <div className="b3-footer-bottom"><span>© {new Date().getFullYear()} BAWERK SOLUTIONS · TODOS OS DIREITOS RESERVADOS</span><span>VOCÊ PODE IR ALÉM DO QUE IMAGINA.</span></div>
+  </footer>
+  {searchOpen&&<div className="b3-search-mask" onMouseDown={e=>{if(e.target===e.currentTarget)setSearchOpen(false)}}>
+   <section className="b3-search-dialog" role="dialog" aria-modal="true" aria-label="Pesquisar páginas">
+    <div className="b3-search-input"><Search size={20}/><input autoFocus value={query} onChange={e=>setQuery(e.target.value)} placeholder="Pesquisar páginas..." aria-label="Pesquisar"/><button onClick={()=>setSearchOpen(false)} aria-label="Fechar pesquisa"><X size={19}/></button></div>
+    <div className="b3-search-list">{searchResults.length?searchResults.map(item=><Link key={item.href} href={item.href} onClick={()=>{setSearchOpen(false);setQuery('')}}>{item.label}<ArrowUpRight size={15}/></Link>):<p>Nenhuma página encontrada.</p>}</div>
+   </section>
+  </div>}
+ </div>
 }
