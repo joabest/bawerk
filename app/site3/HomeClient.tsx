@@ -1,5 +1,5 @@
 'use client'
-import Link from 'next/link'
+import Link from './PublicLink'
 import {useRouter} from 'next/navigation'
 import dynamic from 'next/dynamic'
 import {useEffect,useRef,useState} from 'react'
