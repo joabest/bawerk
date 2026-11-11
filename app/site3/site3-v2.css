@@ -150,3 +150,19 @@
 .b3-browser-art{height:118px}.b3-browser-top{font-size:8px;padding:8px 10px;color:#64b9ed}.b3-browser-top span{float:right;color:#9faebb}.b3-browser-heading{font:700 14px 'DM Mono',monospace;letter-spacing:-.06em;margin:17px 12px 12px;color:#dff5ff}
 .b3-browser-blocks{display:flex;gap:7px;margin:0 12px}.b3-browser-blocks i{height:23px;flex:1;border-radius:4px;background:linear-gradient(100deg,#1764a1,#63ccfa44)}
 .b3-data-art{width:72%;display:flex;flex-direction:column;align-items:center;justify-content:center}.b3-data-art strong{font:700 49px 'DM Mono',monospace;letter-spacing:-.08em;color:#b7efff}.b3-data-chart{height:63px}
+
+/* Starfield grid shared seamlessly by the full page and the transparent WebGL canvas. */
+.b3-dotworld{background-color:#090b0f;background-image:radial-gradient(circle,rgba(133,149,163,.27) .7px,transparent 1.25px),radial-gradient(ellipse at 52% 20%,rgba(16,46,68,.18),transparent 70%);background-size:22px 22px,100% 100%}
+.b3-root{background:transparent}
+.b3-home-globe{isolation:isolate}
+.b3-home-globe .b3-globe-canvas{background:transparent}
+.b3-home-globe canvas{background:transparent!important}
+.site3-globe-marker{margin:0;transform:translate(18px,-14px);color:#e7ebf0;letter-spacing:.1em;border:1px solid #49545e;border-radius:99px;white-space:nowrap;background:#171b20e8;box-shadow:0 12px 36px #000a;padding:9px 14px}
+.site3-globe-marker:before{content:none}
+.b3-root .b3-primary,.b3-root .b3-secondary,.b3-root .b3-contact-pill{background-size:200% 200%;transition:background-position .35s,transform .25s,border-color .25s,box-shadow .25s}
+.b3-root .b3-primary:hover,.b3-root .b3-secondary:hover,.b3-root .b3-contact-pill:hover{background:linear-gradient(110deg,#0059e8 0%,#19d3e9 100%)}
+.b3-root .b3-nav-links a:hover{color:#d9f6ff;background:linear-gradient(115deg,#103e71,#144451)}
+@media(max-width:700px){
+ .site3-globe-marker{margin:0;transform:scale(.74) translate(0,-6px);transform-origin:left center;font-size:9px}
+ .b3-home-globe{height:96vw}
+}
