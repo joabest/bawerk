@@ -6,9 +6,24 @@ import {categories,posts} from '../blog-data'
 import type {BlogPost} from '../blog-data'
 
 export function BlogThumbnail({post}:{post:BlogPost}){
- return <div className={'b3-thumb b3-thumb-'+post.theme} aria-hidden="true">
+ const slug=post.slug
+ return <div className={'b3-thumb b3-thumb-'+post.theme+' b3-art-'+slug} aria-hidden="true">
   <span className="b3-thumb-label">{post.category}</span>
-  <span className="b3-thumb-symbol">{post.symbol}</span>
+  <div className="b3-thumb-display">
+   {slug==='ia-com-responsabilidade'&&<div className="b3-audit-row">
+    {['ACESSO','REVISÃO','CONTROLE'].map((label,i)=><div className="b3-audit-card" key={label}><span>{['⊙','✓','⌁'][i]}</span><small>{label}</small><i/></div>)}
+   </div>}
+   {slug==='agentes-ia-nos-negocios'&&<div className="b3-app-grid">
+    {['▦','✳','⌘','◇','◈','≋','⎔','✦','▣'].map((v,i)=><div key={i} className={i===4?'b3-app-hot':''}>{v}</div>)}
+   </div>}
+   {slug==='sites-rapidos-e-resultados'&&<div className="b3-speed"><strong>98</strong><span>WEB / PERFORMANCE</span><div className="b3-speed-bars">{[38,46,32,58,70,57,85,94,100,83,95,88].map((v,i)=><i key={i} style={{height:v+'%'}}/>)}</div></div>}
+   {slug==='por-que-negocio-nao-aparece'&&<div className="b3-search-art"><div className="b3-search-top">⌕ &nbsp; sua empresa no Google <span>↗</span></div><div className="b3-search-lines"><i/><i/><i/></div><div className="b3-search-badge">SEO ↑</div></div>}
+   {slug==='crm-sem-perder-leads'&&<div className="b3-crm-art"><div className="b3-crm-title">CRM / PIPELINE</div><div className="b3-crm-columns">{['NOVOS','EM CONTATO','PROPOSTA'].map((v,i)=><div key={v}><small>{v}</small>{Array.from({length:3-i},(_,n)=><span key={n}/>)}</div>)}</div></div>}
+   {slug==='automacao-processos-na-pratica'&&<div className="b3-flow-art"><div className="b3-node">FORMULÁRIO</div><span>→</span><div className="b3-node">AUTOMAÇÃO ✳</div><span>→</span><div className="b3-node">CRM ✓</div></div>}
+   {slug==='branding-e-confianca'&&<div className="b3-brand-art"><span>✦</span><strong>IDENTIDADE.</strong><small>MARCA · DESIGN · SISTEMA VISUAL</small></div>}
+   {slug==='landing-page-ou-site'&&<div className="b3-browser-art"><div className="b3-browser-top">● ● ● <span>www.bawerk.solutions</span></div><div className="b3-browser-heading">WEB / EXPERIÊNCIA</div><div className="b3-browser-blocks"><i/><i/><i/></div></div>}
+   {slug==='medindo-o-que-importa'&&<div className="b3-data-art"><span>ANÁLISE / DADOS</span><strong>+28%</strong><div className="b3-data-chart">{[20,34,30,44,40,57,54,73,85,81,91].map((v,i)=><i key={i} style={{height:v+'%'}}/>)}</div></div>}
+  </div>
  </div>
 }
 export default function BlogClient(){
