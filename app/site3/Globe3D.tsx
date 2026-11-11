@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Html, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
@@ -84,7 +84,9 @@ function FlightArc({ from, to, color = '#3aa5ff' }: { from: [number, number]; to
     g.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
     return g
   }, [from, to])
-  return <line geometry={geometry}><lineBasicMaterial color={color} transparent opacity={.65} depthWrite={false} /></line>
+  const line = useMemo(() => new THREE.Line(geometry, new THREE.LineBasicMaterial({ color, transparent: true, opacity: .65, depthWrite: false })), [geometry, color])
+  useEffect(() => () => { geometry.dispose(); (line.material as THREE.Material).dispose() }, [geometry, line])
+  return <primitive object={line} />
 }
 
 function StarField() {
