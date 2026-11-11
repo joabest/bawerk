@@ -94,7 +94,6 @@ export default function HomeClient(){
   <section className="b3-container b3-home-hero">
    <div className="b3-home-globe">
     <div className="b3-globe-canvas"><Globe3D location={location} reduceMotion={reducedMotion}/></div>
-    <div className="b3-overline b3-globe-caption"><span className="b3-live"/> {location?location.city.toUpperCase():'LOCALIZAÇÃO GLOBAL'} · REDE CONECTADA</div>
    </div>
    <div className="b3-home-copy">
     <span className="b3-overline">[ BAWERK SOLUTIONS / VOCÊ PODE IR ALÉM DO QUE IMAGINA ]</span>
