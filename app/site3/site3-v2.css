@@ -249,3 +249,41 @@
  .b3-root .site3-message-button svg{width:14px;height:14px}
  .b3-root .site3-logo img{width:27px;height:27px}
 }
+
+
+/* Hero framing: original centered planet, header above, oversized typography beneath. */
+.b3-root .b3-main{padding-top:132px}
+.b3-root .b3-home-hero{min-height:975px;padding-top:640px;padding-bottom:80px}
+.b3-root .b3-home-globe{
+ top:0;left:50%;transform:translateX(-50%);
+ width:min(710px,76vw);height:min(710px,76vw);
+}
+.b3-root .b3-home-hero h1{
+ font-family:'DM Mono',monospace;
+ font-size:clamp(76px,8.25vw,137px);
+ line-height:.96;
+ letter-spacing:-.082em;
+ font-weight:700;
+ max-width:1250px;
+ color:#f3f4f7;
+}
+.b3-root .b3-home-hero h1 em{font-style:normal;color:inherit}
+.b3-root .b3-home-hero h1 .b3-electric{color:#1398ff}
+.b3-root .b3-home-hero>div:first-child{z-index:5}
+.b3-root .b3-globe-canvas,.b3-root .b3-globe-canvas>div{background:transparent}
+.b3-root .b3-home-globe::before{background:radial-gradient(circle,#11192119,transparent 66%)}
+.b3-root .b3-home-globe .b3-overline{position:absolute;bottom:20px;left:0;color:#7f8a95}
+.b3-root .b3-home-stats{font-size:10px;letter-spacing:.07em}
+@media(max-width:1080px){
+ .b3-root .b3-home-hero{min-height:880px;padding-top:560px}
+ .b3-root .b3-home-globe{width:min(730px,88vw);height:min(730px,88vw);top:4px}
+ .b3-root .b3-home-hero h1{font-size:clamp(70px,10vw,112px)}
+}
+@media(max-width:700px){
+ .b3-root .b3-main{padding-top:112px}
+ .b3-root .b3-home-hero{min-height:760px;padding-top:min(98vw,445px);padding-bottom:70px}
+ .b3-root .b3-home-globe{top:0;width:100vw;height:100vw}
+ .b3-root .b3-home-hero h1{font-size:clamp(45px,11vw,72px)}
+ .b3-root .b3-home-hero .b3-overline{font-size:9px}
+ .b3-root .b3-home-globe .b3-overline{font-size:8px}
+}
