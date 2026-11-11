@@ -58,7 +58,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
    return()=>document.removeEventListener('keydown',onKey)
  },[])
  const entries=menu==='services'?serviceCards:menu==='tools'?toolCards:moreCards
- return <div className="b3-root">
+ return <div className="b3-root" id="top">
   <div className="b3-dotworld" aria-hidden="true"/>
   <header className="site3-header" onMouseLeave={()=>setMenu(null)}>
    <nav className="site3-nav" aria-label="Navegação principal">
