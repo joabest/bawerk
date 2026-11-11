@@ -69,8 +69,8 @@ export default function HomeClient(){
  return <>
   <section className="b3-container b3-home-hero">
    <div>
-    <span className="b3-overline">[ BAWERK SOLUTIONS / ENGENHARIA DIGITAL ]</span>
-    <h1>Você pode ir <em>além do que imagina.</em></h1>
+    <span className="b3-overline">[ BAWERK SOLUTIONS / VOCÊ PODE IR ALÉM DO QUE IMAGINA ]</span>
+    <h1>Sua parceira<br/><em>tecnológica<span className="b3-electric">.</span></em></h1>
     <p>Sites, softwares, CRM, automação, marketing e design. Tecnologia inteligente e experiências digitais que fazem a sua empresa evoluir.</p>
     <div className="b3-cta-row">
      <Link className="b3-primary" href="/site3/servicos">Explorar serviços <ArrowUpRight size={16}/></Link>
@@ -84,7 +84,7 @@ export default function HomeClient(){
    </div>
   </section>
   <div className="b3-container" style={{borderTop:'1px solid #242d35',paddingTop:20,display:'flex',justifyContent:'space-between',font:'10px DM Mono,monospace',letterSpacing:'.13em',color:'#9ab2c5'}}><span>CRIANDO O QUE AINDA NÃO EXISTE</span><span>ROLE PARA EXPLORAR <ArrowDown size={13} style={{display:'inline'}}/></span></div>
-  <section className="b3-container b3-friction">
+  <section className="b3-container b3-friction" id="diagnostico">
    <span className="b3-overline">[ DIAGNÓSTICO / DESAFIOS REAIS ]</span>
    <h2>O que está <span className="b3-electric">dificultando</span> seu crescimento?</h2>
    <p>Conte o que está dificultando seu crescimento. Nós ajudamos a encontrar o melhor caminho.</p>
