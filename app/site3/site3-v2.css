@@ -449,3 +449,8 @@
     letter-spacing:0;
   }
 }
+
+
+/* Signature editorial punctuation: inverse color of the last highlighted words. */
+.b3-root .b3-dot-blue{color:#148fff!important}
+.b3-root .b3-dot-white{color:#f5f8fb!important}
