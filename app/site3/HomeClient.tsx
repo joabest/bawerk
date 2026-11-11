@@ -1,17 +1,28 @@
 'use client'
 import Link from 'next/link'
+import {useRouter} from 'next/navigation'
 import dynamic from 'next/dynamic'
 import {useEffect,useRef,useState} from 'react'
 import {ArrowDown,ArrowRight,ArrowUpRight,Code2,Layers3,Search,Zap} from 'lucide-react'
 
 const Globe3D=dynamic(()=>import('./Globe3D'),{ssr:false,loading:()=> <div className="b3-globe-loading">CARREGANDO GLOBO 3D...</div>})
 type Location={city:string;latitude:number;longitude:number}
-const challenges=[
- 'meu site fica cada vez mais lento',
- 'os leads desaparecem antes de chegar à equipe',
- 'minha empresa faz tudo manualmente',
- 'preciso de um sistema para organizar minhas operações',
- 'quero crescer, mas não sei por onde começar'
+const frictions:[string,number,number][]=[
+ ['meu site fica cada vez mais lento',64,62],
+ ['os leads desaparecem antes de chegar à equipe',2,8],
+ ['minha empresa faz tudo manualmente',70,10],
+ ['preciso de um sistema para organizar minhas operações',2,40],
+ ['quero crescer, mas não sei por onde começar',72,40],
+ ['meus anúncios não trazem vendas',74,52],
+ ['meu site cai toda semana',3,60],
+ ['não sei meus números reais',36,78],
+ ['não sei quem está sendo produtivo',58,86],
+ ['planilhas demais, controle de menos',4,82],
+ ['demoro a responder meus clientes',74,74],
+ ['ninguém usa o meu CRM',6,50],
+ ['perco orçamentos por falta de follow-up',18,70],
+ ['meu site não aparece no Google',44,6],
+ ['retrabalho em toda entrega',38,94]
 ]
 const services=[
  {n:'01',name:'Sites e experiências digitais',text:'Design, performance e experiências web que destacam sua marca.'},
@@ -28,26 +39,38 @@ const steps=[
 export default function HomeClient(){
  const [location,setLocation]=useState<Location|null>(null)
  const [reducedMotion,setReducedMotion]=useState(false)
- const [challenge,setChallenge]=useState(0)
+ const [friction,setFriction]=useState('')
+ const [cloudLive,setCloudLive]=useState(false)
+ const router=useRouter()
+ const cloudRef=useRef<HTMLElement|null>(null)
+ const inputRef=useRef<HTMLInputElement|null>(null)
  const [stepCount,setStepCount]=useState(0)
  const stageRef=useRef<HTMLElement|null>(null)
  useEffect(()=>{
    const motion=window.matchMedia('(prefers-reduced-motion: reduce)')
    setReducedMotion(motion.matches)
+   try{const cached=sessionStorage.getItem('b3-loc');if(cached){setLocation(JSON.parse(cached));return}}catch{}
    const controller=new AbortController()
-   fetch('https://ipapi.co/json/',{signal:controller.signal}).then(r=>{if(!r.ok)throw Error('IP location indisponível');return r.json()}).then(data=>{
+   const timeout=window.setTimeout(()=>controller.abort(),3500)
+   const run=()=>fetch('https://ipapi.co/json/',{signal:controller.signal}).then(r=>{if(!r.ok)throw Error('IP location indisponível');return r.json()}).then(data=>{
      const lat=Number(data.latitude),lon=Number(data.longitude)
      if(!data.error&&typeof data.city==='string'&&Number.isFinite(lat)&&Number.isFinite(lon)&&Math.abs(lat)<=90&&Math.abs(lon)<=180){
-       setLocation({city:data.city.slice(0,42),latitude:lat,longitude:lon})
+       const loc={city:data.city.slice(0,42),latitude:lat,longitude:lon}
+       setLocation(loc)
+       try{sessionStorage.setItem('b3-loc',JSON.stringify(loc))}catch{}
      }
-   }).catch(()=>{})
-   return ()=>controller.abort()
+   }).catch(()=>{}).finally(()=>window.clearTimeout(timeout))
+   const w=window as Window&{requestIdleCallback?:(cb:()=>void,o?:{timeout:number})=>number;cancelIdleCallback?:(id:number)=>void}
+   const idle=w.requestIdleCallback?w.requestIdleCallback(run,{timeout:2000}):window.setTimeout(run,600)
+   return ()=>{controller.abort();window.clearTimeout(timeout);if(w.cancelIdleCallback&&w.requestIdleCallback)w.cancelIdleCallback(idle);else window.clearTimeout(idle)}
  },[])
  useEffect(()=>{
-   if(reducedMotion)return
-   const id=window.setInterval(()=>setChallenge(old=>(old+1)%challenges.length),2900)
-   return()=>window.clearInterval(id)
- },[reducedMotion])
+   const el=cloudRef.current
+   if(!el)return
+   const io=new IntersectionObserver(([e])=>setCloudLive(e.isIntersecting),{rootMargin:'-5% 0px'})
+   io.observe(el)
+   return()=>io.disconnect()
+ },[])
  useEffect(()=>{
    const element=stageRef.current
    if(!element)return
@@ -66,9 +89,14 @@ export default function HomeClient(){
    observer.observe(element)
    return()=>{observer.disconnect();if(timer)window.clearInterval(timer)}
  },[reducedMotion])
+ const go=(text:string)=>{const v=text.trim();router.push(v?`/site3/contato?desafio=${encodeURIComponent(v.slice(0,300))}`:'/site3/contato')}
  return <>
   <section className="b3-container b3-home-hero">
-   <div>
+   <div className="b3-home-globe">
+    <div className="b3-globe-canvas"><Globe3D location={location} reduceMotion={reducedMotion}/></div>
+    <div className="b3-overline b3-globe-caption"><span className="b3-live"/> {location?location.city.toUpperCase():'LOCALIZAÇÃO GLOBAL'} · REDE CONECTADA</div>
+   </div>
+   <div className="b3-home-copy">
     <span className="b3-overline">[ BAWERK SOLUTIONS / VOCÊ PODE IR ALÉM DO QUE IMAGINA ]</span>
     <h1>Sua parceira<br/><em>tecnológica<span className="b3-electric">.</span></em></h1>
     <p>Sites, softwares, CRM, automação, marketing e design. Tecnologia inteligente e experiências digitais que fazem a sua empresa evoluir.</p>
@@ -78,18 +106,19 @@ export default function HomeClient(){
     </div>
     <div className="b3-home-stats"><span><strong>01</strong>Ideia</span><span><strong>02</strong>Estratégia</span><span><strong>03</strong>Execução</span></div>
    </div>
-   <div className="b3-home-globe">
-    <div className="b3-globe-canvas"><Globe3D location={location} reduceMotion={reducedMotion}/></div>
-    <div className="b3-overline" style={{position:'absolute',bottom:12,left:20}}><span className="b3-live"/> {location?location.city.toUpperCase():'LOCALIZAÇÃO GLOBAL'} · REDE CONECTADA</div>
-   </div>
   </section>
-  <div className="b3-container" style={{borderTop:'1px solid #242d35',paddingTop:20,display:'flex',justifyContent:'space-between',font:'10px DM Mono,monospace',letterSpacing:'.13em',color:'#9ab2c5'}}><span>CRIANDO O QUE AINDA NÃO EXISTE</span><span>ROLE PARA EXPLORAR <ArrowDown size={13} style={{display:'inline'}}/></span></div>
-  <section className="b3-container b3-friction" id="diagnostico">
+  <div className="b3-container b3-scrollhint"><span>CRIANDO O QUE AINDA NÃO EXISTE</span><span>ROLE PARA EXPLORAR <ArrowDown size={13} style={{display:'inline'}}/></span></div>
+  <section ref={cloudRef} className={'b3-container b3-friction'+(cloudLive&&!reducedMotion?' b3-cloud-live':'')} id="diagnostico">
    <span className="b3-overline">[ DIAGNÓSTICO / DESAFIOS REAIS ]</span>
-   <h2>O que está <span className="b3-electric">dificultando</span> seu crescimento?</h2>
-   <p>Conte o que está dificultando seu crescimento. Nós ajudamos a encontrar o melhor caminho.</p>
-   <div key={challenge} className="b3-floatline"><span>✳</span>{challenges[challenge]}</div>
-   <Link className="b3-forward" href="/site3/contato">Encontrar uma solução <ArrowUpRight size={16}/></Link>
+   <h2>O que está te <span className="b3-electric">travando?</span></h2>
+   <p>Você nomeia o atrito. Nós mapeamos a solução.<br/>Veja o que acontece depois.</p>
+   <form className="b3-friction-input" onSubmit={e=>{e.preventDefault();go(friction)}}>
+    <input ref={inputRef} value={friction} onChange={e=>setFriction(e.target.value)} maxLength={300} placeholder="meu site fica cada vez mais lento" aria-label="Descreva o que está dificultando seu crescimento"/>
+    <button type="submit" aria-label="Enviar desafio"><ArrowRight size={18}/></button>
+   </form>
+   <div className="b3-cloud" aria-label="Desafios comuns. Clique em um para usar no diagnóstico.">
+    {frictions.map(([text,x,y],i)=><button type="button" key={text} className="b3-chip-float" style={{'--x':x+'%','--y':y+'%','--d':`${-(i*0.83).toFixed(2)}s`} as React.CSSProperties} onClick={()=>{setFriction(text);inputRef.current?.focus({preventScroll:true})}}>{text} <span aria-hidden="true">↗</span></button>)}
+   </div>
   </section>
   <section className="b3-container b3-section">
    <div className="b3-section-top"><span className="b3-overline">[ O QUE FAZEMOS ]</span><Link href="/site3/servicos" className="b3-forward">Todos os serviços <ArrowUpRight size={15}/></Link></div>

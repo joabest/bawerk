@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Html, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
@@ -45,7 +45,7 @@ function countryDots() {
   const bright = new THREE.Color('#f2f5f8')
   const soft = new THREE.Color('#919aa5')
   const ocean = new THREE.Color('#222a34')
-  const latStep = .65
+  const latStep = .72
   for (let lat = -89.3, row = 0; lat < 89.3; lat += latStep, row++) {
     const cos = Math.cos(lat * Math.PI / 180)
     const perRow = Math.max(12, Math.round((360 * cos) / latStep))
@@ -78,7 +78,7 @@ function OrbitRing({ tilt, color = '#1f78c3', radius = 2.54, speed = 0 }: { tilt
   useFrame((_, delta) => { if (ref.current) ref.current.rotation.z += delta * speed })
   return <group ref={ref} rotation={tilt}>
     <mesh>
-      <torusGeometry args={[radius, .0034, 2, 256]} />
+      <torusGeometry args={[radius, .0034, 2, 160]} />
       <meshBasicMaterial color={color} transparent opacity={.28} depthWrite={false} />
     </mesh>
     <mesh position={[Math.cos(1.65) * radius, Math.sin(1.65) * radius, 0]}>
@@ -88,30 +88,93 @@ function OrbitRing({ tilt, color = '#1f78c3', radius = 2.54, speed = 0 }: { tilt
   </group>
 }
 
-function FlightArc({ from, to, color = '#4f94c1' }: { from: [number, number]; to: [number, number]; color?: string }) {
-  const geometry = useMemo(() => {
-    const a = spherical(from[0], from[1], 1).normalize()
-    const b = spherical(to[0], to[1], 1).normalize()
-    const positions: number[] = []
-    for (let i = 0; i <= 74; i++) {
-      const t = i / 74
-      const point = a.clone().lerp(b, t).normalize().multiplyScalar(2.055 + Math.sin(Math.PI * t) * .30)
-      positions.push(point.x, point.y, point.z)
+type Hub = { name: string; lat: number; lon: number; label?: boolean; dy?: number; host?: boolean }
+// Ajuste a região real da hospedagem aqui (Vercel padrão = Washington D.C./Virgínia, iad1).
+const HUBS: Hub[] = [
+  { name: 'HOSPEDAGEM · VERCEL · VIRGÍNIA', lat: 38.95, lon: -77.45, label: true, host: true },
+  { name: 'APPLE · CUPERTINO', lat: 37.33, lon: -122.01, label: true, dy: -26 },
+  { name: 'NVIDIA · SANTA CLARA', lat: 37.37, lon: -121.96, label: true, dy: 0 },
+  { name: 'NGROK · SÃO FRANCISCO', lat: 37.77, lon: -122.42, label: true, dy: 26 },
+  { name: 'MICROSOFT · REDMOND', lat: 47.64, lon: -122.13, label: true },
+  { name: 'TESLA · AUSTIN', lat: 30.22, lon: -97.62, label: true },
+  { name: 'DEEPMIND · LONDRES', lat: 51.53, lon: -0.12, label: true },
+  { name: 'TSMC · TAIWAN', lat: 24.78, lon: 120.97, label: true },
+  { name: 'SONY · TÓQUIO', lat: 35.68, lon: 139.69, label: true },
+  { name: 'SAMSUNG · SEUL', lat: 37.5, lon: 127.0 },
+  { name: 'SHENZHEN', lat: 22.54, lon: 114.06 },
+  { name: 'SINGAPURA', lat: 1.35, lon: 103.82 },
+  { name: 'BANGALORE', lat: 12.97, lon: 77.59 },
+  { name: 'DUBAI', lat: 25.2, lon: 55.27 },
+]
+const ARC_SEGMENTS = 64
+
+function Network({ origin, pivot, reduceMotion }: { origin: [number, number]; pivot: React.RefObject<THREE.Group | null>; reduceMotion: boolean }) {
+  const net = useMemo(() => {
+    const a = spherical(origin[0], origin[1], 1).normalize()
+    const paths: (THREE.Vector3[] | null)[] = []
+    const seg: number[] = []
+    HUBS.forEach(h => {
+      const b = spherical(h.lat, h.lon, 1).normalize()
+      const ang = a.angleTo(b)
+      if (ang < .03) { paths.push(null); return }
+      const lift = .05 + .46 * (ang / Math.PI)
+      const pts: THREE.Vector3[] = []
+      for (let i = 0; i <= ARC_SEGMENTS; i++) {
+        const t = i / ARC_SEGMENTS
+        pts.push(a.clone().lerp(b, t).normalize().multiplyScalar(2.03 + Math.sin(Math.PI * t) * lift))
+      }
+      paths.push(pts)
+      for (let i = 0; i < ARC_SEGMENTS; i++) seg.push(pts[i].x, pts[i].y, pts[i].z, pts[i + 1].x, pts[i + 1].y, pts[i + 1].z)
+    })
+    const lines = new THREE.BufferGeometry()
+    lines.setAttribute('position', new THREE.Float32BufferAttribute(seg, 3))
+    const dots = new THREE.BufferGeometry()
+    dots.setAttribute('position', new THREE.Float32BufferAttribute(HUBS.flatMap(h => spherical(h.lat, h.lon, 2.025).toArray()), 3))
+    const pulses = new THREE.BufferGeometry()
+    pulses.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(HUBS.length * 3), 3))
+    const units = HUBS.map(h => spherical(h.lat, h.lon, 1).normalize())
+    return { paths, lines, dots, pulses, units }
+  }, [origin[0], origin[1]])
+  useEffect(() => () => { net.lines.dispose(); net.dots.dispose(); net.pulses.dispose() }, [net])
+
+  const labels = useRef<(HTMLDivElement | null)[]>([])
+  const shown = useRef<boolean[]>([])
+  const tmp = useMemo(() => new THREE.Vector3(), [])
+  useFrame(state => {
+    const attr = net.pulses.getAttribute('position') as THREE.BufferAttribute
+    const clock = reduceMotion ? 3 : state.clock.elapsedTime
+    net.paths.forEach((pts, i) => {
+      if (!pts) { attr.setXYZ(i, 0, 0, 0); return }
+      const f = ((clock * .16 + i * .137) % 1)
+      const p = pts[Math.min(ARC_SEGMENTS, Math.floor(f * ARC_SEGMENTS))]
+      attr.setXYZ(i, p.x, p.y, p.z)
+    })
+    attr.needsUpdate = true
+    if (pivot.current) {
+      HUBS.forEach((h, i) => {
+        const el = labels.current[i]
+        if (!el) return
+        tmp.copy(net.units[i]).applyQuaternion(pivot.current!.quaternion)
+        const visible = tmp.z > .25
+        if (shown.current[i] !== visible) { shown.current[i] = visible; el.style.opacity = visible ? '1' : '0' }
+      })
     }
-    const g = new THREE.BufferGeometry()
-    g.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
-    return g
-  }, [from, to])
-  const line = useMemo(() => new THREE.Line(geometry, new THREE.LineBasicMaterial({ color, transparent: true, opacity: .24, depthWrite: false })), [geometry, color])
-  useEffect(() => () => { geometry.dispose(); (line.material as THREE.Material).dispose() }, [geometry, line])
-  return <primitive object={line} />
+  })
+  return <>
+    <lineSegments geometry={net.lines}><lineBasicMaterial color="#3fa4f0" transparent opacity={.42} depthWrite={false} /></lineSegments>
+    <points geometry={net.dots}><pointsMaterial size={.075} color="#9fe3ff" sizeAttenuation transparent opacity={.95} depthWrite={false} /></points>
+    <points geometry={net.pulses}><pointsMaterial size={.1} color="#ffffff" sizeAttenuation transparent opacity={.95} depthWrite={false} /></points>
+    {HUBS.map((h, i) => h.label ? <Html key={h.name} position={spherical(h.lat, h.lon, 2.03).toArray()} zIndexRange={[15, 0]} style={{ pointerEvents: 'none' }}>
+      <div ref={el => { labels.current[i] = el }} className={'site3-hub-label' + (h.host ? ' site3-hub-host' : '')} style={{ transform: `translate(10px, calc(-50% + ${h.dy ?? 0}px))` }}>{h.name}</div>
+    </Html> : null)}
+  </>
 }
 
 function StarField() {
   const geometry = useMemo(() => {
     const random = seededRandom(85921)
     const positions: number[] = []
-    for (let i = 0; i < 750; i++) {
+    for (let i = 0; i < 380; i++) {
       const phi = Math.acos(2 * random() - 1)
       const theta = 2 * Math.PI * random()
       const r = 10 + random() * 9
@@ -126,15 +189,33 @@ function StarField() {
 
 function World({ location, reduceMotion }: GlobeProps) {
   const globeDots = useMemo(countryDots, [])
+  useEffect(() => () => globeDots.dispose(), [globeDots])
+  const markerLabel = useRef<HTMLDivElement>(null)
+  const markerAnchor = useRef<THREE.Mesh>(null)
+  const wp = useMemo(() => new THREE.Vector3(), [])
+  const lastVisible = useRef(true)
   const shell = useRef<THREE.Group>(null)
   const pivot = useRef<THREE.Group>(null)
   const marker = location ? spherical(location.latitude, location.longitude, 2.23) : spherical(-23.55, -46.63, 2.23)
-  const targetQuaternion = useMemo(() =>
-    new THREE.Quaternion().setFromUnitVectors(marker.clone().normalize(), new THREE.Vector3(0.36, -0.24, 0.90).normalize()),
-    [marker.x, marker.y, marker.z])
+  const origin = useMemo<[number, number]>(() => location ? [location.latitude, location.longitude] : [-23.55, -46.63], [location?.latitude, location?.longitude])
+  const targetQuaternion = useMemo(() => {
+    const v = spherical(origin[0], origin[1], 1).normalize()
+    const hub = spherical(38, -100, 1).normalize()
+    const mid = v.clone().add(hub.multiplyScalar(.9))
+    const center = mid.length() > .25 ? mid.normalize() : v
+    return new THREE.Quaternion().setFromUnitVectors(center, new THREE.Vector3(0, .1, 1).normalize())
+  }, [origin])
   useFrame((state, delta) => {
     if (pivot.current) pivot.current.quaternion.slerp(targetQuaternion, 1 - Math.exp(-delta * 2.4))
     if (shell.current && !reduceMotion) shell.current.rotation.z = Math.sin(state.clock.elapsedTime * .13) * .013
+    if (markerAnchor.current && markerLabel.current) {
+      markerAnchor.current.getWorldPosition(wp)
+      const visible = wp.z > .25
+      if (visible !== lastVisible.current) {
+        lastVisible.current = visible
+        markerLabel.current.style.opacity = visible ? '1' : '0'
+      }
+    }
   })
   return <>
     <ambientLight intensity={.8} />
@@ -142,29 +223,23 @@ function World({ location, reduceMotion }: GlobeProps) {
     <group ref={pivot}>
       <group ref={shell}>
       <mesh>
-        <sphereGeometry args={[2.002, 80, 80]} />
+        <sphereGeometry args={[2.002, 48, 48]} />
         <meshBasicMaterial color="#090a0c" />
       </mesh>
       <mesh>
         <sphereGeometry args={[2.05, 48, 32]} />
         <meshBasicMaterial color="#e1ebf4" transparent opacity={.055} side={THREE.BackSide} depthWrite={false} />
       </mesh>
-      <mesh>
-        <sphereGeometry args={[2.022, 36, 24]} />
-        <meshBasicMaterial wireframe color="#5e6972" transparent opacity={.012} depthWrite={false} />
-      </mesh>
       <points geometry={globeDots}>
         <shaderMaterial transparent depthWrite={false} depthTest vertexShader={"attribute vec3 color;\nvarying vec3 vColor;\nvarying float vFacing;\nvoid main() {\n  vColor = color;\n  vec4 mv = modelViewMatrix * vec4(position, 1.0);\n  gl_Position = projectionMatrix * mv;\n  vec3 n = normalize(mat3(modelViewMatrix) * position);\n  vFacing = smoothstep(0.04, 0.90, max(0.0, n.z));\n  gl_PointSize = clamp(11.0 / -mv.z, 1.15, 2.9);\n}"} fragmentShader={"varying vec3 vColor;\nvarying float vFacing;\nvoid main() {\n  vec2 pt = gl_PointCoord - vec2(0.5);\n  float softCircle = 1.0 - smoothstep(0.30, 0.52, length(pt));\n  if (softCircle < 0.02) discard;\n  gl_FragColor = vec4(vColor, softCircle * (0.22 + 0.78 * vFacing));\n}"} />
       </points>
-      <FlightArc from={[-23.55, -46.63]} to={[40.71, -74.0]} />
-      <FlightArc from={[-23.55, -46.63]} to={[51.5, -.13]} color="#647f97" />
-      <FlightArc from={[35.68, 139.69]} to={[1.35, 103.82]} color="#275d89" />
-      <Html position={[marker.x, marker.y, marker.z]} center distanceFactor={8.2} occlude zIndexRange={[20, 0]}>
-        <div className="site3-globe-marker" aria-label={location ? `Conectado: ${location.city}` : 'Rede global conectada'}>
+      <Html position={[marker.x, marker.y, marker.z]} center distanceFactor={8.2} zIndexRange={[20, 0]}>
+        <div ref={markerLabel} className="site3-globe-marker" aria-label={location ? `Conectado: ${location.city}` : 'Rede global conectada'}>
           <span className="site3-live-dot" />ONLINE <span className="site3-marker-sep">·</span> {(location?.city || 'GLOBAL').toUpperCase()}
         </div>
       </Html>
-      <mesh position={[marker.x, marker.y, marker.z]}>
+      <Network origin={origin} pivot={pivot} reduceMotion={reduceMotion} />
+      <mesh ref={markerAnchor} position={[marker.x, marker.y, marker.z]}>
         <sphereGeometry args={[.036, 10, 10]} />
         <meshBasicMaterial color="#b6ecff" />
       </mesh>
@@ -177,8 +252,20 @@ function World({ location, reduceMotion }: GlobeProps) {
 }
 
 export default function Globe3D(props: GlobeProps) {
-  return <div className="site3-canvas-frame" role="img" aria-label="Globo terrestre 3D de partículas interativo. Arraste para girar e explorar conexões globais.">
-    <Canvas dpr={[1, 1.65]} gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }} camera={{ fov: 43, near: .1, far: 100, position: [0, 0, 6.65] }} style={{ touchAction: 'pan-y' }}>
+  const frame = useRef<HTMLDivElement>(null)
+  const [inView, setInView] = useState(true)
+  const [tabVisible, setTabVisible] = useState(true)
+  useEffect(() => {
+    const el = frame.current
+    if (!el) return
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { rootMargin: '80px' })
+    io.observe(el)
+    const onVis = () => setTabVisible(document.visibilityState === 'visible')
+    document.addEventListener('visibilitychange', onVis)
+    return () => { io.disconnect(); document.removeEventListener('visibilitychange', onVis) }
+  }, [])
+  return <div ref={frame} className="site3-canvas-frame" role="img" aria-label="Globo terrestre 3D de partículas interativo. Arraste para girar e explorar conexões globais.">
+    <Canvas frameloop={inView && tabVisible ? 'always' : 'never'} dpr={[1, 1.5]} gl={{ antialias: false, alpha: true, powerPreference: 'default' }} camera={{ fov: 43, near: .1, far: 100, position: [0, 0, 6.9] }} style={{ touchAction: 'pan-y' }}>
       <World {...props} />
     </Canvas>
   </div>

@@ -1,5 +1,5 @@
 'use client'
-import {useState} from 'react'
+import {useEffect,useRef,useState} from 'react'
 import Link from 'next/link'
 import {ArrowUpRight,CheckCircle2,Mail,MapPin,Phone,Send} from 'lucide-react'
 
@@ -8,6 +8,11 @@ const phone='https://wa.me/5511992779039'
 export default function ContactPage(){
  const [status,setStatus]=useState<Status>('idle')
  const [error,setError]=useState('')
+ const messageRef=useRef<HTMLTextAreaElement>(null)
+ useEffect(()=>{
+  const desafio=new URLSearchParams(window.location.search).get('desafio')
+  if(desafio&&messageRef.current&&!messageRef.current.value)messageRef.current.value=`Meu desafio: ${desafio.slice(0,300)}\n\n`
+ },[])
  async function submit(event:React.FormEvent<HTMLFormElement>){
   event.preventDefault()
   if(status==='sending')return
@@ -57,7 +62,7 @@ export default function ContactPage(){
      <label className="b3-field"><span>E-mail *</span><input name="email" type="email" required maxLength={150} placeholder="voce@empresa.com" autoComplete="email"/></label>
     </div>
     <label className="b3-field"><span>Serviço de interesse</span><select name="service" defaultValue=""><option value="" disabled>Selecione uma opção</option><option>Website ou landing page</option><option>Software sob medida</option><option>CRM</option><option>Automação e inteligência artificial</option><option>Marketing digital</option><option>Design e identidade visual</option><option>Outro / ainda não sei</option></select></label>
-    <label className="b3-field"><span>Conte sobre o projeto *</span><textarea name="message" minLength={10} maxLength={2500} required placeholder="O que você quer criar, melhorar ou automatizar?" rows={6}/></label>
+    <label className="b3-field"><span>Conte sobre o projeto *</span><textarea ref={messageRef} name="message" minLength={10} maxLength={2500} required placeholder="O que você quer criar, melhorar ou automatizar?" rows={6}/></label>
     <div style={{display:'none'}} aria-hidden="true"><label>Não preencha<input name="website" tabIndex={-1} autoComplete="off"/></label></div>
     <p className="b3-form-note">Seus dados serão usados apenas para responder ao seu contato. O envio é feito diretamente pelo formulário da Bawerk.</p>
     <button className="b3-primary" type="submit" disabled={status==='sending'} style={{marginTop:22,width:'100%'}}>{status==='sending'?'ENVIANDO...':'ENVIAR SOLICITAÇÃO'} <Send size={16}/></button>

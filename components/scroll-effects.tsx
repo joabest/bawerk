@@ -1,8 +1,11 @@
 "use client"
 import { useEffect } from "react"
+import { usePathname } from "next/navigation"
 
 export function ScrollEffects(){
+  const pathname=usePathname()
   useEffect(()=>{
+    if(pathname.startsWith("/site3"))return
     const targets=[...document.querySelectorAll<HTMLElement>("main section > div, main section article, main section h2, main section h3")]
     targets.forEach((el,index)=>{el.classList.add("scroll-reveal");el.style.setProperty("--reveal-delay",`${Math.min(index%4,3)*70}ms`)})
     const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add("is-visible");observer.unobserve(entry.target)}}),{threshold:.12,rootMargin:"0px 0px -8% 0px"})
@@ -13,6 +16,6 @@ export function ScrollEffects(){
     const onScroll=()=>document.documentElement.style.setProperty("--page-scroll",String(window.scrollY))
     window.addEventListener("scroll",onScroll,{passive:true});onScroll()
     return()=>{observer.disconnect();cards.forEach(card=>card.removeEventListener("pointermove",move));window.removeEventListener("scroll",onScroll)}
-  },[])
+  },[pathname])
   return null
 }

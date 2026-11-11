@@ -21,8 +21,14 @@ Push the production branch that is connected to the BAWERK hosting deployment. A
 
 ## Privacy / location
 
-The public geolocation API `ipapi.co` is called only when a visitor accepts optional preferences. Approximate IP city and coordinates are used solely in the client to position the blue location marker. Rejecting optional preferences leaves a generic global marker. No API key or database is needed.
+The public geolocation API `ipapi.co` is called once per session (cached in sessionStorage, during browser idle time, 3.5s timeout). Approximate IP city and coordinates are used solely in the client to position the blue location marker. Rejecting optional preferences leaves a generic global marker. No API key or database is needed.
 
 ## Content
 
 Case study examples are labeled as scenarios rather than claiming unverified project results, customer counts, or awards. Contact links use the existing BAWERK WhatsApp contact number.
+
+## Performance notes
+- Globe pauses rendering when off-screen or when the tab is hidden (`frameloop`), no `occlude` raycasting, no wireframe shell, dpr capped at 1.5.
+- Fonts loaded with `next/font` instead of CSS `@import`.
+- Global `ScrollEffects` (blur reveal + scroll listener) is disabled on `/site3`.
+- `Site3Client.tsx` and `site3.css` are legacy and unused; safe to delete.
