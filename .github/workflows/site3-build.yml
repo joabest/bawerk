@@ -1,9 +1,13 @@
-name: Check site3 build
+name: Check Bawerk main and Site 3 build
 on:
   push:
     branches: [test]
     paths:
-      - "app/site3/**"
+      - "app/**"
+      - "components/**"
+      - "lib/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
       - ".github/workflows/site3-build.yml"
   workflow_dispatch:
 
