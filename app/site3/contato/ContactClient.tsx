@@ -41,11 +41,11 @@ export default function ContactPage(){
   }
  }
  return <div className="b3-container">
-  <header className="b3-page-head"><span className="b3-overline">[ CONTATO / INICIE SUA IDEIA ]</span><h1>Conte sua ideia.<br/><em>Vamos construir.</em></h1><p>Envie o briefing da sua empresa. Seu contato entra diretamente no sistema de atendimento da Bawerk.</p></header>
+  <header className="b3-page-head"><span className="b3-overline">[ CONTATO / INICIE SUA IDEIA ]</span><h1>Conte sua ideia<span className="b3-dot-blue">.</span><br/><em>Vamos construir<span className="b3-dot-white">.</span></em></h1><p>Envie o briefing da sua empresa. Seu contato entra diretamente no sistema de atendimento da Bawerk.</p></header>
   <div className="b3-contact-grid">
    <aside className="b3-contact-info">
     <span className="b3-overline">[ FALE COM A EQUIPE ]</span>
-    <h2 className="b3-section-title">Toda boa solução começa com uma conversa.</h2>
+    <h2 className="b3-section-title">Toda boa solução começa com uma conversa<span className="b3-dot-blue">.</span></h2>
     <p>Descreva seu projeto, serviço desejado ou desafio atual. Vamos entender sua necessidade e indicar o próximo passo.</p>
     <div style={{marginTop:38,display:'grid',gap:18}}>
      <a href={phone} target="_blank" rel="noreferrer" className="b3-card"><Phone size={22} color="#43bfff"/><h3 className="b3-card-title">WhatsApp</h3><p className="b3-card-copy">(11) 99277-9039</p></a>
