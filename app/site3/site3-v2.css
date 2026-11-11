@@ -410,7 +410,42 @@
 
 /* Rótulos do globo: não cortar na borda do canvas */
 .b3-root .site3-canvas-frame>div{overflow:visible!important}
-.site3-hub-label{font:8.5px var(--f-mono),monospace;letter-spacing:.09em;color:#cfe8f7;background:#0d1319d9;border:1px solid #2c4256;border-radius:99px;padding:4px 9px;white-space:nowrap;transition:opacity .25s;pointer-events:none}
-.site3-hub-host{color:#fff;border-color:#2f8fd8;background:#0f2438e6}
 .site3-globe-marker{transform:translate(14px,-6px)}
-@media(max-width:700px){.site3-hub-label{font-size:7px;padding:3px 6px}}
+
+/* Site 3: quieter dot matrix for readability without losing the signature backdrop. */
+.b3-root .b3-dotworld{
+  background-color:#090b0f;
+  background-image:
+    radial-gradient(circle, rgba(133,149,163,.13) .65px, transparent 1.1px),
+    radial-gradient(ellipse at 52% 20%,rgba(16,46,68,.11),transparent 70%);
+  background-size:22px 22px,100% 100%;
+  opacity:.82;
+}
+
+/* One discreet visitor-city label; decorative connection beacons have no text. */
+.b3-root .site3-globe-marker{
+  font:8px/1.3 var(--f-mono),monospace;
+  letter-spacing:.045em;
+  color:#e9f1fb;
+  gap:6px;
+  padding:6px 9px;
+  margin:0;
+  transform:translate(10px,-6px);
+  border:1px solid #374758;
+  border-radius:999px;
+  box-shadow:0 8px 23px #0008;
+  white-space:nowrap;
+}
+.b3-root .site3-globe-marker .site3-live-dot{
+  width:5px;
+  height:5px;
+  box-shadow:0 0 0 3px #128efa20,0 0 8px #149eff;
+}
+@media(max-width:700px){
+  .b3-root .site3-globe-marker{
+    font-size:7px;
+    padding:5px 7px;
+    transform:translate(7px,-4px);
+    letter-spacing:0;
+  }
+}
