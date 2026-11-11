@@ -67,3 +67,4 @@ export default function ContactPage(){
   </div>
   <section className="b3-section"><div className="b3-section-top"><span className="b3-overline">[ CONTINUE EXPLORANDO ]</span></div><div className="b3-cta-row"><Link className="b3-secondary" href="/site3/servicos">Conheça os serviços <ArrowUpRight size={16}/></Link><Link className="b3-secondary" href="/site3/sobre">Sobre a Bawerk <ArrowUpRight size={16}/></Link></div></section>
  </div>
+}
