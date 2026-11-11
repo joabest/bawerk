@@ -105,7 +105,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
    <div className="b3-footer-hero">
     <div className="b3-footer-particle-globe" aria-hidden="true" />
     <span className="b3-overline">[ NOSSA MISSÃO ]</span>
-    <h2>E toda empresa<br/>merece <em>evoluir.</em></h2>
+    <h2>E toda empresa<br/>merece <em>evoluir<span className="b3-dot-white">.</span></em></h2>
     <p>Bawerk Solutions — você pode ir além do que imagina.</p>
    </div>
    <div className="b3-footer-follow">
