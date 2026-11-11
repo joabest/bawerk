@@ -111,8 +111,8 @@ function ConnectionRoutes({ origin }: { origin: [number, number] }) {
     }
     const curve = new THREE.CatmullRomCurve3(waypoints)
     return {
-      core: new THREE.TubeGeometry(curve, 72, 0.011, 5, false),
-      glow: new THREE.TubeGeometry(curve, 72, 0.025, 5, false),
+      core: new THREE.TubeGeometry(curve, 72, 0.0075, 5, false),
+      glow: new THREE.TubeGeometry(curve, 72, 0.016, 5, false),
     }
   }).filter((r): r is { core: THREE.TubeGeometry; glow: THREE.TubeGeometry } => r !== null), [start])
 
@@ -120,10 +120,10 @@ function ConnectionRoutes({ origin }: { origin: [number, number] }) {
   return <group>
     {routes.map((route, index) => <group key={index}>
       <mesh geometry={route.glow}>
-        <meshBasicMaterial color="#1a78e0" transparent opacity={.18} depthWrite={false} blending={THREE.AdditiveBlending} />
+        <meshBasicMaterial color="#1a78e0" transparent opacity={.14} depthWrite={false} blending={THREE.AdditiveBlending} />
       </mesh>
       <mesh geometry={route.core}>
-        <meshBasicMaterial color="#76c8ff" transparent opacity={.79} depthWrite={false} blending={THREE.AdditiveBlending} />
+        <meshBasicMaterial color="#76c8ff" transparent opacity={.68} depthWrite={false} blending={THREE.AdditiveBlending} />
       </mesh>
     </group>)}
   </group>
