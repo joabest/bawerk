@@ -112,32 +112,31 @@ function World({ location, reduceMotion }: GlobeProps) {
   const pivot = useRef<THREE.Group>(null)
   const marker = location ? spherical(location.latitude, location.longitude, 2.23) : spherical(-23.55, -46.63, 2.23)
   const targetQuaternion = useMemo(() =>
-    new THREE.Quaternion().setFromUnitVectors(marker.clone().normalize(), new THREE.Vector3(0, 0, 1)),
+    new THREE.Quaternion().setFromUnitVectors(marker.clone().normalize(), new THREE.Vector3(0.32, 0.38, 0.867).normalize()),
     [marker.x, marker.y, marker.z])
   useFrame((state, delta) => {
     if (pivot.current) pivot.current.quaternion.slerp(targetQuaternion, 1 - Math.exp(-delta * 2.4))
     if (shell.current && !reduceMotion) shell.current.rotation.z = Math.sin(state.clock.elapsedTime * .13) * .013
   })
   return <>
-    <color attach="background" args={['#080b12']} />
     <ambientLight intensity={.8} />
     <StarField />
     <group ref={pivot}>
       <group ref={shell}>
       <mesh>
         <sphereGeometry args={[2.002, 80, 80]} />
-        <meshBasicMaterial color="#090c12" transparent opacity={.96} />
+        <meshBasicMaterial color="#090d12" transparent opacity={.98} />
       </mesh>
       <mesh>
         <sphereGeometry args={[2.05, 48, 32]} />
-        <meshBasicMaterial color="#4a5b6e" transparent opacity={.07} side={THREE.BackSide} depthWrite={false} />
+        <meshBasicMaterial color="#778b99" transparent opacity={.09} side={THREE.BackSide} depthWrite={false} />
       </mesh>
       <mesh>
         <sphereGeometry args={[2.022, 36, 24]} />
         <meshBasicMaterial wireframe color="#667488" transparent opacity={.022} depthWrite={false} />
       </mesh>
       <points geometry={globeDots}>
-        <pointsMaterial vertexColors transparent opacity={.96} size={.014} sizeAttenuation depthWrite={false} />
+        <pointsMaterial vertexColors transparent opacity={1} size={.016} sizeAttenuation depthWrite={false} />
       </points>
       <FlightArc from={[-23.55, -46.63]} to={[40.71, -74.0]} />
       <FlightArc from={[-23.55, -46.63]} to={[51.5, -.13]} color="#647f97" />
@@ -153,7 +152,7 @@ function World({ location, reduceMotion }: GlobeProps) {
       </mesh>
       </group>
     </group>
-    <OrbitRing tilt={[.42, .2, .2]} color="#425367" speed={reduceMotion ? 0 : .009} />
+    <OrbitRing tilt={[.42, .2, .2]} color="#425367" speed={reduceMotion ? 0 : .005} />
     <OrbitRing tilt={[-.32, 1.12, -.33]} radius={2.75} color="#153e6d" speed={reduceMotion ? 0 : -.007} />
     <OrbitControls autoRotate={false} enableZoom={false} enablePan={false} enableDamping dampingFactor={.045} minPolarAngle={.35} maxPolarAngle={Math.PI - .35} />
   </>
@@ -161,7 +160,7 @@ function World({ location, reduceMotion }: GlobeProps) {
 
 export default function Globe3D(props: GlobeProps) {
   return <div className="site3-canvas-frame" role="img" aria-label="Globo terrestre 3D de partículas interativo. Arraste para girar e explorar conexões globais.">
-    <Canvas dpr={[1, 1.65]} gl={{ antialias: false, alpha: false, powerPreference: 'high-performance' }} camera={{ fov: 43, near: .1, far: 100, position: [0, 0, 6.65] }} style={{ touchAction: 'pan-y' }}>
+    <Canvas dpr={[1, 1.65]} gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }} camera={{ fov: 43, near: .1, far: 100, position: [0, 0, 6.65] }} style={{ touchAction: 'pan-y' }}>
       <World {...props} />
     </Canvas>
   </div>
