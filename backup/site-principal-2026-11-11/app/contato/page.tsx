@@ -1,0 +1,7 @@
+"use client"
+import { SiteShell } from "@/components/site-shell"
+import { PageHero } from "@/components/page-hero"
+import { ContactForm } from "@/components/contact-form"
+import { useI18n } from "@/lib/i18n"
+
+export default function Page(){const {language}=useI18n();const pt=language==="pt-BR";return <SiteShell><PageHero eyebrow={pt?"Vamos conversar":"Let's talk"} title={pt?"SUA IDEIA PODE":"YOUR IDEA CAN"} accent={pt?"COMEÇAR AGORA.":"START NOW."} body={pt?"Conte o que sua empresa precisa. As mensagens chegam diretamente ao painel administrativo da BAWERK.":"Tell us what your company needs. Messages go directly to the BAWERK admin dashboard."}/><section className="px-4 pb-24"><div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[.7fr_1.3fr]"><aside className="space-y-7 rounded-2xl border p-8"><div><p className="font-mono text-xs text-primary">WHATSAPP</p><a className="mt-2 block text-xl" href="https://wa.me/5511992779039">(11) 99277-9039</a></div><div><p className="font-mono text-xs text-primary">{pt?"ENDEREÇO":"ADDRESS"}</p><p className="mt-2 leading-7 text-muted-foreground">R. Pechi, 115 — Sala 01<br/>Vila Pierina · São Paulo — SP</p></div><div><p className="font-mono text-xs text-primary">{pt?"ATENDIMENTO":"SERVICE AREA"}</p><p className="mt-2 text-muted-foreground">{pt?"Projetos em todo o Brasil.":"Projects throughout Brazil."}</p></div></aside><ContactForm/></div></section></SiteShell>}
