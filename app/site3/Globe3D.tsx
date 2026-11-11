@@ -30,21 +30,21 @@ function countryDots() {
   const random = seededRandom(329771)
   const positions: number[] = []
   const colors: number[] = []
-  const brighter = new THREE.Color('#49b2ff')
-  const brilliant = new THREE.Color('#b4e8ff')
-  const muted = new THREE.Color('#153857')
+  const brighter = new THREE.Color('#ced6e0')
+  const brilliant = new THREE.Color('#ffffff')
+  const muted = new THREE.Color('#1e2a35')
   for (let row = 1; row < MASK_HEIGHT - 1; row++) {
     const lat = -90 + row * MASK_STEP
     for (let col = 0; col < MASK_WIDTH; col++) {
       const lon = -180 + col * MASK_STEP
       const land = isLand(row, col)
-      if (!land && random() > .075) continue
+      if (!land && random() > .042) continue
       const repetitions = land ? 2 : 1
       for (let d = 0; d < repetitions; d++) {
         const p = spherical(lat + (random() - .5) * MASK_STEP * .83, lon + (random() - .5) * MASK_STEP * .83, 2.015 + random() * .019)
         positions.push(p.x, p.y, p.z)
         const c = land ? brighter.clone().lerp(brilliant, random() * .72) : muted
-        const factor = land ? (.45 + random() * .55) : .45
+        const factor = land ? (.6 + random() * .4) : .33
         colors.push(c.r * factor, c.g * factor, c.b * factor)
       }
     }
@@ -70,7 +70,7 @@ function OrbitRing({ tilt, color = '#1f78c3', radius = 2.54, speed = 0 }: { tilt
   </group>
 }
 
-function FlightArc({ from, to, color = '#3aa5ff' }: { from: [number, number]; to: [number, number]; color?: string }) {
+function FlightArc({ from, to, color = '#4f94c1' }: { from: [number, number]; to: [number, number]; color?: string }) {
   const geometry = useMemo(() => {
     const a = spherical(from[0], from[1], 1).normalize()
     const b = spherical(to[0], to[1], 1).normalize()
@@ -84,7 +84,7 @@ function FlightArc({ from, to, color = '#3aa5ff' }: { from: [number, number]; to
     g.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
     return g
   }, [from, to])
-  const line = useMemo(() => new THREE.Line(geometry, new THREE.LineBasicMaterial({ color, transparent: true, opacity: .65, depthWrite: false })), [geometry, color])
+  const line = useMemo(() => new THREE.Line(geometry, new THREE.LineBasicMaterial({ color, transparent: true, opacity: .28, depthWrite: false })), [geometry, color])
   useEffect(() => () => { geometry.dispose(); (line.material as THREE.Material).dispose() }, [geometry, line])
   return <primitive object={line} />
 }
@@ -126,22 +126,22 @@ function World({ location, reduceMotion }: GlobeProps) {
       <group ref={shell}>
       <mesh>
         <sphereGeometry args={[2.002, 80, 80]} />
-        <meshBasicMaterial color="#071728" transparent opacity={.92} />
+        <meshBasicMaterial color="#090c12" transparent opacity={.96} />
       </mesh>
       <mesh>
         <sphereGeometry args={[2.05, 48, 32]} />
-        <meshBasicMaterial color="#0b5dab" transparent opacity={.115} side={THREE.BackSide} depthWrite={false} />
+        <meshBasicMaterial color="#4a5b6e" transparent opacity={.07} side={THREE.BackSide} depthWrite={false} />
       </mesh>
       <mesh>
         <sphereGeometry args={[2.022, 36, 24]} />
-        <meshBasicMaterial wireframe color="#2368ad" transparent opacity={.075} depthWrite={false} />
+        <meshBasicMaterial wireframe color="#667488" transparent opacity={.022} depthWrite={false} />
       </mesh>
       <points geometry={globeDots}>
-        <pointsMaterial vertexColors transparent opacity={.93} size={.015} sizeAttenuation depthWrite={false} />
+        <pointsMaterial vertexColors transparent opacity={.96} size={.014} sizeAttenuation depthWrite={false} />
       </points>
       <FlightArc from={[-23.55, -46.63]} to={[40.71, -74.0]} />
-      <FlightArc from={[-23.55, -46.63]} to={[51.5, -.13]} color="#7bbaff" />
-      <FlightArc from={[35.68, 139.69]} to={[1.35, 103.82]} color="#2383eb" />
+      <FlightArc from={[-23.55, -46.63]} to={[51.5, -.13]} color="#647f97" />
+      <FlightArc from={[35.68, 139.69]} to={[1.35, 103.82]} color="#275d89" />
       <Html position={[marker.x, marker.y, marker.z]} center distanceFactor={8.2} occlude zIndexRange={[20, 0]}>
         <div className="site3-globe-marker" aria-label={location ? `Conectado: ${location.city}` : 'Rede global conectada'}>
           <span className="site3-live-dot" />ONLINE <span className="site3-marker-sep">·</span> {(location?.city || 'GLOBAL').toUpperCase()}
@@ -153,7 +153,7 @@ function World({ location, reduceMotion }: GlobeProps) {
       </mesh>
       </group>
     </group>
-    <OrbitRing tilt={[.42, .2, .2]} speed={reduceMotion ? 0 : .009} />
+    <OrbitRing tilt={[.42, .2, .2]} color="#425367" speed={reduceMotion ? 0 : .009} />
     <OrbitRing tilt={[-.32, 1.12, -.33]} radius={2.75} color="#153e6d" speed={reduceMotion ? 0 : -.007} />
     <OrbitControls autoRotate={false} enableZoom={false} enablePan={false} enableDamping dampingFactor={.045} minPolarAngle={.35} maxPolarAngle={Math.PI - .35} />
   </>
