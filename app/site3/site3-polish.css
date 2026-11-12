@@ -133,7 +133,7 @@
 @keyframes b3-intro-spin{to{transform:rotate(360deg)}}
 body.b3-location-loading{overflow:hidden}
 body.b3-location-loading .b3-root .site3-header,
-body.b3-location-loading .b3-root .b3-main,
+body.b3-location-loading .b3-root .b3-main > *:not(.b3-location-intro),
 body.b3-location-loading .b3-root .b3-footer,
 body.b3-location-loading .b3-root .b3-scroll-progress{opacity:0}
 body.b3-location-loading .b3-root .b3-location-intro{opacity:1}
