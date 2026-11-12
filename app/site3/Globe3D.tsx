@@ -260,7 +260,7 @@ function World({ location, reduceMotion }: GlobeProps) {
     </group>
     
     
-    <OrbitControls autoRotate={false} enableZoom enablePan={false} minDistance={5.0} maxDistance={9.0} zoomSpeed={.65} enableDamping dampingFactor={.045} minPolarAngle={.35} maxPolarAngle={Math.PI - .35} touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE }} />
+    <OrbitControls autoRotate={false} enableZoom enablePan={false} minDistance={6.35} maxDistance={9.0} zoomSpeed={.55} enableDamping dampingFactor={.045} minPolarAngle={.35} maxPolarAngle={Math.PI - .35} touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE }} />
   </>
 }
 
