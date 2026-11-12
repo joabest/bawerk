@@ -3,7 +3,8 @@ import Link from './PublicLink'
 import Image from 'next/image'
 import {usePathname} from 'next/navigation'
 import {useCallback,useEffect,useMemo,useRef,useState} from 'react'
-import {ArrowUpRight,ChevronDown,Menu,Search,X, Camera, Users, MessageCircle, MapPin} from 'lucide-react'
+import {ArrowUpRight,ChevronDown,Menu,Search,X,MessageCircle} from 'lucide-react'
+import {BrandIcon} from './BrandIcon'
 
 type MenuName = 'services'|'tools'|'more'
 const phone='https://wa.me/5511992779039'
@@ -54,6 +55,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
  const [mobileMenu,setMobileMenu]=useState(false)
  const [searchOpen,setSearchOpen]=useState(false)
  const [query,setQuery]=useState('')
+ const [scrollPercent,setScrollPercent]=useState(0)
  const closeNav=useCallback(()=>{cancelMenuClose();setMenu(null);setMobileMenu(false)},[cancelMenuClose])
  const searchResults=useMemo(()=>siteLinks.filter(item=>item.label.toLocaleLowerCase('pt-BR').includes(query.toLocaleLowerCase('pt-BR'))),[query])
  useEffect(()=>{
@@ -64,6 +66,16 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
    document.addEventListener('keydown',onKey)
    return()=>{document.removeEventListener('keydown',onKey);cancelMenuClose()}
  },[cancelMenuClose])
+ useEffect(()=>{
+  let frame=0
+  const update=()=>{if(frame)return;frame=requestAnimationFrame(()=>{frame=0;const limit=Math.max(0,document.documentElement.scrollHeight-window.innerHeight);setScrollPercent(limit?Math.min(100,Math.max(0,Math.round(window.scrollY/limit*100))):0)})}
+  update()
+  window.addEventListener('scroll',update,{passive:true})
+  window.addEventListener('resize',update)
+  const observer=new ResizeObserver(update)
+  observer.observe(document.documentElement)
+  return()=>{window.removeEventListener('scroll',update);window.removeEventListener('resize',update);observer.disconnect();if(frame)cancelAnimationFrame(frame)}
+ },[pathname])
  const entries=menu==='services'?serviceCards:menu==='tools'?toolCards:moreCards
  return <div className="b3-root" id="top">
   <div className="b3-dotworld" aria-hidden="true"/>
@@ -112,15 +124,15 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
    <div className="b3-footer-hero">
     <div className="b3-footer-particle-globe" aria-hidden="true" />
     <span className="b3-overline">[ NOSSA MISSÃO ]</span>
-    <h2><span className="b3-footer-mission-first">E toda empresa<br/>merece</span> <em>evoluir<span className="b3-dot-white">.</span></em></h2>
+    <h2 className="b3-footer-mission-title"><span className="b3-footer-mission-first">VOCÊ PODE IR ALÉM</span><span className="b3-footer-mission-second">DO QUE <em>IMAGINA.</em></span></h2>
     <p>Bawerk Solutions — você pode ir além do que imagina.</p>
    </div>
    <div className="b3-footer-follow">
     <span className="b3-overline">[ ACOMPANHE ]</span>
     <div className="b3-footer-social-links">
-     <a href="https://www.instagram.com/Bawerksolutions/" target="_blank" rel="noopener noreferrer"><Camera size={16}/> Instagram <ArrowUpRight size={13}/></a>
-     <a href="https://www.facebook.com/Bawerksolutions/" target="_blank" rel="noopener noreferrer"><Users size={16}/> Facebook <ArrowUpRight size={13}/></a>
-     <a href={phone} target="_blank" rel="noopener noreferrer"><MessageCircle size={16}/> WhatsApp <ArrowUpRight size={13}/></a>
+     <a href="https://www.instagram.com/Bawerksolutions/" target="_blank" rel="noopener noreferrer"><BrandIcon name="instagram" width={16} height={16}/> Instagram <ArrowUpRight size={13}/></a>
+     <a href="https://www.facebook.com/Bawerksolutions/" target="_blank" rel="noopener noreferrer"><BrandIcon name="facebook" width={16} height={16}/> Facebook <ArrowUpRight size={13}/></a>
+     <a href={phone} target="_blank" rel="noopener noreferrer"><BrandIcon name="whatsapp" width={16} height={16}/> WhatsApp <ArrowUpRight size={13}/></a>
     </div>
    </div>
    <div className="b3-footer-grid b3-footer-navigation">
@@ -138,6 +150,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
     <a href="#top">VOLTAR AO TOPO ↑</a>
    </div>
   </footer>
+  <div className="b3-scroll-progress" aria-label={`Progresso da página: ${scrollPercent}%`}><span className="b3-scroll-progress-text">{String(scrollPercent).padStart(2,'0')}%</span><span className="b3-scroll-progress-track"><span style={{height:scrollPercent+'%'}}/></span><span className="b3-scroll-progress-caption">SCROLL</span></div>
   {searchOpen&&<div className="b3-search-mask" onMouseDown={e=>{if(e.target===e.currentTarget)setSearchOpen(false)}}>
    <section className="b3-search-dialog" role="dialog" aria-modal="true" aria-label="Pesquisar páginas">
     <div className="b3-search-input"><Search size={20}/><input autoFocus value={query} onChange={e=>setQuery(e.target.value)} placeholder="Pesquisar páginas..." aria-label="Pesquisar"/><button onClick={()=>setSearchOpen(false)} aria-label="Fechar pesquisa"><X size={19}/></button></div>
