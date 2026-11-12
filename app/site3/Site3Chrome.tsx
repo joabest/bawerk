@@ -2,7 +2,7 @@
 import Link from './PublicLink'
 import Image from 'next/image'
 import {usePathname} from 'next/navigation'
-import {useCallback,useEffect,useMemo,useState} from 'react'
+import {useCallback,useEffect,useMemo,useRef,useState} from 'react'
 import {ArrowUpRight,ChevronDown,Menu,Search,X, Camera, Users, MessageCircle, MapPin} from 'lucide-react'
 
 type MenuName = 'services'|'tools'|'more'
@@ -44,10 +44,14 @@ function Brand(){
 export default function Site3Chrome({children}:{children:React.ReactNode}){
  const pathname=usePathname()
  const [menu,setMenu]=useState<MenuName|null>(null)
+ const closeTimer = useRef<ReturnType<typeof setTimeout>|null>(null)
+ const cancelMenuClose = useCallback(()=>{if(closeTimer.current!==null){clearTimeout(closeTimer.current);closeTimer.current=null}},[])
+ const openMenu = useCallback((next:MenuName)=>{cancelMenuClose();setMenu(next)},[cancelMenuClose])
+ const scheduleMenuClose = useCallback(()=>{cancelMenuClose();closeTimer.current=setTimeout(()=>{setMenu(null);closeTimer.current=null},260)},[cancelMenuClose])
  const [mobileMenu,setMobileMenu]=useState(false)
  const [searchOpen,setSearchOpen]=useState(false)
  const [query,setQuery]=useState('')
- const closeNav=useCallback(()=>{setMenu(null);setMobileMenu(false)},[])
+ const closeNav=useCallback(()=>{cancelMenuClose();setMenu(null);setMobileMenu(false)},[cancelMenuClose])
  const searchResults=useMemo(()=>siteLinks.filter(item=>item.label.toLocaleLowerCase('pt-BR').includes(query.toLocaleLowerCase('pt-BR'))),[query])
  useEffect(()=>{
    const onKey=(e:KeyboardEvent)=>{
@@ -55,21 +59,21 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
      if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();setSearchOpen(open=>!open)}
    }
    document.addEventListener('keydown',onKey)
-   return()=>document.removeEventListener('keydown',onKey)
- },[])
+   return()=>{document.removeEventListener('keydown',onKey);cancelMenuClose()}
+ },[cancelMenuClose])
  const entries=menu==='services'?serviceCards:menu==='tools'?toolCards:moreCards
  return <div className="b3-root" id="top">
   <div className="b3-dotworld" aria-hidden="true"/>
-  <header className="site3-header" onMouseLeave={()=>setMenu(null)}>
+  <header className="site3-header" onMouseEnter={cancelMenuClose} onMouseLeave={scheduleMenuClose}>
    <nav className="site3-nav" aria-label="Navegação principal">
     <Brand/>
     <div className="site3-desktop-nav">
-     <button className={'site3-nav-item'+(menu==='services'?' site3-nav-active':'')} onMouseEnter={()=>setMenu('services')} onFocus={()=>setMenu('services')} onClick={()=>setMenu(menu==='services'?null:'services')} aria-expanded={menu==='services'}>Serviços <ChevronDown size={11}/></button>
-     <Link className="site3-nav-item" href="/site3/metodo" onMouseEnter={()=>setMenu(null)} onClick={closeNav}>Método</Link>
-     <Link className="site3-nav-item" href="/site3/projetos" onMouseEnter={()=>setMenu(null)} onClick={closeNav}>Projetos</Link>
-     <button className={'site3-nav-item'+(menu==='tools'?' site3-nav-active':'')} onMouseEnter={()=>setMenu('tools')} onFocus={()=>setMenu('tools')} onClick={()=>setMenu(menu==='tools'?null:'tools')} aria-expanded={menu==='tools'}>Ferramentas <span className="site3-nav-free">GRÁTIS</span><ChevronDown size={11}/></button>
-     <button className={'site3-nav-item'+(menu==='more'?' site3-nav-active':'')} onMouseEnter={()=>setMenu('more')} onFocus={()=>setMenu('more')} onClick={()=>setMenu(menu==='more'?null:'more')} aria-expanded={menu==='more'}>Mais <ChevronDown size={11}/></button>
-     <Link className="site3-nav-item" href="/site3/contato" onMouseEnter={()=>setMenu(null)} onClick={closeNav}>Contato</Link>
+     <button className={'site3-nav-item'+(menu==='services'?' site3-nav-active':'')} onMouseEnter={()=>openMenu('services')} onFocus={()=>openMenu('services')} onClick={()=>{cancelMenuClose();setMenu(menu==='services'?null:'services')}} aria-expanded={menu==='services'}>Serviços <ChevronDown size={11}/></button>
+     <Link className="site3-nav-item" href="/site3/metodo" onMouseEnter={scheduleMenuClose} onClick={closeNav}>Método</Link>
+     <Link className="site3-nav-item" href="/site3/projetos" onMouseEnter={scheduleMenuClose} onClick={closeNav}>Projetos</Link>
+     <button className={'site3-nav-item'+(menu==='tools'?' site3-nav-active':'')} onMouseEnter={()=>openMenu('tools')} onFocus={()=>openMenu('tools')} onClick={()=>{cancelMenuClose();setMenu(menu==='tools'?null:'tools')}} aria-expanded={menu==='tools'}>Ferramentas <span className="site3-nav-free">GRÁTIS</span><ChevronDown size={11}/></button>
+     <button className={'site3-nav-item'+(menu==='more'?' site3-nav-active':'')} onMouseEnter={()=>openMenu('more')} onFocus={()=>openMenu('more')} onClick={()=>{cancelMenuClose();setMenu(menu==='more'?null:'more')}} aria-expanded={menu==='more'}>Mais <ChevronDown size={11}/></button>
+     <Link className="site3-nav-item" href="/site3/contato" onMouseEnter={scheduleMenuClose} onClick={closeNav}>Contato</Link>
     </div>
     <div className="site3-nav-actions">
      <button className="site3-icon-button" aria-label="Pesquisar no site" onClick={()=>{setSearchOpen(true);setMenu(null)}}><Search size={18}/></button>
@@ -77,7 +81,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
      <button className="site3-mobile-toggle" aria-label={mobileMenu?'Fechar menu':'Abrir menu'} aria-expanded={mobileMenu} onClick={()=>{setMobileMenu(p=>!p);setMenu(null)}}>{mobileMenu?<X size={22}/>:<Menu size={22}/>}</button>
     </div>
    </nav>
-   {menu&&<div className={'site3-mega-menu site3-mega-'+menu} onMouseEnter={()=>setMenu(menu)}>
+   {menu&&<div className={'site3-mega-menu site3-mega-'+menu} onMouseEnter={cancelMenuClose} onMouseLeave={scheduleMenuClose}>
     <div className="site3-mega-eyebrow">{menu==='services'?'SERVIÇOS':menu==='tools'?'FERRAMENTAS GRATUITAS':'CONHEÇA A BAWERK'} <span>— {menu==='services'?'ENGENHARIA COM PROPÓSITO':menu==='tools'?'NAVEGUE SEM CADASTRO':'OUTRAS PÁGINAS'}</span></div>
     <div className={'site3-mega-grid'+(menu==='services'?'':' site3-mega-grid-3')}>
      {entries.map(item=><Link href={item.href} key={item.index} className="site3-mega-card" onClick={closeNav}>
