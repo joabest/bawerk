@@ -2,7 +2,7 @@
 import {useMemo,useState} from 'react'
 import Link from '../PublicLink'
 import {ArrowUpRight,Grid2X2,List,Search} from 'lucide-react'
-import {categories,posts} from '../blog-data'
+import {categories,posts,getReadingTime} from '../blog-data'
 import type {BlogPost} from '../blog-data'
 
 export function BlogThumbnail({post}:{post:BlogPost}){
@@ -23,6 +23,14 @@ export function BlogThumbnail({post}:{post:BlogPost}){
    {slug==='branding-e-confianca'&&<div className="b3-brand-art"><span>✦</span><strong>IDENTIDADE.</strong><small>MARCA · DESIGN · SISTEMA VISUAL</small></div>}
    {slug==='landing-page-ou-site'&&<div className="b3-browser-art"><div className="b3-browser-top">● ● ● <span>www.bawerk.solutions</span></div><div className="b3-browser-heading">WEB / EXPERIÊNCIA</div><div className="b3-browser-blocks"><i/><i/><i/></div></div>}
    {slug==='medindo-o-que-importa'&&<div className="b3-data-art"><span>ANÁLISE / DADOS</span><strong>+28%</strong><div className="b3-data-chart">{[20,34,30,44,40,57,54,73,85,81,91].map((v,i)=><i key={i} style={{height:v+'%'}}/>)}</div></div>}
+   <div className="b3-editorial-art">
+    <div className="b3-editorial-ring b3-editorial-ring-outer"/>
+    <div className="b3-editorial-ring b3-editorial-ring-inner"/>
+    <div className="b3-editorial-grid-art"><span/><span/><span/><span/></div>
+    <span className="b3-editorial-art-code">BW/{String(post.category).slice(0,3)}</span>
+    <span className="b3-editorial-art-mark">{post.symbol}</span>
+    <span className="b3-editorial-art-bottom">BAWERK · IDEIAS EM MOVIMENTO <i>●</i></span>
+   </div>
   </div>
  </div>
 }
@@ -41,6 +49,7 @@ export default function BlogClient(){
   <section className="b3-section" style={{paddingTop:30}}>
    <span className="b3-overline">[ EXPLORE POR CATEGORIA ]</span>
    <h2 className="b3-category-heading">Escolha um tema<span className="b3-dot-blue">.</span><br/>Explore o conteúdo<span className="b3-dot-blue">.</span></h2>
+   <div className="b3-blog-intro-bar"><span>30 ARTIGOS ORIGINAIS · 7 CATEGORIAS</span><span>CONTEÚDO TÉCNICO / NEGÓCIOS / EXPERIÊNCIAS DIGITAIS</span></div>
    <div className="b3-blog-controls">
     <div className="b3-chips" role="group" aria-label="Filtrar categorias">
      {categories.map(cat=><button key={cat} className={'b3-chip'+(category===cat?' b3-selected':'')} aria-pressed={category===cat} onClick={()=>{setCategory(cat);setLimit(9)}}>{cat} <small>{cat==='TODOS'?posts.length:posts.filter(p=>p.category===cat).length}</small></button>)}
@@ -50,7 +59,7 @@ export default function BlogClient(){
    <div className="b3-section-top" style={{marginTop:46}}><span className="b3-overline">[ ARTIGOS ]</span><span className="b3-overline">{filtered.length} ARTIGOS · {view==='grade'?'GRADE':'LISTA'}</span></div>
    {visible.length>0?<div className={'b3-blog-grid'+(view==='lista'?' b3-blog-list':'')}>{visible.map(post=><Link key={post.slug} href={'/site3/blog/'+post.slug} className="b3-blog-card">
      <BlogThumbnail post={post}/>
-     <div className="b3-blog-card-body"><span className="b3-card-index">{post.category}</span><h3>{post.title}</h3><p>{post.summary}</p><div className="b3-blog-card-foot"><span>BAWERK · {post.readMinutes} MIN DE LEITURA</span><ArrowUpRight size={17}/></div></div>
+     <div className="b3-blog-card-body"><span className="b3-card-index">{post.category}</span><h3>{post.title}</h3><p>{post.summary}</p><div className="b3-blog-card-foot"><span>BAWERK · {getReadingTime(post)} MIN DE LEITURA</span><ArrowUpRight size={17}/></div></div>
     </Link>)}</div>:<div className="b3-card" style={{marginTop:20,textAlign:'center'}}>Nenhum artigo encontrado. Experimente outra categoria ou termo.</div>}
    {limit<filtered.length&&<div className="b3-pagination"><button onClick={()=>setLimit(v=>v+6)}>CARREGAR MAIS ARTIGOS ↓</button></div>}
   </section>
