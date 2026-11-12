@@ -46,6 +46,7 @@ export default function HomeClient(){
  const lastSlots=useRef<number[]>([])
  const [cloudLive,setCloudLive]=useState(false)
  const [phraseCycle,setPhraseCycle]=useState(0)
+ const [phrasesHidden,setPhrasesHidden]=useState(false)
  const router=useRouter()
  const pathname=usePathname()
  const cloudRef=useRef<HTMLElement|null>(null)
@@ -112,9 +113,18 @@ export default function HomeClient(){
      setPhraseCycle(c=>c+1)
    }
    shuffle()
+   setPhrasesHidden(false)
    if(reducedMotion)return
-   const timer=window.setInterval(shuffle,5600)
-   return()=>window.clearInterval(timer)
+   let swapTimer:number|undefined
+   const timer=window.setInterval(()=>{
+     // Fade the entire cloud (independent of child opacity/animation rules).
+     setPhrasesHidden(true)
+     swapTimer=window.setTimeout(()=>{
+       shuffle()
+       setPhrasesHidden(false)
+     },1050)
+   },5600)
+   return()=>{window.clearInterval(timer);if(swapTimer)window.clearTimeout(swapTimer)}
  },[cloudLive,reducedMotion])
 
  useEffect(()=>{
@@ -161,7 +171,7 @@ export default function HomeClient(){
     <input ref={inputRef} value={friction} onChange={e=>setFriction(e.target.value)} maxLength={300} placeholder="meu site fica cada vez mais lento" aria-label="Descreva o que está dificultando seu crescimento"/>
     <button type="submit" aria-label="Enviar desafio"><ArrowRight size={18}/></button>
    </form>
-   <div className="b3-cloud" aria-label="Desafios comuns. Clique em um para usar no diagnóstico.">
+   <div className={"b3-cloud"+(phrasesHidden?" b3-cloud-hidden":"")} aria-label="Desafios comuns. Clique em um para usar no diagnóstico.">
     {floatingPhrases.map(({index,x,y})=><button type="button" key={`${phraseCycle}-${index}`} className="b3-chip-float" style={{'--x':x+'%','--y':y+'%'} as React.CSSProperties} onClick={()=>setFriction(frictions[index][0])}>{frictions[index][0]} <span aria-hidden="true">↗</span></button>)}
    </div>
   </section>
