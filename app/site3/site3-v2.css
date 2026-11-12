@@ -472,3 +472,26 @@
 .b3-root .b3-globe-canvas{filter:contrast(1.04) saturate(.68)}
 .b3-root .site3-globe-marker{background:#15171ae6;border-color:#555c6575;font-size:8px;padding:5px 9px}
 @media (max-width:700px){.b3-root .site3-globe-marker{font-size:7px;padding:4px 7px}}
+
+
+/* 2026-11-12: Prevent hover animation from being clipped by the mega-menu grid. */
+.b3-root .site3-mega-menu{overflow:visible!important;max-height:none!important}
+.b3-root .site3-mega-grid{overflow:visible!important;max-height:none!important;padding:8px; margin:-8px}
+.b3-root .site3-mega-card:hover{transform:translateY(-2px)}
+.b3-root .site3-mega-card:focus-visible{outline:2px solid #57b9f5;outline-offset:2px}
+
+/* The globe itself is a WebGL canvas: keep safe camera zoom and contain the frame without clipping surrounding copy. */
+.b3-root .b3-home-globe{overflow:visible!important}
+.b3-root .b3-globe-canvas{overflow:visible!important}
+.b3-root .site3-canvas-frame{overflow:visible!important}
+
+/* Floating phrases fade and gently move to new positions every few seconds. */
+.b3-root .b3-chip-float{transition:left 1.4s ease-in-out,top 1.4s ease-in-out,color .2s!important;outline:none!important}
+.b3-root .b3-chip-float:focus{outline:none!important;box-shadow:none!important;border-color:transparent!important}
+.b3-root .b3-chip-float:focus-visible{outline:1px dashed #72cfff!important;outline-offset:3px}
+.b3-root .b3-friction-input{transition:border-color .2s;outline:0!important}
+.b3-root .b3-friction-input:focus-within{border-color:#34404c!important;box-shadow:0 14px 40px #0008!important}
+.b3-root .b3-friction-input input:focus,.b3-root .b3-friction-input input:focus-visible{outline:0!important;box-shadow:none!important}
+@media(max-width:900px){
+ .b3-root .b3-chip-float{transition:opacity .4s,color .2s!important}
+}
