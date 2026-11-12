@@ -1,0 +1,18 @@
+.bawerk-consent-overlay{position:fixed;z-index:9999;inset:0;display:flex;align-items:flex-end;justify-content:center;padding:18px;pointer-events:none}
+.bawerk-consent-box{pointer-events:auto;width:min(100%,720px);margin:0 auto 14px;padding:24px 26px;border:1px solid #3e526b;background:linear-gradient(145deg,#151e2b,#0b1018);color:#eaf3fb;border-radius:20px;box-shadow:0 20px 85px #000c;font-family:system-ui,-apple-system,sans-serif}
+.bawerk-consent-heading{display:flex;align-items:center;gap:12px}
+.bawerk-consent-heading>div{flex:1;display:flex;flex-direction:column;gap:3px}
+.bawerk-consent-heading strong{font-size:16px;letter-spacing:-.025em}
+.bawerk-consent-heading small{color:#89a1b7;font:10px/1.5 ui-monospace,monospace;letter-spacing:.06em}
+.bawerk-consent-heading button{border:0;background:transparent;color:#a3b3c4;padding:7px;cursor:pointer}
+.bawerk-consent-icon{display:grid;place-items:center;height:42px;width:42px;border-radius:12px;background:#1d395a;color:#85d4ff}
+.bawerk-consent-box>p{font:13px/1.85 system-ui,sans-serif;color:#b6c7d6;margin:18px 0 20px}
+.bawerk-consent-actions{display:flex;flex-wrap:wrap;gap:10px}
+.bawerk-consent-actions button{cursor:pointer;border-radius:11px;min-height:43px;padding:10px 18px;font-size:13px;font-weight:650;border:1px solid #39516a;flex:1;transition:filter .2s}
+.bawerk-consent-actions button:hover{filter:brightness(1.15)}
+.bawerk-consent-no{background:#17212d;color:#d6e8f7}
+.bawerk-consent-yes{background:linear-gradient(105deg,#197dcc,#365fde);color:#fff;border-color:#3d8fdd!important}
+.bawerk-consent-foot{display:flex;align-items:center;gap:7px;margin-top:15px;color:#849bab;font:10px/1.6 ui-monospace,monospace}
+.bawerk-consent-settings{position:fixed;z-index:9998;left:15px;bottom:15px;width:39px;height:39px;display:grid;place-items:center;background:#132536;color:#a8dafa;border:1px solid #36546e;box-shadow:0 6px 24px #0008;border-radius:50%;cursor:pointer}
+.bawerk-consent-settings:hover{background:#1a3e55}
+@media(max-width:600px){.bawerk-consent-overlay{padding:10px}.bawerk-consent-box{padding:18px;margin:0;border-radius:15px}.bawerk-consent-actions{flex-direction:column}.bawerk-consent-actions button{width:100%}.bawerk-consent-box>p{font-size:12px;line-height:1.7}}
