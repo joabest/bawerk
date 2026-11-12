@@ -454,3 +454,21 @@
 /* Signature editorial punctuation: inverse color of the last highlighted words. */
 .b3-root .b3-dot-blue{color:#148fff!important}
 .b3-root .b3-dot-white{color:#f5f8fb!important}
+
+
+/* Keep a continuous hover corridor between the capsule navigation and mega-menu. */
+.b3-root .site3-mega-menu{top:70px;overflow:visible}
+.b3-root .site3-mega-menu::before{
+  content:'';
+  position:absolute;
+  left:0;right:0;top:-14px;height:16px;
+  background:transparent;
+  pointer-events:auto;
+}
+.b3-root .site3-mega-grid{max-height:min(70vh,510px);overflow-y:auto;scrollbar-width:thin}
+.b3-root .site3-mega-card{position:relative;z-index:1}
+@media (max-width:1050px){.b3-root .site3-mega-menu{display:none}}
+/* The reference uses a quiet graphite sphere and monochrome dotted coastlines. */
+.b3-root .b3-globe-canvas{filter:contrast(1.04) saturate(.68)}
+.b3-root .site3-globe-marker{background:#15171ae6;border-color:#555c6575;font-size:8px;padding:5px 9px}
+@media (max-width:700px){.b3-root .site3-globe-marker{font-size:7px;padding:4px 7px}}
