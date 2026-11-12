@@ -373,3 +373,30 @@
    margin:8px 0 0 auto;
  }
 }
+
+
+/* Final interaction tuning: a low-intensity cursor halo and restrained hover. */
+.b3-cursor-neon-portal {
+  width:92px!important;height:92px!important;
+  z-index:2147483600!important;
+  background:radial-gradient(circle,rgba(0,38,192,.10) 0%,rgba(0,38,192,.09) 28%,rgba(0,38,192,.05) 55%,transparent 78%)!important;
+  border:1px solid rgba(55,77,166,.10)!important;
+  box-shadow:0 0 25px rgba(0,38,192,.10)!important;
+}
+@media(hover:hover) and (pointer:fine) {
+ .b3-root :is(.b3-card,.b3-blog-card,.site3-mega-card,.b3-footer-contact-links>a):hover{
+  background:radial-gradient(245px circle at var(--glass-x,50%) var(--glass-y,50%),rgba(0,38,192,.12),transparent 80%),linear-gradient(130deg,#101825,#101620 65%,#0b111a)!important;
+  border-color:rgba(49,77,162,.38)!important;
+  box-shadow:0 8px 22px rgba(0,12,59,.14)!important;
+ }
+ .b3-root :is(.b3-primary,.b3-secondary,.site3-message-button,.b3-footer-social-links>a,.b3-footer-contact-links>a):hover{
+  background:linear-gradient(125deg,#0a1636,#0c1320)!important;
+  border-color:rgba(55,78,167,.45)!important;
+  color:#eaf0ff!important;
+  box-shadow:0 4px 16px rgba(0,13,59,.15)!important;
+ }
+}
+.b3-root .b3-footer-social-links>a {padding-left:20px;padding-right:20px;gap:12px;min-width:136px;justify-content:center}
+.b3-root .b3-footer-contact-links>a {padding-left:22px;padding-right:22px}
+.b3-root .b3-backtop-ring {animation-play-state:running!important;animation-duration:17s!important}
+@media(prefers-reduced-motion:reduce){.b3-root .b3-backtop-ring{animation:none!important}}
