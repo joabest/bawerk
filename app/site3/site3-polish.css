@@ -1,0 +1,84 @@
+
+
+/* BAWERK polish — visual rhythm, calm grain, readable globe and smooth diagnosis phrases */
+.b3-root .b3-contact-headline{
+  line-height:1.11;
+  letter-spacing:-.068em;
+}
+.b3-root .b3-contact-headline>span,.b3-root .b3-contact-headline>em{
+  display:block;
+}
+.b3-root .b3-contact-headline>em{
+  margin-top:.22em;
+  line-height:1.12;
+}
+.b3-root .site3-message-button{
+  text-transform:uppercase;
+  letter-spacing:.095em;
+}
+.b3-root .b3-footer-hero h2 .b3-footer-mission-first{
+  color:#239bff;
+}
+.b3-root .b3-footer-hero h2 em{
+  color:#d5e5ff;
+  transition:color .35s ease,text-shadow .35s ease;
+}
+.b3-root .b3-footer-hero h2 em:hover,
+.b3-root .b3-footer-hero h2:hover em{
+  color:#fff;
+  text-shadow:0 0 32px rgba(125,179,255,.2);
+}
+.b3-root .b3-home-globe .b3-globe-canvas{
+  filter:contrast(1.04) saturate(.72) brightness(1.02);
+}
+.b3-root .b3-cloud-live .b3-chip-float{
+  animation:none!important;
+  opacity:.88;
+  transform:translateY(0);
+  transition:opacity .88s ease-in-out,transform .88s ease-in-out,color .2s!important;
+}
+.b3-root .b3-cloud-live.b3-cloud-fading .b3-chip-float{
+  opacity:0!important;
+  transform:translateY(-12px);
+}
+.b3-root .b3-chip-float:hover{
+  color:#9cddff;
+}
+@media(max-width:900px){
+  .b3-root .b3-cloud-live.b3-cloud-fading .b3-chip-float{
+    opacity:0!important;
+    transform:translateY(-7px);
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .b3-root .b3-chip-float{opacity:.88!important;transform:none!important;animation:none!important;transition:none!important}
+}
+/* One subtle SVG turbulence tile. No remote image request, no canvas loop or scroll jank. */
+.b3-root::after{
+  content:"";
+  position:fixed;
+  inset:-40%;
+  z-index:45;
+  pointer-events:none;
+  opacity:.072;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.7' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:180px 180px;
+  mix-blend-mode:screen;
+  will-change:transform;
+  animation:b3-fine-grain .9s steps(4,end) infinite;
+}
+@keyframes b3-fine-grain{
+  0%{transform:translate3d(0,0,0)}
+  25%{transform:translate3d(-2%,1%,0)}
+  50%{transform:translate3d(1%,-2%,0)}
+  75%{transform:translate3d(2%,1%,0)}
+  100%{transform:translate3d(0,0,0)}
+}
+@media(prefers-reduced-motion:reduce){
+  .b3-root::after{animation:none;will-change:auto}
+}
+@media(max-width:700px){
+  .b3-root .b3-contact-headline{line-height:1.13}
+  .b3-root .b3-contact-headline>em{margin-top:.18em}
+  .b3-root::after{opacity:.053;animation-duration:1.8s}
+}
