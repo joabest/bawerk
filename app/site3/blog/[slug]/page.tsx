@@ -2,15 +2,17 @@ import type { Metadata } from 'next'
 import Link from '../../PublicLink'
 import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Clock3 } from 'lucide-react'
 import { notFound } from 'next/navigation'
-import { getPost, getRelated, posts, getWordCount, getReadingTime } from '../../blog-data'
+import { getRelated, posts, getWordCount, getReadingTime } from '../../blog-data'
+import {getBlogPost} from '@/lib/blog-edits'
 import { BlogThumbnail } from '../BlogClient'
 
+export const dynamic = 'force-dynamic'
 type Props = { params: Promise<{ slug: string }> }
 const sectionId = (heading: string) => heading.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')
 export function generateStaticParams() { return posts.map(post => ({ slug: post.slug })) }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
  const {slug} = await params
- const post = getPost(slug)
+ const post = await getBlogPost(slug)
  if (!post) return { title:'Artigo não encontrado' }
  const url = 'https://bawerk.solutions/blog/' + slug
  return {
