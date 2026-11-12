@@ -117,29 +117,6 @@
   .b3-root .b3-scroll-progress-text{font-size:9px}
   .b3-root .b3-scroll-progress-caption{font-size:7px}
 }
-/* Show a branded loading state while the approximate regional IP lookup and globe orientation settle. */
-.b3-location-intro{
- position:fixed;z-index:10000;inset:0;display:flex;flex-direction:column;gap:18px;
- align-items:center;justify-content:center;text-align:center;
- background:radial-gradient(ellipse at 50% 38%,#123b6055,#090d15 68%),#090d15;
- color:#e6f2fc;padding:24px;font-family:var(--f-mono),monospace;
-}
-.b3-location-intro-symbol{font-size:64px;font-weight:800;letter-spacing:-.12em;line-height:1;color:#f3f7fc}
-.b3-location-intro-symbol>span{color:#349bff}
-.b3-location-intro-rule{display:block;height:1px;width:170px;background:linear-gradient(90deg,transparent,#52a8ed,transparent)}
-.b3-location-intro strong{font-size:13px;letter-spacing:.15em}
-.b3-location-intro small{font-size:10px;letter-spacing:.12em;color:#94afc7;line-height:1.8}
-.b3-location-intro-loader{display:block;width:42px;height:42px;border:2px solid #416d9040;border-top-color:#6dbaff;border-radius:50%;animation:b3-intro-spin .9s linear infinite}
-@keyframes b3-intro-spin{to{transform:rotate(360deg)}}
-body.b3-location-loading{overflow:hidden}
-body.b3-location-loading .b3-root .site3-header,
-body.b3-location-loading .b3-root .b3-main > *:not(.b3-location-intro),
-body.b3-location-loading .b3-root .b3-footer,
-body.b3-location-loading .b3-root .b3-scroll-progress{opacity:0}
-body.b3-location-loading .b3-root .b3-location-intro{opacity:1}
-@media(prefers-reduced-motion:reduce){.b3-location-intro-loader{animation:none}}
-
-
 /* Restrained neon-glass interaction: only clickable surfaces, no typography/glass headline effects. */
 @media (hover:hover) and (pointer:fine){
  .b3-root :is(.b3-card,.b3-blog-card,.site3-mega-card,.b3-footer-contact-links>a){
@@ -163,3 +140,94 @@ body.b3-location-loading .b3-root .b3-location-intro{opacity:1}
    transform:none!important;
  }
 }
+
+
+/* Home hero globe: smaller, centered between navigation and editorial introduction. */
+.b3-root .b3-home-hero .b3-home-globe{
+  width:clamp(280px,46vw,535px)!important;
+  height:clamp(280px,46vw,535px)!important;
+  margin:-52px auto -22px!important;
+  overflow:visible;
+}
+.b3-root .b3-home-hero{padding-top:26px}
+.b3-root .b3-home-globe .site3-canvas-frame{max-width:100%;height:100%}
+@media(max-width:700px){
+ .b3-root .b3-home-hero .b3-home-globe{
+   width:min(88vw,375px)!important;
+   height:min(88vw,375px)!important;
+   margin:-12px auto -12px!important;
+ }
+ .b3-root .b3-home-hero{padding-top:8px}
+}
+/* Exact color arrangement — blue VOCÊ, ALÉM and IMAGINA; white elsewhere and the dot.
+   Hover only swaps the two colors, without glow, glass or text shadow. */
+.b3-root .b3-footer-hero h2.b3-footer-mission-title{
+  font-size:clamp(36px,5.3vw,80px);
+  line-height:1.16;
+  letter-spacing:-.055em;
+}
+.b3-root .b3-footer-mission-title .b3-footer-mission-first,
+.b3-root .b3-footer-mission-title .b3-footer-mission-second{
+  display:block;
+  color:inherit;
+  margin:0;
+  text-shadow:none;
+}
+.b3-root .b3-footer-mission-title .b3-footer-mission-second{margin-top:.24em}
+.b3-root .b3-footer-mission-title .b3-mission-blue{color:#239bff;transition:color .3s ease}
+.b3-root .b3-footer-mission-title .b3-mission-white,
+.b3-root .b3-footer-mission-title .b3-mission-dot{color:#fff;transition:color .3s ease}
+.b3-root .b3-footer-mission-title:hover .b3-mission-blue{color:#fff}
+.b3-root .b3-footer-mission-title:hover .b3-mission-white,
+.b3-root .b3-footer-mission-title:hover .b3-mission-dot{color:#239bff}
+.b3-root .b3-footer-mission-title,
+.b3-root .b3-footer-mission-title *{text-shadow:none!important}
+@media(max-width:700px){
+ .b3-root .b3-footer-hero h2.b3-footer-mission-title{font-size:clamp(30px,7.7vw,53px)}
+ .b3-root .b3-footer-mission-title .b3-footer-mission-second{margin-top:.23em}
+}
+/* Each set of six phrases is remounted with a new key every 5.6 s.
+   Fade on/off is explicit and overrides all earlier static hover and animation rules. */
+@keyframes b3-phrase-crossfade{
+  0%{opacity:0;transform:translateY(10px)}
+  13%,67%{opacity:.92;transform:translateY(0)}
+  93%,100%{opacity:0;transform:translateY(-10px)}
+}
+.b3-root .b3-cloud-live .b3-chip-float{
+  animation:b3-phrase-crossfade 5.6s ease-in-out both!important;
+  transition:color .2s ease!important;
+  opacity:0;
+  will-change:opacity,transform;
+}
+@media(max-width:900px){
+ .b3-root .b3-cloud{position:relative;min-height:180px}
+ .b3-root .b3-cloud-live .b3-chip-float{animation:b3-phrase-crossfade 5.6s ease-in-out both!important;opacity:0!important;max-width:42%}
+ .b3-root .b3-chip-float{position:absolute;left:var(--x);top:var(--y);text-align:left}
+}
+@media(max-width:700px){
+ .b3-root .b3-cloud{min-height:255px}
+ .b3-root .b3-chip-float{font-size:10px;max-width:46%}
+ .b3-root .b3-cloud-live .b3-chip-float{max-width:46%}
+}
+@media(prefers-reduced-motion:reduce){
+ .b3-root .b3-chip-float{opacity:.9!important;animation:none!important;transform:none!important;will-change:auto}
+}
+/* Pointer-tracking neon spot: follows the cursor inside cards/buttons, no global glow. */
+@media(hover:hover) and (pointer:fine){
+ .b3-root :is(.b3-card,.b3-blog-card,.site3-mega-card,.b3-footer-contact-links>a):hover{
+   background:
+      radial-gradient(245px circle at var(--glass-x,50%) var(--glass-y,50%),rgba(64,174,249,.27),transparent 77%),
+      linear-gradient(135deg,rgba(27,49,71,.72),rgba(14,24,38,.93))!important;
+ }
+ .b3-root :is(.b3-primary,.b3-secondary,.site3-message-button,.b3-footer-social-links>a):hover{
+   background:
+      radial-gradient(135px circle at var(--glass-x,50%) var(--glass-y,50%),rgba(109,206,255,.28),transparent 80%),
+      linear-gradient(125deg,#124477,#123048)!important;
+ }
+}
+.b3-root .site3-message-button>svg:first-child{
+  flex-shrink:0;color:inherit;
+}
+/* A slightly more tactile film grain, still behind interactivity. */
+.b3-root::after{opacity:.205}
+@media(max-width:700px){.b3-root::after{opacity:.145}}
