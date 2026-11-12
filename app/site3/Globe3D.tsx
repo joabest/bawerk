@@ -236,14 +236,14 @@ function World({ location, reduceMotion }: GlobeProps) {
       <group ref={shell}>
       <mesh>
         <sphereGeometry args={[2.002, 96, 64]} />
-        <meshBasicMaterial color="#111318" />
+        <meshBasicMaterial color="#111318" transparent opacity={.22} depthWrite={false} />
       </mesh>
       <mesh>
         <sphereGeometry args={[2.044, 96, 64]} />
         <shaderMaterial transparent depthWrite={false} side={THREE.BackSide} vertexShader={"varying vec3 vNormal; varying vec3 vView; void main(){ vec4 mv=modelViewMatrix*vec4(position,1.); vNormal=normalize(normalMatrix*normal); vView=normalize(-mv.xyz); gl_Position=projectionMatrix*mv; }"} fragmentShader={"varying vec3 vNormal; varying vec3 vView; void main(){ float rim=pow(1.0-abs(dot(normalize(vNormal),normalize(vView))),3.1); gl_FragColor=vec4(0.69,0.76,0.83,0.025+rim*0.19); }"} />
       </mesh>
       <points geometry={globeDots}>
-        <shaderMaterial transparent depthWrite={false} depthTest vertexShader={"attribute vec3 color;\nvarying vec3 vColor;\nvarying float vFacing;\nvoid main() {\n  vColor = color;\n  vec4 mv = modelViewMatrix * vec4(position, 1.0);\n  gl_Position = projectionMatrix * mv;\n  vec3 n = normalize(mat3(modelViewMatrix) * position);\n  vFacing = smoothstep(0.04, 0.90, max(0.0, n.z));\n  gl_PointSize = clamp(9.0 / -mv.z, 0.95, 2.25);\n}"} fragmentShader={"varying vec3 vColor;\nvarying float vFacing;\nvoid main() {\n  vec2 pt = gl_PointCoord - vec2(0.5);\n  float softCircle = 1.0 - smoothstep(0.30, 0.52, length(pt));\n  if (softCircle < 0.02) discard;\n  gl_FragColor = vec4(vColor, softCircle * (0.22 + 0.78 * vFacing));\n}"} />
+        <shaderMaterial transparent depthWrite={false} depthTest vertexShader={"attribute vec3 color;\nvarying vec3 vColor;\nvarying float vFacing;\nvoid main() {\n  vColor = color;\n  vec4 mv = modelViewMatrix * vec4(position, 1.0);\n  gl_Position = projectionMatrix * mv;\n  vec3 n = normalize(mat3(modelViewMatrix) * position);\n  vFacing = smoothstep(0.04, 0.90, max(0.0, n.z));\n  gl_PointSize = clamp(9.0 / -mv.z, 0.95, 2.25);\n}"} fragmentShader={"varying vec3 vColor;\nvarying float vFacing;\nvoid main() {\n  vec2 pt = gl_PointCoord - vec2(0.5);\n  float softCircle = 1.0 - smoothstep(0.30, 0.52, length(pt));\n  if (softCircle < 0.02) discard;\n  gl_FragColor = vec4(vColor, softCircle * (0.15 + 0.64 * vFacing));\n}"} />
       </points>
       {location && <Html position={[marker.x, marker.y, marker.z]} center distanceFactor={6.7} zIndexRange={[20, 0]}>
         <div ref={markerLabel} className="site3-globe-marker" aria-label={`Cidade aproximada: ${location.city}`}>
