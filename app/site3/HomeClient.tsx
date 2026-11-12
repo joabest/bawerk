@@ -44,6 +44,7 @@ export default function HomeClient(){
  const [friction,setFriction]=useState('')
  const [floatingPhrases,setFloatingPhrases]=useState<{index:number;x:number;y:number}[]>(()=>[0,2,4,7,10,12].map((index,i)=>({index,x:i%2===0?3:74,y:16+Math.floor(i/2)*29})))
  const [cloudLive,setCloudLive]=useState(false)
+ const [cloudFading,setCloudFading]=useState(false)
  const router=useRouter()
  const pathname=usePathname()
  const cloudRef=useRef<HTMLElement|null>(null)
@@ -91,8 +92,16 @@ export default function HomeClient(){
      })))
    }
    update()
-   const timer=window.setInterval(update,4900)
-   return()=>window.clearInterval(timer)
+   setCloudFading(false)
+   let swapTimer:number|undefined
+   const timer=window.setInterval(()=>{
+     setCloudFading(true)
+     swapTimer=window.setTimeout(()=>{
+       update()
+       setCloudFading(false)
+     },950)
+   },5900)
+   return()=>{window.clearInterval(timer);if(swapTimer)window.clearTimeout(swapTimer)}
  },[cloudLive,reducedMotion])
 
  useEffect(()=>{
@@ -131,7 +140,7 @@ export default function HomeClient(){
    </div>
   </section>
   <div className="b3-container b3-scrollhint"><span>CRIANDO O QUE AINDA NÃO EXISTE</span><span>ROLE PARA EXPLORAR <ArrowDown size={13} style={{display:'inline'}}/></span></div>
-  <section ref={cloudRef} className={'b3-container b3-friction'+(cloudLive&&!reducedMotion?' b3-cloud-live':'')} id="diagnostico">
+  <section ref={cloudRef} className={'b3-container b3-friction'+(cloudLive&&!reducedMotion?' b3-cloud-live':'')+(cloudFading?' b3-cloud-fading':'')} id="diagnostico">
    <span className="b3-overline">[ DIAGNÓSTICO / DESAFIOS REAIS ]</span>
    <h2>O que está te <span className="b3-electric">travando?</span></h2>
    <p>Você nomeia o atrito. Nós mapeamos a solução.<br/>Veja o que acontece depois.</p>
