@@ -42,10 +42,7 @@ export default function HomeClient(){
  const [location,setLocation]=useState<Location|null>(null)
  const [reducedMotion,setReducedMotion]=useState(false)
  const [friction,setFriction]=useState('')
- const [floatingPhrases,setFloatingPhrases]=useState<{index:number;x:number;y:number}[]>([])
- const lastSlots=useRef<number[]>([])
- const [phraseCycle,setPhraseCycle]=useState(0)
- const [phrasesHidden,setPhrasesHidden]=useState(false)
+ const [floatingPhrases,setFloatingPhrases]=useState<{slot:number;index:number;x:number;y:number;visible:boolean}[]>([])
  const router=useRouter()
  const pathname=usePathname()
  const cloudRef=useRef<HTMLElement|null>(null)
@@ -71,60 +68,49 @@ export default function HomeClient(){
    return ()=>{controller.abort();window.clearTimeout(timeout);if(w.cancelIdleCallback&&w.requestIdleCallback)w.cancelIdleCallback(idle);else window.clearTimeout(idle)}
  },[])
  useEffect(()=>{
-   // Independent positions across the whole diagnosis canvas, not three fixed rows.
-   // The center is intentionally reserved for the heading and input.
-   const spots:[number,number][]=[
-     [3,6],[40,5],[74,7],
-     [5,24],[76,25],
-     [3,43],[77,44],
-     [4,62],[76,63],
-     [3,80],[39,81],[74,79],
-     [4,92],[40,92],[75,92],
+   // Six independent timers: each phrase vanishes, moves, changes copy and returns on its own.
+   // Keep the central editorial text clear; randomize among perimeter anchors.
+   const anchors:[number,number][]=[
+     [2,6],[29,5],[69,6],[4,23],[73,22],
+     [2,42],[75,43],[4,64],[73,65],
+     [3,82],[37,83],[72,82],[4,94],[75,94],
    ]
-   const shuffle=()=>{
-     const ids=spots.map((_,i)=>i)
-     for(let i=ids.length-1;i>0;i--){
-       const j=Math.floor(Math.random()*(i+1))
-       ;[ids[i],ids[j]]=[ids[j],ids[i]]
-     }
-     // A phrase never reuses the same spot in the immediately following cycle.
-     const fresh=ids.filter(id=>!lastSlots.current.includes(id))
-     const chosen=fresh.slice(0,6)
-     lastSlots.current=chosen
-     const phraseIds=frictions.map((_,i)=>i)
-     for(let i=phraseIds.length-1;i>0;i--){
-       const j=Math.floor(Math.random()*(i+1))
-       ;[phraseIds[i],phraseIds[j]]=[phraseIds[j],phraseIds[i]]
-     }
-     setFloatingPhrases(chosen.map((spotId,i)=>({
-       index:phraseIds[i],
-       x:Math.min(77,Math.max(2,spots[spotId][0]+(Math.random()-.5)*7)),
-       y:Math.min(93,Math.max(3,spots[spotId][1]+(Math.random()-.5)*6)),
-     })))
-     setPhraseCycle(c=>c+1)
-   }
-   shuffle()
-   setPhrasesHidden(false)
-   if(reducedMotion)return
-   let stopped=false
+   const random=(n:number)=>Math.floor(Math.random()*n)
+   const shuffled=frictions.map((_,i)=>i).sort(()=>Math.random()-.5)
+   const positions=[0,4,5,8,9,11]
+   let active=true
    const timers:number[]=[]
-   const schedule=(delay:number,callback:()=>void)=>{
-     timers.push(window.setTimeout(()=>{if(!stopped)callback()},delay))
+   const init=positions.map((place,slot)=>({
+     slot,index:shuffled[slot],x:anchors[place][0],y:anchors[place][1],visible:true
+   }))
+   setFloatingPhrases(init)
+   if(reducedMotion)return()=>{active=false}
+   function schedule(slot:number,delay:number){
+     const timer=window.setTimeout(()=>{
+       if(!active)return
+       setFloatingPhrases(current=>current.map(item=>item.slot===slot?{...item,visible:false}:item))
+       const another=window.setTimeout(()=>{
+         if(!active)return
+         setFloatingPhrases(current=>{
+           const occupied=new Set(current.filter(item=>item.slot!==slot&&item.visible).map(item=>item.x+'-'+item.y))
+           const old=current.find(item=>item.slot===slot)
+           const candidates=anchors.filter(([x,y])=>!(old&&Math.abs(old.x-x)<15&&Math.abs(old.y-y)<13)&&!occupied.has(x+'-'+y))
+           const chosen=candidates[random(candidates.length)]||anchors[random(anchors.length)]
+           const used=new Set(current.filter(item=>item.slot!==slot).map(item=>item.index))
+           const options=frictions.map((_,i)=>i).filter(i=>!used.has(i)&&i!==old?.index)
+           return current.map(item=>item.slot===slot?{
+             ...item,index:options[random(options.length)]??random(frictions.length),
+             x:chosen[0]+Math.random()*3,y:chosen[1]+Math.random()*2,visible:true
+           }:item)
+         })
+         schedule(slot,2400+random(3600))
+       },850)
+       timers.push(another)
+     },delay)
+     timers.push(timer)
    }
-   const cycle=()=>{
-     setPhrasesHidden(true)
-     // Remove the old phrases entirely after their fade-out.
-     schedule(1050,()=>{
-       setFloatingPhrases([])
-       schedule(220,()=>{
-         shuffle()
-         setPhrasesHidden(false)
-         schedule(3100,cycle)
-       })
-     })
-   }
-   schedule(3100,cycle)
-   return()=>{stopped=true;timers.forEach(id=>window.clearTimeout(id))}
+   positions.forEach((_,slot)=>schedule(slot,1000+slot*690+random(1400)))
+   return()=>{active=false;timers.forEach(timer=>window.clearTimeout(timer))}
  },[reducedMotion])
 
  useEffect(()=>{
@@ -171,8 +157,8 @@ export default function HomeClient(){
     <input ref={inputRef} value={friction} onChange={e=>setFriction(e.target.value)} maxLength={300} placeholder="meu site fica cada vez mais lento" aria-label="Descreva o que está dificultando seu crescimento"/>
     <button type="submit" aria-label="Enviar desafio"><ArrowRight size={18}/></button>
    </form>
-   <div className={"b3-cloud"+(phrasesHidden?" b3-cloud-hidden":"")} aria-hidden={phrasesHidden} aria-label="Desafios comuns. Clique em um para usar no diagnóstico.">
-    {floatingPhrases.map(({index,x,y})=><button type="button" key={`${phraseCycle}-${index}`} className="b3-chip-float" style={{'--x':x+'%','--y':y+'%'} as React.CSSProperties} onClick={()=>setFriction(frictions[index][0])}>{frictions[index][0]} <span aria-hidden="true">↗</span></button>)}
+   <div className="b3-cloud" aria-label="Desafios comuns. Clique em um para usar no diagnóstico.">
+    {floatingPhrases.map(({slot,index,x,y,visible})=><button type="button" key={slot} tabIndex={visible?0:-1} aria-hidden={!visible} className={"b3-chip-float b3-phrase-independent"+(visible?" b3-phrase-visible":" b3-phrase-hidden")} style={{'--x':x+'%','--y':y+'%'} as React.CSSProperties} onClick={()=>setFriction(frictions[index][0])}>{frictions[index][0]} <span aria-hidden="true">↗</span></button>)}
    </div>
   </section>
   <section className="b3-container b3-section">
