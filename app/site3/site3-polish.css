@@ -231,3 +231,41 @@
 /* A slightly more tactile film grain, still behind interactivity. */
 .b3-root::after{opacity:.205}
 @media(max-width:700px){.b3-root::after{opacity:.145}}
+
+
+/* Brand blue, requested: replace lighter blues in editorial emphasis. */
+.b3-root{--b3-blue:#0026c0}
+.b3-root .b3-electric,
+.b3-root .b3-dot-blue,
+.b3-root .b3-footer-mission-title .b3-mission-blue{color:#0026c0}
+.b3-root .b3-footer-mission-title:hover .b3-mission-white,
+.b3-root .b3-footer-mission-title:hover .b3-mission-dot{color:#0026c0}
+/* The whole cloud fades: does not depend on existing conflicting child keyframes. */
+.b3-root .b3-friction .b3-cloud{
+  opacity:1;
+  transition:opacity 1000ms ease-in-out!important;
+}
+.b3-root .b3-friction .b3-cloud.b3-cloud-hidden{
+  opacity:0!important;
+  pointer-events:none!important;
+}
+.b3-root .b3-cloud-live .b3-chip-float{
+  animation:none!important;
+  opacity:.9!important;
+  transform:none!important;
+  transition:color .2s ease!important;
+}
+/* Minimal, soft neon-glass behind the cursor, never replaces the native arrow. */
+.b3-root .b3-cursor-neon{
+  position:fixed;left:0;top:0;
+  width:62px;height:62px;border-radius:50%;
+  z-index:60;pointer-events:none;opacity:0;
+  background:radial-gradient(circle,rgba(70,111,255,.16) 0%,rgba(0,38,192,.10) 35%,rgba(0,38,192,0) 72%);
+  border:1px solid rgba(127,153,255,.13);
+  box-shadow:0 0 18px rgba(0,38,192,.13),inset 0 0 18px rgba(78,107,255,.08);
+  backdrop-filter:blur(2px);
+  transition:opacity .22s ease;
+  will-change:transform;
+}
+@media(hover:none),(pointer:coarse){.b3-root .b3-cursor-neon{display:none}}
+@media(prefers-reduced-motion:reduce){.b3-root .b3-cursor-neon{display:none}}
