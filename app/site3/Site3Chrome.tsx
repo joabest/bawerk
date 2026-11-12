@@ -59,7 +59,6 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
  const [query,setQuery]=useState('')
  const [scrollPercent,setScrollPercent]=useState(0)
  const cursorGlowRef=useRef<HTMLDivElement>(null)
- const [isIdle,setIsIdle]=useState(false)
  const [cursorPortalReady,setCursorPortalReady]=useState(false)
  const closeNav=useCallback(()=>{cancelMenuClose();setMenu(null);setMobileMenu(false)},[cancelMenuClose])
  const searchResults=useMemo(()=>siteLinks.filter(item=>item.label.toLocaleLowerCase('pt-BR').includes(query.toLocaleLowerCase('pt-BR'))),[query])
@@ -105,23 +104,6 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
     window.removeEventListener('blur',hide)
     document.removeEventListener('mouseleave',hide)
     if(request)window.cancelAnimationFrame(request)
-  }
- },[])
- useEffect(()=>{
-  let idleTimer=window.setTimeout(()=>setIsIdle(true),1600)
-  const activity=()=>{
-    setIsIdle(prev=>prev?false:prev)
-    window.clearTimeout(idleTimer)
-    idleTimer=window.setTimeout(()=>setIsIdle(true),1600)
-  }
-  window.addEventListener('pointermove',activity,{passive:true})
-  window.addEventListener('scroll',activity,{passive:true})
-  window.addEventListener('keydown',activity)
-  return()=>{
-    window.clearTimeout(idleTimer)
-    window.removeEventListener('pointermove',activity)
-    window.removeEventListener('scroll',activity)
-    window.removeEventListener('keydown',activity)
   }
  },[])
  const entries=menu==='services'?serviceCards:menu==='tools'?toolCards:moreCards
@@ -203,7 +185,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
    <div className="b3-footer-bottom b3-footer-bottom-v2">
     <span>© {new Date().getFullYear()} BAWERK SOLUTIONS · TODOS OS DIREITOS RESERVADOS</span>
     <Link href="/site3">BAWERK SOLUTIONS <span className="b3-electric">•</span> VOCÊ PODE IR ALÉM DO QUE IMAGINA.</Link>
-    <a href="#top" className={"b3-backtop-orbit"+(isIdle?" b3-backtop-idle":"")} aria-label="Voltar ao topo">
+    <a href="#top" className="b3-backtop-orbit b3-backtop-idle" aria-label="Voltar ao topo">
       <svg viewBox="0 0 120 120" className="b3-backtop-ring" aria-hidden="true">
        <defs><path id="b3-backtop-circle" d="M60,60m-45,0a45,45 0 1,1 90,0a45,45 0 1,1 -90,0"/></defs>
        <text><textPath href="#b3-backtop-circle">VOLTAR AO TOPO. VOLTAR AO TOPO. VOLTAR AO TOPO. </textPath></text>
