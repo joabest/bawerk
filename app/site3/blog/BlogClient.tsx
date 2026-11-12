@@ -1,8 +1,8 @@
 'use client'
-import {useMemo,useState} from 'react'
+import {useEffect,useMemo,useState} from 'react'
 import Link from '../PublicLink'
 import {ArrowUpRight,Grid2X2,List,Search} from 'lucide-react'
-import {categories,posts,getReadingTime} from '../blog-data'
+import {categories,posts as originalPosts,getReadingTime} from '../blog-data'
 import type {BlogPost} from '../blog-data'
 
 export function BlogThumbnail({post}:{post:BlogPost}){
@@ -35,6 +35,8 @@ export function BlogThumbnail({post}:{post:BlogPost}){
  </div>
 }
 export default function BlogClient(){
+ const [posts,setPosts]=useState<BlogPost[]>(originalPosts)
+ useEffect(()=>{let alive=true;fetch('/api/blog',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(v=>{if(alive&&Array.isArray(v?.posts))setPosts(v.posts)}).catch(()=>{});return()=>{alive=false}},[])
  const [category,setCategory]=useState<string>('TODOS')
  const [search,setSearch]=useState('')
  const [view,setView]=useState<'grade'|'lista'>('grade')
