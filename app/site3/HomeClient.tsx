@@ -40,6 +40,9 @@ const steps=[
 ]
 export default function HomeClient(){
  const [location,setLocation]=useState<Location|null>(null)
+ const [locationResolved,setLocationResolved]=useState(false)
+ const [globeAligned,setGlobeAligned]=useState(false)
+ const [revealTimeout,setRevealTimeout]=useState(false)
  const [reducedMotion,setReducedMotion]=useState(false)
  const [friction,setFriction]=useState('')
  const [floatingPhrases,setFloatingPhrases]=useState<{index:number;x:number;y:number}[]>(()=>[0,2,4,7,10,12].map((index,i)=>({index,x:i%2===0?3:74,y:16+Math.floor(i/2)*29})))
@@ -54,7 +57,7 @@ export default function HomeClient(){
  useEffect(()=>{
    const motion=window.matchMedia('(prefers-reduced-motion: reduce)')
    setReducedMotion(motion.matches)
-   try{const cached=sessionStorage.getItem('b3-loc');if(cached){setLocation(JSON.parse(cached));return}}catch{}
+   try{const cached=sessionStorage.getItem('b3-loc');if(cached){const loc=JSON.parse(cached);if(typeof loc.city==='string'&&Number.isFinite(loc.latitude)&&Number.isFinite(loc.longitude)){setLocation(loc);setLocationResolved(true);return}}}catch{}
    const controller=new AbortController()
    const timeout=window.setTimeout(()=>controller.abort(),3500)
    const run=()=>fetch('https://ipapi.co/json/',{signal:controller.signal}).then(r=>{if(!r.ok)throw Error('IP location indisponível');return r.json()}).then(data=>{
@@ -64,11 +67,20 @@ export default function HomeClient(){
        setLocation(loc)
        try{sessionStorage.setItem('b3-loc',JSON.stringify(loc))}catch{}
      }
-   }).catch(()=>{}).finally(()=>window.clearTimeout(timeout))
+   }).catch(()=>{}).finally(()=>{setLocationResolved(true);window.clearTimeout(timeout)})
    const w=window as unknown as {requestIdleCallback?:(cb:()=>void,o?:{timeout:number})=>number;cancelIdleCallback?:(id:number)=>void}
    const idle=w.requestIdleCallback?w.requestIdleCallback(run,{timeout:2000}):window.setTimeout(run,600)
    return ()=>{controller.abort();window.clearTimeout(timeout);if(w.cancelIdleCallback&&w.requestIdleCallback)w.cancelIdleCallback(idle);else window.clearTimeout(idle)}
  },[])
+ useEffect(()=>{
+   const timer=window.setTimeout(()=>setRevealTimeout(true),9000)
+   return()=>window.clearTimeout(timer)
+ },[])
+ const pageReady=(locationResolved&&globeAligned)||revealTimeout
+ useEffect(()=>{
+   document.body.classList.toggle('b3-location-loading',!pageReady)
+   return()=>document.body.classList.remove('b3-location-loading')
+ },[pageReady])
  useEffect(()=>{
    const el=cloudRef.current
    if(!el)return
@@ -124,9 +136,10 @@ export default function HomeClient(){
  },[reducedMotion])
  const go=(text:string)=>{const v=text.trim();const route=pathname.startsWith('/site3')?'/site3/contato':'/contato';router.push(v?`${route}?desafio=${encodeURIComponent(v.slice(0,300))}`:route)}
  return <>
+  {!pageReady&&<div className="b3-location-intro" role="status" aria-live="polite"><span className="b3-location-intro-symbol">B<span>.</span></span><span className="b3-location-intro-rule"/><strong>PREPARANDO SUA EXPERIÊNCIA</strong><small>{locationResolved?'ORIENTANDO O GLOBO PARA SUA REGIÃO':'IDENTIFICANDO SUA REGIÃO APROXIMADA'}</small><span className="b3-location-intro-loader"/></div>}
   <section className="b3-container b3-home-hero">
    <div className="b3-home-globe">
-    <div className="b3-globe-canvas"><Globe3D location={location} reduceMotion={reducedMotion}/></div>
+    <div className="b3-globe-canvas"><Globe3D location={location} reduceMotion={reducedMotion} onAligned={()=>setGlobeAligned(true)}/></div>
    </div>
    <div className="b3-home-copy">
     <span className="b3-overline">[ BAWERK SOLUTIONS / VOCÊ PODE IR ALÉM DO QUE IMAGINA ]</span>
