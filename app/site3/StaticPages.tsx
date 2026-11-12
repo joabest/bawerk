@@ -4,11 +4,11 @@ import {ArrowUpRight,Code2,Globe2,Layers3,Palette,Search,Settings2,TrendingUp,Za
 const services=[
  {n:'01',title:'Sites e experiências digitais',category:'WEB / UX',text:'Sites institucionais, landing pages, interfaces e experiências 3D responsivas. Foco em clareza, velocidade e conversão.',tags:['Next.js','UI/UX','Performance']},
  {n:'02',title:'Softwares personalizados',category:'ENGENHARIA',text:'Softwares empresariais sob medida, plataformas web, painéis administrativos, integrações e APIs alinhados aos processos de cada empresa.',tags:['Sistemas','Plataformas','APIs']},
- {n:'07',title:'Aplicativos para celular',category:'ANDROID / IOS',text:'Criamos aplicativos para Android e iPhone: interfaces mobile, integração com sistemas, autenticação, notificações e publicação conforme o projeto.',tags:['Android','iOS','Apps mobile']},
  {n:'03',title:'CRM e gestão comercial',category:'NEGÓCIOS',text:'Organização de leads, funis, orçamentos, notificações, dashboards e relacionamento com clientes.',tags:['Leads','CRM','Dashboards']},
  {n:'04',title:'Automação e inteligência artificial',category:'EFICIÊNCIA',text:'Integrações, agentes assistivos e fluxos de trabalho que reduzem tarefas repetitivas.',tags:['Automação','IA','Integrações']},
  {n:'05',title:'Marketing digital',category:'CRESCIMENTO',text:'Estratégia digital, campanhas, conteúdo e presença de marca para ampliar oportunidades.',tags:['Campanhas','SEO','Conteúdo']},
  {n:'06',title:'Identidade visual e design',category:'CRIATIVIDADE',text:'Design de marca, materiais gráficos, animações, layouts e sistemas visuais consistentes.',tags:['Branding','Motion','Design']},
+ {n:'07',title:'Aplicativos para celular',category:'ANDROID / IOS',text:'Criamos aplicativos para Android e iPhone: interfaces mobile, integração com sistemas, autenticação, notificações e publicação conforme o projeto.',tags:['Android','iOS','Apps mobile']},
 ]
 const process=[
  {n:'01',title:'Descobrir',desc:'Objetivos, desafios, contexto e oportunidades.',extra:'Escutamos sua equipe, entendemos a jornada do cliente e priorizamos o que precisa mudar.',icon:Search},
