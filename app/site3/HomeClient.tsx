@@ -57,13 +57,14 @@ export default function HomeClient(){
  useEffect(()=>{
    const motion=window.matchMedia('(prefers-reduced-motion: reduce)')
    setReducedMotion(motion.matches)
-   try{const cached=sessionStorage.getItem('b3-loc');if(cached){const loc=JSON.parse(cached);if(typeof loc.city==='string'&&Number.isFinite(loc.latitude)&&Number.isFinite(loc.longitude)){setLocation(loc);setLocationResolved(true);return}}}catch{}
+   try{const cached=sessionStorage.getItem('b3-loc');if(cached){const loc=JSON.parse(cached);if(typeof loc.city==='string'&&Number.isFinite(loc.latitude)&&Number.isFinite(loc.longitude)){setGlobeAligned(false);setLocation(loc);setLocationResolved(true);return}}}catch{}
    const controller=new AbortController()
    const timeout=window.setTimeout(()=>controller.abort(),3500)
    const run=()=>fetch('https://ipapi.co/json/',{signal:controller.signal}).then(r=>{if(!r.ok)throw Error('IP location indisponível');return r.json()}).then(data=>{
      const lat=Number(data.latitude),lon=Number(data.longitude)
      if(!data.error&&typeof data.city==='string'&&Number.isFinite(lat)&&Number.isFinite(lon)&&Math.abs(lat)<=90&&Math.abs(lon)<=180){
        const loc={city:data.city.slice(0,42),latitude:lat,longitude:lon}
+       setGlobeAligned(false)
        setLocation(loc)
        try{sessionStorage.setItem('b3-loc',JSON.stringify(loc))}catch{}
      }
@@ -99,8 +100,8 @@ export default function HomeClient(){
      // Six at a time, three on each side, with non-overlapping vertical bands.
      setFloatingPhrases(indexes.slice(0,6).map((index,i)=>({
        index,
-       x:i%2===0?2+Math.random()*8:72+Math.random()*7,
-       y:10+Math.floor(i/2)*27+Math.random()*10,
+       x:i%2===0?2+Math.random()*13:73+Math.random()*10,
+       y:8+Math.floor(i/2)*29+Math.random()*13,
      })))
    }
    update()
