@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { Cookie, ShieldCheck, Settings2, X } from "lucide-react"
 
 const CONSENT_KEY = "bawerk_analytics_consent_v1"
-const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ""
+const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-91BEZ30Z23"
 const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID || ""
 const gaValid = /^G-[A-Z0-9]{5,20}$/.test(GA_ID)
 const clarityValid = /^[a-z0-9]{5,32}$/i.test(CLARITY_ID)
