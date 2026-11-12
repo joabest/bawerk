@@ -41,7 +41,7 @@ export default function ContactPage(){
   }
  }
  return <div className="b3-container">
-  <header className="b3-page-head"><span className="b3-overline">[ CONTATO / INICIE SUA IDEIA ]</span><h1>Conte sua ideia<span className="b3-dot-blue">.</span><br/><em>Vamos construir<span className="b3-dot-white">.</span></em></h1><p>Envie o briefing da sua empresa. Seu contato entra diretamente no sistema de atendimento da Bawerk.</p></header>
+  <header className="b3-page-head"><span className="b3-overline">[ CONTATO / INICIE SUA IDEIA ]</span><h1 className="b3-contact-headline"><span>Conte sua ideia<span className="b3-dot-blue">.</span></span><em>Vamos construir<span className="b3-dot-white">.</span></em></h1><p>Envie o briefing da sua empresa. Seu contato entra diretamente no sistema de atendimento da Bawerk.</p></header>
   <div className="b3-contact-grid">
    <aside className="b3-contact-info">
     <span className="b3-overline">[ FALE COM A EQUIPE ]</span>
