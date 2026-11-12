@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 export default async function ArticlePage({ params }: Props) {
  const { slug } = await params
- const post = getPost(slug)
+ const post = await getBlogPost(slug)
  if (!post) notFound()
  const related = getRelated(post)
  const current = posts.findIndex(item => item.slug === slug)
