@@ -8,7 +8,7 @@ import { LAND_MASK, MASK_HEIGHT, MASK_WIDTH, MASK_STEP } from './land-mask'
 
 type Location = { city: string; latitude: number; longitude: number }
 
-type GlobeProps = { location: Location | null; reduceMotion: boolean }
+type GlobeProps = { location: Location | null; reduceMotion: boolean; onAligned?: () => void }
 
 function spherical(lat: number, lon: number, radius = 2) {
   const phi = ((90 - lat) * Math.PI) / 180
@@ -202,13 +202,14 @@ function StarField() {
   return <points geometry={geometry}><pointsMaterial size={.03} color="#a6d8ff" opacity={.53} transparent sizeAttenuation depthWrite={false} /></points>
 }
 
-function World({ location, reduceMotion }: GlobeProps) {
+function World({ location, reduceMotion, onAligned }: GlobeProps) {
   const globeDots = useMemo(countryDots, [])
   useEffect(() => () => globeDots.dispose(), [globeDots])
   const markerLabel = useRef<HTMLDivElement>(null)
   const markerAnchor = useRef<THREE.Mesh>(null)
   const wp = useMemo(() => new THREE.Vector3(), [])
   const lastVisible = useRef(true)
+  const alignedNotified = useRef(false)
   const shell = useRef<THREE.Group>(null)
   const pivot = useRef<THREE.Group>(null)
   const marker = location ? spherical(location.latitude, location.longitude, 2.23) : spherical(-23.55, -46.63, 2.23)
@@ -217,8 +218,15 @@ function World({ location, reduceMotion }: GlobeProps) {
     const v = spherical(origin[0], origin[1], 1).normalize()
     return new THREE.Quaternion().setFromUnitVectors(v, new THREE.Vector3(.20, .24, .95).normalize())
   }, [origin])
+  useEffect(() => { alignedNotified.current = false }, [targetQuaternion])
   useFrame((state, delta) => {
-    if (pivot.current) pivot.current.quaternion.slerp(targetQuaternion, 1 - Math.exp(-delta * 2.4))
+    if (pivot.current) {
+      pivot.current.quaternion.slerp(targetQuaternion, 1 - Math.exp(-delta * 3.3))
+      if (!alignedNotified.current && pivot.current.quaternion.angleTo(targetQuaternion) < 0.055) {
+        alignedNotified.current = true
+        onAligned?.()
+      }
+    }
     if (shell.current && !reduceMotion) shell.current.rotation.z = Math.sin(state.clock.elapsedTime * .13) * .013
     if (markerAnchor.current && markerLabel.current) {
       markerAnchor.current.getWorldPosition(wp)
