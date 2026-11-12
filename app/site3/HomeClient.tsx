@@ -115,16 +115,25 @@ export default function HomeClient(){
    shuffle()
    setPhrasesHidden(false)
    if(reducedMotion)return
-   let swapTimer:number|undefined
-   const timer=window.setInterval(()=>{
-     // Fade the entire cloud (independent of child opacity/animation rules).
+   let stopped=false
+   const timers:number[]=[]
+   const schedule=(delay:number,callback:()=>void)=>{
+     timers.push(window.setTimeout(()=>{if(!stopped)callback()},delay))
+   }
+   const cycle=()=>{
      setPhrasesHidden(true)
-     swapTimer=window.setTimeout(()=>{
-       shuffle()
-       setPhrasesHidden(false)
-     },1050)
-   },5600)
-   return()=>{window.clearInterval(timer);if(swapTimer)window.clearTimeout(swapTimer)}
+     // Remove the old phrases entirely after their fade-out.
+     schedule(1050,()=>{
+       setFloatingPhrases([])
+       schedule(220,()=>{
+         shuffle()
+         setPhrasesHidden(false)
+         schedule(3100,cycle)
+       })
+     })
+   }
+   schedule(3100,cycle)
+   return()=>{stopped=true;timers.forEach(id=>window.clearTimeout(id))}
  },[cloudLive,reducedMotion])
 
  useEffect(()=>{
@@ -171,7 +180,7 @@ export default function HomeClient(){
     <input ref={inputRef} value={friction} onChange={e=>setFriction(e.target.value)} maxLength={300} placeholder="meu site fica cada vez mais lento" aria-label="Descreva o que está dificultando seu crescimento"/>
     <button type="submit" aria-label="Enviar desafio"><ArrowRight size={18}/></button>
    </form>
-   <div className={"b3-cloud"+(phrasesHidden?" b3-cloud-hidden":"")} aria-label="Desafios comuns. Clique em um para usar no diagnóstico.">
+   <div className={"b3-cloud"+(phrasesHidden?" b3-cloud-hidden":"")} aria-hidden={phrasesHidden} aria-label="Desafios comuns. Clique em um para usar no diagnóstico.">
     {floatingPhrases.map(({index,x,y})=><button type="button" key={`${phraseCycle}-${index}`} className="b3-chip-float" style={{'--x':x+'%','--y':y+'%'} as React.CSSProperties} onClick={()=>setFriction(frictions[index][0])}>{frictions[index][0]} <span aria-hidden="true">↗</span></button>)}
    </div>
   </section>
