@@ -1,26 +1,49 @@
-import { createHmac, timingSafeEqual } from "node:crypto"
+import { createHmac, scryptSync, timingSafeEqual } from "node:crypto"
 
-const COOKIE="bawerk_admin"
-const PREVIEW_PASSWORD="1234"
-const PREVIEW_SECRET="bawerk-admin-preview-session-v1"
+const COOKIE = "bawerk_admin"
+const SESSION_SECONDS = 12 * 60 * 60
 
-function secret(){return process.env.ADMIN_SECRET||PREVIEW_SECRET}
-
-export function validPassword(value:string){
-  const expected=process.env.ADMIN_PASSWORD||PREVIEW_PASSWORD
-  if(!value||!expected)return false
-  const a=Buffer.from(value),b=Buffer.from(expected)
-  return a.length===b.length&&timingSafeEqual(a,b)
+function adminSecret(): string | null {
+  const secret = process.env.ADMIN_SECRET
+  return secret && secret.length >= 32 ? secret : null
 }
-
-export function token(){
-  return createHmac("sha256",secret()).update("bawerk-admin-v1").digest("hex")
+export function adminConfigured(): boolean {
+  const password = process.env.ADMIN_PASSWORD
+  const hash = process.env.ADMIN_PASSWORD_HASH
+  return !!adminSecret() && (!!(hash && /^[a-f\d]{32,128}:[a-f\d]{128}$/i.test(hash)) || !!(password && password.length >= 12))
 }
-
-export function validToken(value?:string){
-  if(!value)return false
-  const a=Buffer.from(value),b=Buffer.from(token())
-  return a.length===b.length&&timingSafeEqual(a,b)
+function equal(a: string, b: string): boolean {
+  const first = Buffer.from(a)
+  const second = Buffer.from(b)
+  return first.length === second.length && timingSafeEqual(first, second)
 }
-
-export {COOKIE}
+export function validPassword(value: string): boolean {
+  if (!adminConfigured() || !value) return false
+  const hash = process.env.ADMIN_PASSWORD_HASH
+  if (hash) {
+    const [salt, expected] = hash.split(":")
+    if (!salt || !expected || !/^[a-f\d]+$/i.test(salt + expected)) return false
+    return equal(scryptSync(value, Buffer.from(salt, "hex"), 64).toString("hex"), expected.toLowerCase())
+  }
+  return equal(value, process.env.ADMIN_PASSWORD || "")
+}
+function sign(payload: string, secret: string) {
+  return createHmac("sha256", secret).update("bawerk-admin-v2:" + payload).digest("hex")
+}
+export function token(): string {
+  const secret = adminSecret()
+  if (!secret || !adminConfigured()) throw new Error("ADMIN_SECRET e senha administrativa precisam ser configurados")
+  const expiry = (Math.floor(Date.now() / 1000) + SESSION_SECONDS).toString()
+  return "v2." + expiry + "." + sign(expiry, secret)
+}
+export function validToken(value?: string): boolean {
+  const secret = adminSecret()
+  if (!secret || !adminConfigured() || !value) return false
+  const match = /^v2\.(\d{10})\.([a-f0-9]{64})$/.exec(value)
+  if (!match) return false
+  const expiry = Number(match[1])
+  const now = Math.floor(Date.now() / 1000)
+  if (!Number.isSafeInteger(expiry) || expiry < now || expiry > now + SESSION_SECONDS) return false
+  return equal(match[2], sign(match[1], secret))
+}
+export { COOKIE, SESSION_SECONDS }
