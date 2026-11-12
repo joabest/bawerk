@@ -268,7 +268,7 @@ function World({ location, reduceMotion, onAligned }: GlobeProps) {
     </group>
     
     
-    <OrbitControls autoRotate={false} enableZoom enablePan={false} minDistance={6.35} maxDistance={9.0} zoomSpeed={.55} enableDamping dampingFactor={.045} minPolarAngle={.35} maxPolarAngle={Math.PI - .35} touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE }} />
+    <OrbitControls autoRotate={false} enableZoom={false} enablePan={false} enableDamping dampingFactor={.045} minPolarAngle={.35} maxPolarAngle={Math.PI - .35} touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.ROTATE }} />
   </>
 }
 
@@ -285,8 +285,8 @@ export default function Globe3D(props: GlobeProps) {
     document.addEventListener('visibilitychange', onVis)
     return () => { io.disconnect(); document.removeEventListener('visibilitychange', onVis) }
   }, [])
-  return <div ref={frame} className="site3-canvas-frame" role="img" aria-label="Globo terrestre interativo. Arraste para girar e use dois dedos para aproximar ou afastar.">
-    <Canvas frameloop={inView && tabVisible ? 'always' : 'never'} dpr={[1, 1.5]} gl={{ antialias: true, alpha: true, powerPreference: 'default' }} camera={{ fov: 43, near: .1, far: 100, position: [0, 0, 6.9] }} style={{ touchAction: 'none' }}>
+  return <div ref={frame} className="site3-canvas-frame" role="img" aria-label="Globo terrestre interativo. Arraste para girar e gire com o mouse ou com o dedo, sem zoom.">
+    <Canvas frameloop={inView && tabVisible ? 'always' : 'never'} dpr={[1, 1.5]} gl={{ antialias: true, alpha: true, powerPreference: 'default' }} camera={{ fov: 43, near: .1, far: 100, position: [0, 0, 7.5] }} style={{ touchAction: 'none' }}>
       <World {...props} />
     </Canvas>
   </div>
