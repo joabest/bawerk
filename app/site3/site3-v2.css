@@ -400,7 +400,7 @@
 @media(max-width:900px){
  .b3-root .b3-friction{min-height:0;padding:90px 0 60px}
  .b3-cloud{position:static;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;margin-top:30px}
- .b3-chip-float{position:static;max-width:100%;text-align:center;animation:none!important;opacity:.85!important;will-change:auto}
+ .b3-chip-float{position:static;max-width:100%;text-align:center;will-change:auto}
  .b3-chip-float:nth-child(n+8){display:none}
 }
 @media(max-width:700px){
@@ -534,7 +534,7 @@
  14%,74%{opacity:.85;transform:translateY(0)}
  95%,100%{opacity:0;transform:translateY(-10px)}
 }
-@media(max-width:900px){.b3-root .b3-chip-float{max-width:100%;animation:none!important;opacity:.85!important}}
+@media(max-width:900px){.b3-root .b3-chip-float{max-width:100%}}
 
 
 /* BAWERK EDITORIAL 2026 — readable, navigable long-form articles */
