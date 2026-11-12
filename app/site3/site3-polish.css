@@ -336,3 +336,40 @@
 /* The existing phrases now fully leave the DOM for a moment on each cycle. */
 .b3-root .b3-friction .b3-cloud.b3-cloud-hidden{opacity:0!important}
 .b3-root .b3-friction .b3-cloud{transition:opacity 1s ease-in-out!important}
+
+
+/* Final pointer polish: 10% opacity corporate-blue halo in a body-level portal.
+   Using the portal avoids clipping or stacking beneath the site grain/header. */
+.b3-cursor-neon-portal{
+  position:fixed!important;top:0;left:0;
+  width:86px;height:86px;border-radius:50%;
+  z-index:2147483000;pointer-events:none;opacity:0;
+  background:radial-gradient(circle,rgba(0,38,192,.10) 0%,rgba(0,38,192,.075) 31%,rgba(0,38,192,.025) 58%,transparent 76%);
+  border:1px solid rgba(0,38,192,.10);
+  box-shadow:0 0 18px rgba(0,38,192,.10),inset 0 0 13px rgba(0,38,192,.07);
+  transition:opacity .18s ease;
+  will-change:transform;
+}
+@media(hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){.b3-cursor-neon-portal{display:none!important}}
+/* Bottom-most back-to-top orbit is always visibly placed on the footer's right end. */
+.b3-root .b3-footer-bottom.b3-footer-bottom-v2{
+  min-height:150px;position:relative;
+  align-items:center;justify-content:space-between;
+  padding-bottom:22px;overflow:visible;
+}
+.b3-root .b3-footer-bottom-v2>a.b3-backtop-orbit{
+  width:124px;height:124px;flex:0 0 124px;
+  margin-left:auto;align-self:center;justify-self:end;
+  display:inline-grid!important;place-items:center!important;
+  visibility:visible!important;opacity:1!important;
+}
+.b3-root .b3-backtop-ring text{font-size:8.6px;letter-spacing:.25px;font-weight:650}
+.b3-root .b3-backtop-ring{animation-duration:17s}
+.b3-root .b3-backtop-arrow{color:#d7e0ff}
+@media(max-width:700px){
+ .b3-root .b3-footer-bottom.b3-footer-bottom-v2{min-height:0;gap:15px;padding-bottom:20px}
+ .b3-root .b3-footer-bottom-v2>a.b3-backtop-orbit{
+   width:112px;height:112px;flex-basis:112px;
+   margin:8px 0 0 auto;
+ }
+}
