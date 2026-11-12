@@ -1,6 +1,6 @@
 'use client'
 import Link from './PublicLink'
-import {useRouter} from 'next/navigation'
+import {usePathname,useRouter} from 'next/navigation'
 import dynamic from 'next/dynamic'
 import {useEffect,useRef,useState} from 'react'
 import {ArrowDown,ArrowRight,ArrowUpRight,Code2,Layers3,Search,Zap} from 'lucide-react'
@@ -26,9 +26,11 @@ const frictions:[string,number,number][]=[
 ]
 const services=[
  {n:'01',name:'Sites e experiências digitais',text:'Design, performance e experiências web que destacam sua marca.'},
- {n:'02',name:'Softwares e plataformas',text:'Sistemas sob medida para a realidade da sua operação.'},
- {n:'03',name:'CRM e automação',text:'Leads, atendimento, notificações e processos conectados.'},
- {n:'04',name:'Marketing e design',text:'Identidade, campanhas e presença digital profissional.'}
+ {n:'02',name:'Softwares personalizados',text:'Sistemas empresariais, painéis, APIs e plataformas sob medida para sua operação.'},
+ {n:'03',name:'Aplicativos para celular',text:'Desenvolvimento de apps Android e iOS, com interfaces modernas e integração com sistemas.'},
+ {n:'04',name:'CRM e automação',text:'Leads, atendimento, notificações e processos conectados.'},
+ {n:'05',name:'Marketing digital',text:'Campanhas e estratégias de aquisição e presença online.'},
+ {n:'06',name:'Design e identidade visual',text:'Identidade, interfaces e experiências para fortalecer sua marca.'}
 ]
 const steps=[
  {name:'Descobrir',description:'Objetivos, desafios, contexto e oportunidades.',icon:Search},
@@ -40,8 +42,10 @@ export default function HomeClient(){
  const [location,setLocation]=useState<Location|null>(null)
  const [reducedMotion,setReducedMotion]=useState(false)
  const [friction,setFriction]=useState('')
+ const [phrasePositions,setPhrasePositions]=useState<[number,number][]>(()=>frictions.map(([,x,y])=>[x,y]))
  const [cloudLive,setCloudLive]=useState(false)
  const router=useRouter()
+ const pathname=usePathname()
  const cloudRef=useRef<HTMLElement|null>(null)
  const inputRef=useRef<HTMLInputElement|null>(null)
  const [stepCount,setStepCount]=useState(0)
@@ -72,6 +76,22 @@ export default function HomeClient(){
    return()=>io.disconnect()
  },[])
  useEffect(()=>{
+   if(!cloudLive||reducedMotion)return
+   const update=()=>{
+     setPhrasePositions(frictions.map(([,x,y],i)=>{
+       const dx=(Math.random()-.5)*24
+       const dy=(Math.random()-.5)*16
+       // Keep phrases in outer lanes, leaving the headline and form readable.
+       const xx=Math.max(1,Math.min(x+dx,84))
+       const yy=Math.max(4,Math.min(y+dy,94))
+       return [xx,yy] as [number,number]
+     }))
+   }
+   update()
+   const timer=window.setInterval(update,5600)
+   return()=>window.clearInterval(timer)
+ },[cloudLive,reducedMotion])
+ useEffect(()=>{
    const element=stageRef.current
    if(!element)return
    if(reducedMotion){setStepCount(4);return}
@@ -89,7 +109,7 @@ export default function HomeClient(){
    observer.observe(element)
    return()=>{observer.disconnect();if(timer)window.clearInterval(timer)}
  },[reducedMotion])
- const go=(text:string)=>{const v=text.trim();router.push(v?`/site3/contato?desafio=${encodeURIComponent(v.slice(0,300))}`:'/site3/contato')}
+ const go=(text:string)=>{const v=text.trim();const route=pathname.startsWith('/site3')?'/site3/contato':'/contato';router.push(v?`${route}?desafio=${encodeURIComponent(v.slice(0,300))}`:route)}
  return <>
   <section className="b3-container b3-home-hero">
    <div className="b3-home-globe">
@@ -98,7 +118,7 @@ export default function HomeClient(){
    <div className="b3-home-copy">
     <span className="b3-overline">[ BAWERK SOLUTIONS / VOCÊ PODE IR ALÉM DO QUE IMAGINA ]</span>
     <h1>Sua parceira<br/><em>tecnológica<span className="b3-electric">.</span></em></h1>
-    <p>Sites, softwares, CRM, automação, marketing e design. Tecnologia inteligente e experiências digitais que fazem a sua empresa evoluir.</p>
+    <p>Sites, softwares personalizados, aplicativos Android e iOS, CRM, automação, marketing e design. Tecnologia inteligente e experiências digitais que fazem a sua empresa evoluir.</p>
     <div className="b3-cta-row">
      <Link className="b3-primary" href="/site3/servicos">Explorar serviços <ArrowUpRight size={16}/></Link>
      <Link className="b3-secondary" href="/site3/contato">Falar sobre meu projeto <ArrowRight size={16}/></Link>
@@ -116,13 +136,13 @@ export default function HomeClient(){
     <button type="submit" aria-label="Enviar desafio"><ArrowRight size={18}/></button>
    </form>
    <div className="b3-cloud" aria-label="Desafios comuns. Clique em um para usar no diagnóstico.">
-    {frictions.map(([text,x,y],i)=><button type="button" key={text} className="b3-chip-float" style={{'--x':x+'%','--y':y+'%','--d':`${-(i*0.83).toFixed(2)}s`} as React.CSSProperties} onClick={()=>{setFriction(text);inputRef.current?.focus({preventScroll:true})}}>{text} <span aria-hidden="true">↗</span></button>)}
+    {frictions.map(([text,x,y],i)=><button type="button" key={text} className="b3-chip-float" style={{'--x':phrasePositions[i][0]+'%','--y':phrasePositions[i][1]+'%','--d':`${-(i*0.83).toFixed(2)}s`} as React.CSSProperties} onClick={()=>{setFriction(text)}}>{text} <span aria-hidden="true">↗</span></button>)}
    </div>
   </section>
   <section className="b3-container b3-section">
    <div className="b3-section-top"><span className="b3-overline">[ O QUE FAZEMOS ]</span><Link href="/site3/servicos" className="b3-forward">Todos os serviços <ArrowUpRight size={15}/></Link></div>
    <h2>Soluções digitais<span className="b3-dot-blue">.</span><br/><span className="b3-electric">Resultados reais<span className="b3-dot-white">.</span></span></h2>
-   <div className="b3-cols4">{services.map(s=><Link className="b3-card" href="/site3/servicos" key={s.n}><span className="b3-card-index">{s.n} / BAWERK</span><h3 className="b3-card-title">{s.name}</h3><p className="b3-card-copy">{s.text}</p><span className="b3-forward">Descobrir <ArrowUpRight size={15}/></span></Link>)}</div>
+   <div className="b3-cols3">{services.map(s=><Link className="b3-card" href="/site3/servicos" key={s.n}><span className="b3-card-index">{s.n} / BAWERK</span><h3 className="b3-card-title">{s.name}</h3><p className="b3-card-copy">{s.text}</p><span className="b3-forward">Descobrir <ArrowUpRight size={15}/></span></Link>)}</div>
   </section>
   <section ref={stageRef} className="b3-container b3-section">
    <div className="b3-section-top"><span className="b3-overline">[ NOSSO MÉTODO ]</span><Link href="/site3/metodo" className="b3-forward">Conhecer o método <ArrowUpRight size={16}/></Link></div>
@@ -132,7 +152,7 @@ export default function HomeClient(){
   <section className="b3-container b3-section">
    <div className="b3-section-top"><span className="b3-overline">[ CONTEÚDO & IDEIAS ]</span><Link href="/site3/blog" className="b3-forward">Acessar o blog <ArrowUpRight size={16}/></Link></div>
    <h2>Conhecimento que<br/><span className="b3-electric">move negócios<span className="b3-dot-white">.</span></span></h2>
-   <p className="b3-section-lead">Artigos sobre inteligência artificial, desenvolvimento, CRM, design, automação e decisões melhores com tecnologia.</p>
+   <p className="b3-section-lead">Artigos sobre inteligência artificial, desenvolvimento de softwares, aplicativos para Android e iOS, CRM, design e automação.</p>
    <div className="b3-cta-row"><Link href="/site3/blog" className="b3-secondary">Explorar todos os artigos <ArrowUpRight size={16}/></Link><Link href="/site3/sobre" className="b3-secondary">Conhecer a Bawerk <ArrowRight size={16}/></Link></div>
   </section>
  </>
