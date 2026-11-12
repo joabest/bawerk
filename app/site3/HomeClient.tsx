@@ -42,7 +42,8 @@ export default function HomeClient(){
  const [location,setLocation]=useState<Location|null>(null)
  const [reducedMotion,setReducedMotion]=useState(false)
  const [friction,setFriction]=useState('')
- const [floatingPhrases,setFloatingPhrases]=useState<{index:number;x:number;y:number}[]>(()=>[0,2,4,7,10,12].map((index,i)=>({index,x:i%2===0?3:74,y:16+Math.floor(i/2)*29})))
+ const [floatingPhrases,setFloatingPhrases]=useState<{index:number;x:number;y:number}[]>([])
+ const lastSlots=useRef<number[]>([])
  const [cloudLive,setCloudLive]=useState(false)
  const [phraseCycle,setPhraseCycle]=useState(0)
  const router=useRouter()
@@ -77,22 +78,41 @@ export default function HomeClient(){
    return()=>io.disconnect()
  },[])
  useEffect(()=>{
-   if(!cloudLive||reducedMotion)return
+   if(!cloudLive)return
+   // Independent positions across the whole diagnosis canvas, not three fixed rows.
+   // The center is intentionally reserved for the heading and input.
+   const spots:[number,number][]=[
+     [3,6],[40,5],[74,7],
+     [5,24],[76,25],
+     [3,43],[77,44],
+     [4,62],[76,63],
+     [3,80],[39,81],[74,79],
+     [4,92],[40,92],[75,92],
+   ]
    const shuffle=()=>{
-     const indexes=frictions.map((_,i)=>i)
-     for(let i=indexes.length-1;i>0;i--){
+     const ids=spots.map((_,i)=>i)
+     for(let i=ids.length-1;i>0;i--){
        const j=Math.floor(Math.random()*(i+1))
-       ;[indexes[i],indexes[j]]=[indexes[j],indexes[i]]
+       ;[ids[i],ids[j]]=[ids[j],ids[i]]
      }
-     // One left and one right phrase in each of three bands.
-     setFloatingPhrases(indexes.slice(0,6).map((index,i)=>({
-       index,
-       x:i%2===0?2+Math.random()*9:75+Math.random()*9,
-       y:10+Math.floor(i/2)*28+Math.random()*10,
+     // A phrase never reuses the same spot in the immediately following cycle.
+     const fresh=ids.filter(id=>!lastSlots.current.includes(id))
+     const chosen=fresh.slice(0,6)
+     lastSlots.current=chosen
+     const phraseIds=frictions.map((_,i)=>i)
+     for(let i=phraseIds.length-1;i>0;i--){
+       const j=Math.floor(Math.random()*(i+1))
+       ;[phraseIds[i],phraseIds[j]]=[phraseIds[j],phraseIds[i]]
+     }
+     setFloatingPhrases(chosen.map((spotId,i)=>({
+       index:phraseIds[i],
+       x:Math.min(77,Math.max(2,spots[spotId][0]+(Math.random()-.5)*7)),
+       y:Math.min(93,Math.max(3,spots[spotId][1]+(Math.random()-.5)*6)),
      })))
      setPhraseCycle(c=>c+1)
    }
    shuffle()
+   if(reducedMotion)return
    const timer=window.setInterval(shuffle,5600)
    return()=>window.clearInterval(timer)
  },[cloudLive,reducedMotion])
