@@ -3,8 +3,9 @@ import Link from './PublicLink'
 import Image from 'next/image'
 import {usePathname} from 'next/navigation'
 import {useCallback,useEffect,useMemo,useRef,useState} from 'react'
-import {ArrowUpRight,ChevronDown,Menu,Search,X,MessageCircle} from 'lucide-react'
+import {ArrowUp,ArrowUpRight,ChevronDown,Menu,Search,X,MessageCircle} from 'lucide-react'
 import {BrandIcon} from './BrandIcon'
+import {VisitorLocalClock} from './VisitorLocalClock'
 
 type MenuName = 'services'|'tools'|'more'
 const phone='https://wa.me/5511992779039'
@@ -42,7 +43,7 @@ const moreCards=[
 function Brand(){
  return <Link className="site3-logo" href="/site3" aria-label="Bawerk Solutions — página inicial">
   <Image src="/icon.svg" alt="" width={35} height={35} />
-  <span className="site3-logo-type"><strong>BAWERK<span className="site3-blue">.</span></strong><small>SOLUTIONS / ENGENHARIA DIGITAL</small></span>
+  <span className="site3-logo-type"><strong>BAWERK<span className="site3-blue">.</span></strong><small>SOLUTIONS</small></span>
  </Link>
 }
 export default function Site3Chrome({children}:{children:React.ReactNode}){
@@ -57,6 +58,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
  const [query,setQuery]=useState('')
  const [scrollPercent,setScrollPercent]=useState(0)
  const cursorGlowRef=useRef<HTMLDivElement>(null)
+ const [isIdle,setIsIdle]=useState(false)
  const closeNav=useCallback(()=>{cancelMenuClose();setMenu(null);setMobileMenu(false)},[cancelMenuClose])
  const searchResults=useMemo(()=>siteLinks.filter(item=>item.label.toLocaleLowerCase('pt-BR').includes(query.toLocaleLowerCase('pt-BR'))),[query])
  useEffect(()=>{
@@ -77,12 +79,50 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
   observer.observe(document.documentElement)
   return()=>{window.removeEventListener('scroll',update);window.removeEventListener('resize',update);observer.disconnect();if(frame)cancelAnimationFrame(frame)}
  },[pathname])
+ useEffect(()=>{
+  if(!window.matchMedia('(hover:hover) and (pointer:fine)').matches)return
+  let request=0,mouseX=0,mouseY=0
+  const move=(event:PointerEvent)=>{
+    mouseX=event.clientX;mouseY=event.clientY
+    if(request)return
+    request=window.requestAnimationFrame(()=>{
+      request=0
+      const el=cursorGlowRef.current
+      if(!el)return
+      el.style.transform=`translate3d(${mouseX}px,${mouseY}px,0) translate(-50%,-50%)`
+      el.style.opacity='1'
+    })
+  }
+  const hide=()=>{if(cursorGlowRef.current)cursorGlowRef.current.style.opacity='0'}
+  window.addEventListener('pointermove',move,{passive:true})
+  window.addEventListener('blur',hide)
+  document.addEventListener('mouseleave',hide)
+  return()=>{
+    window.removeEventListener('pointermove',move)
+    window.removeEventListener('blur',hide)
+    document.removeEventListener('mouseleave',hide)
+    if(request)window.cancelAnimationFrame(request)
+  }
+ },[])
+ useEffect(()=>{
+  let idleTimer=window.setTimeout(()=>setIsIdle(true),1600)
+  const activity=()=>{
+    setIsIdle(prev=>prev?false:prev)
+    window.clearTimeout(idleTimer)
+    idleTimer=window.setTimeout(()=>setIsIdle(true),1600)
+  }
+  window.addEventListener('pointermove',activity,{passive:true})
+  window.addEventListener('scroll',activity,{passive:true})
+  window.addEventListener('keydown',activity)
+  return()=>{
+    window.clearTimeout(idleTimer)
+    window.removeEventListener('pointermove',activity)
+    window.removeEventListener('scroll',activity)
+    window.removeEventListener('keydown',activity)
+  }
+ },[])
  const entries=menu==='services'?serviceCards:menu==='tools'?toolCards:moreCards
  const onGlassMouseMove=(e:React.MouseEvent<HTMLDivElement>)=>{
-   if(cursorGlowRef.current){
-     cursorGlowRef.current.style.transform=`translate3d(${e.clientX}px,${e.clientY}px,0) translate(-50%,-50%)`
-     cursorGlowRef.current.style.opacity='1'
-   }
    const el=(e.target as HTMLElement).closest<HTMLElement>('.b3-card,.b3-blog-card,.site3-mega-card,.b3-footer-contact-links>a,.b3-primary,.b3-secondary,.site3-message-button,.b3-footer-social-links>a')
    if(!el)return
    const box=el.getBoundingClientRect()
@@ -145,6 +185,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
      <a href="https://www.instagram.com/Bawerksolutions/" target="_blank" rel="noopener noreferrer"><BrandIcon name="instagram" width={16} height={16}/> Instagram <ArrowUpRight size={13}/></a>
      <a href="https://www.facebook.com/Bawerksolutions/" target="_blank" rel="noopener noreferrer"><BrandIcon name="facebook" width={16} height={16}/> Facebook <ArrowUpRight size={13}/></a>
      <a href={phone} target="_blank" rel="noopener noreferrer"><BrandIcon name="whatsapp" width={16} height={16}/> WhatsApp <ArrowUpRight size={13}/></a>
+     <a href="https://br.linkedin.com/company/bawerksolutions" target="_blank" rel="noopener noreferrer"><BrandIcon name="linkedin" width={16} height={16}/> LinkedIn <ArrowUpRight size={13}/></a>
     </div>
    </div>
    <div className="b3-footer-grid b3-footer-navigation">
@@ -153,13 +194,19 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
     <div><span className="b3-overline">ACESSO RÁPIDO</span><Link href="/site3/blog">Blog</Link><Link href="/site3/contato">Solicitar orçamento</Link><Link href="/site3/#diagnostico">Diagnóstico digital</Link><Link href="/site3">Página inicial</Link></div>
    </div>
    <div className="b3-footer-location-strip">
-    <span className="b3-footer-location-badge">ATENDIMENTO DIGITAL · TODO O BRASIL</span>
+    <VisitorLocalClock/>
     <span className="b3-footer-location-badge">TECNOLOGIA · DESIGN · EVOLUÇÃO</span>
    </div>
    <div className="b3-footer-bottom b3-footer-bottom-v2">
     <span>© {new Date().getFullYear()} BAWERK SOLUTIONS · TODOS OS DIREITOS RESERVADOS</span>
     <Link href="/site3">BAWERK SOLUTIONS <span className="b3-electric">•</span> VOCÊ PODE IR ALÉM DO QUE IMAGINA.</Link>
-    <a href="#top">VOLTAR AO TOPO ↑</a>
+    <a href="#top" className={"b3-backtop-orbit"+(isIdle?" b3-backtop-idle":"")} aria-label="Voltar ao topo">
+      <svg viewBox="0 0 120 120" className="b3-backtop-ring" aria-hidden="true">
+       <defs><path id="b3-backtop-circle" d="M60,60m-45,0a45,45 0 1,1 90,0a45,45 0 1,1 -90,0"/></defs>
+       <text><textPath href="#b3-backtop-circle">VOLTAR AO TOPO · VOLTAR AO TOPO · VOLTAR AO TOPO · </textPath></text>
+      </svg>
+      <ArrowUp className="b3-backtop-arrow" size={28} aria-hidden="true"/>
+     </a>
    </div>
   </footer>
   <div className="b3-scroll-progress" aria-label={`Progresso da página: ${scrollPercent}%`}><span className="b3-scroll-progress-text">{String(scrollPercent).padStart(2,'0')}%</span><span className="b3-scroll-progress-track"><span style={{height:scrollPercent+'%'}}/></span><span className="b3-scroll-progress-caption">SCROLL</span></div>
