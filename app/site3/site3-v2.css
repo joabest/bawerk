@@ -495,3 +495,43 @@
 @media(max-width:900px){
  .b3-root .b3-chip-float{transition:opacity .4s,color .2s!important}
 }
+
+
+/* Submenu cards: subtle futuristic preview graphics, without third-party branding. */
+.b3-root .site3-mega-card{
+ min-height:166px;isolation:isolate;
+ background:linear-gradient(125deg,#191e25,#151a22 68%);
+ padding:15px;overflow:hidden;
+}
+.b3-root .site3-mega-card .site3-mega-title{max-width:calc(100% - 46px);font-size:16px;line-height:1.12}
+.b3-root .site3-mega-card .site3-mega-desc{max-width:calc(100% - 36px);line-height:1.5}
+.b3-root .site3-mega-art{
+ position:absolute;right:7px;top:10px;width:88px;height:83px;
+ border:1px solid #4c77a42e;border-radius:14px;
+ background:radial-gradient(ellipse at 50% 46%,#0f6aac3b,#171d2a22 61%,#12192108);
+ display:grid;place-items:center;pointer-events:none;
+ transform:rotate(-5deg);transition:transform .3s,border-color .3s,box-shadow .3s;
+ box-shadow:inset 0 0 24px #2088ff12;
+}
+.b3-root .site3-mega-art-ring{position:absolute;width:59px;height:59px;border:1px solid #79c8fe50;border-radius:50%;transform:rotate(35deg) scaleX(.72)}
+.b3-root .site3-mega-art-ring::before{content:'';position:absolute;inset:7px;border:1px dashed #8dbdf936;border-radius:50%}
+.b3-root .site3-mega-art .site3-mega-glyph{position:relative;right:auto;bottom:auto;font-size:33px;color:#86d2ffb7;text-shadow:0 0 16px #218cfa98;z-index:1}
+.b3-root .site3-mega-art-pips{position:absolute;bottom:4px;left:10px;letter-spacing:3px;color:#64c5fa5c;font-size:11px}
+.b3-root .site3-mega-card:nth-child(3n+2) .site3-mega-art{background:radial-gradient(circle,#353c8352,transparent 74%)}
+.b3-root .site3-mega-card:nth-child(3n) .site3-mega-art{background:radial-gradient(circle,#0b77865a,transparent 74%)}
+.b3-root .site3-mega-card:hover .site3-mega-art{transform:rotate(0deg) translateY(-2px);border-color:#5eccff88;box-shadow:inset 0 0 35px #2088ff1a,0 0 22px #0c8bf93c}
+.b3-root .site3-mega-card:hover .site3-mega-art .site3-mega-glyph{color:#b8edff}
+.b3-root .site3-mega-card:focus-visible{outline:2px solid #6ccefc;outline-offset:1px}
+@media(max-width:1150px){.b3-root .site3-mega-art{width:70px;height:69px}.b3-root .site3-mega-art-ring{width:46px;height:46px}.b3-root .site3-mega-art .site3-mega-glyph{font-size:26px}}
+
+/* Diagnosis cloud: only six examples at a time; fade out/in without covering the title. */
+.b3-root .b3-chip-float{width:max-content;max-width:25%;transition:color .2s,background .2s!important;outline-offset:4px}
+@media(prefers-reduced-motion:no-preference){
+ .b3-root .b3-cloud-live .b3-chip-float{animation:b3-diagnosis-pop 4.9s ease-in-out both;animation-play-state:running}
+}
+@keyframes b3-diagnosis-pop{
+ 0%{opacity:0;transform:translateY(12px)}
+ 14%,74%{opacity:.85;transform:translateY(0)}
+ 95%,100%{opacity:0;transform:translateY(-10px)}
+}
+@media(max-width:900px){.b3-root .b3-chip-float{max-width:100%;animation:none!important;opacity:.85!important}}
