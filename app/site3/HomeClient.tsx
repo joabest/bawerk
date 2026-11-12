@@ -40,14 +40,11 @@ const steps=[
 ]
 export default function HomeClient(){
  const [location,setLocation]=useState<Location|null>(null)
- const [locationResolved,setLocationResolved]=useState(false)
- const [globeAligned,setGlobeAligned]=useState(false)
- const [revealTimeout,setRevealTimeout]=useState(false)
  const [reducedMotion,setReducedMotion]=useState(false)
  const [friction,setFriction]=useState('')
  const [floatingPhrases,setFloatingPhrases]=useState<{index:number;x:number;y:number}[]>(()=>[0,2,4,7,10,12].map((index,i)=>({index,x:i%2===0?3:74,y:16+Math.floor(i/2)*29})))
  const [cloudLive,setCloudLive]=useState(false)
- const [cloudFading,setCloudFading]=useState(false)
+ const [phraseCycle,setPhraseCycle]=useState(0)
  const router=useRouter()
  const pathname=usePathname()
  const cloudRef=useRef<HTMLElement|null>(null)
@@ -57,31 +54,21 @@ export default function HomeClient(){
  useEffect(()=>{
    const motion=window.matchMedia('(prefers-reduced-motion: reduce)')
    setReducedMotion(motion.matches)
-   try{const cached=sessionStorage.getItem('b3-loc');if(cached){const loc=JSON.parse(cached);if(typeof loc.city==='string'&&Number.isFinite(loc.latitude)&&Number.isFinite(loc.longitude)){setGlobeAligned(false);setLocation(loc);setLocationResolved(true);return}}}catch{}
+   try{const cached=sessionStorage.getItem('b3-loc');if(cached){const loc=JSON.parse(cached);if(typeof loc.city==='string'&&Number.isFinite(loc.latitude)&&Number.isFinite(loc.longitude)){setLocation(loc);return}}}catch{}
    const controller=new AbortController()
    const timeout=window.setTimeout(()=>controller.abort(),3500)
    const run=()=>fetch('https://ipapi.co/json/',{signal:controller.signal}).then(r=>{if(!r.ok)throw Error('IP location indisponível');return r.json()}).then(data=>{
      const lat=Number(data.latitude),lon=Number(data.longitude)
      if(!data.error&&typeof data.city==='string'&&Number.isFinite(lat)&&Number.isFinite(lon)&&Math.abs(lat)<=90&&Math.abs(lon)<=180){
        const loc={city:data.city.slice(0,42),latitude:lat,longitude:lon}
-       setGlobeAligned(false)
        setLocation(loc)
        try{sessionStorage.setItem('b3-loc',JSON.stringify(loc))}catch{}
      }
-   }).catch(()=>{}).finally(()=>{setLocationResolved(true);window.clearTimeout(timeout)})
+   }).catch(()=>{}).finally(()=>{window.clearTimeout(timeout)})
    const w=window as unknown as {requestIdleCallback?:(cb:()=>void,o?:{timeout:number})=>number;cancelIdleCallback?:(id:number)=>void}
    const idle=w.requestIdleCallback?w.requestIdleCallback(run,{timeout:2000}):window.setTimeout(run,600)
    return ()=>{controller.abort();window.clearTimeout(timeout);if(w.cancelIdleCallback&&w.requestIdleCallback)w.cancelIdleCallback(idle);else window.clearTimeout(idle)}
  },[])
- useEffect(()=>{
-   const timer=window.setTimeout(()=>setRevealTimeout(true),9000)
-   return()=>window.clearTimeout(timer)
- },[])
- const pageReady=(locationResolved&&globeAligned)||revealTimeout
- useEffect(()=>{
-   document.body.classList.toggle('b3-location-loading',!pageReady)
-   return()=>document.body.classList.remove('b3-location-loading')
- },[pageReady])
  useEffect(()=>{
    const el=cloudRef.current
    if(!el)return
@@ -91,30 +78,23 @@ export default function HomeClient(){
  },[])
  useEffect(()=>{
    if(!cloudLive||reducedMotion)return
-   const update=()=>{
+   const shuffle=()=>{
      const indexes=frictions.map((_,i)=>i)
      for(let i=indexes.length-1;i>0;i--){
        const j=Math.floor(Math.random()*(i+1))
        ;[indexes[i],indexes[j]]=[indexes[j],indexes[i]]
      }
-     // Six at a time, three on each side, with non-overlapping vertical bands.
+     // One left and one right phrase in each of three bands.
      setFloatingPhrases(indexes.slice(0,6).map((index,i)=>({
        index,
-       x:i%2===0?2+Math.random()*13:73+Math.random()*10,
-       y:8+Math.floor(i/2)*29+Math.random()*13,
+       x:i%2===0?2+Math.random()*9:75+Math.random()*9,
+       y:10+Math.floor(i/2)*28+Math.random()*10,
      })))
+     setPhraseCycle(c=>c+1)
    }
-   update()
-   setCloudFading(false)
-   let swapTimer:number|undefined
-   const timer=window.setInterval(()=>{
-     setCloudFading(true)
-     swapTimer=window.setTimeout(()=>{
-       update()
-       setCloudFading(false)
-     },950)
-   },5900)
-   return()=>{window.clearInterval(timer);if(swapTimer)window.clearTimeout(swapTimer)}
+   shuffle()
+   const timer=window.setInterval(shuffle,5600)
+   return()=>window.clearInterval(timer)
  },[cloudLive,reducedMotion])
 
  useEffect(()=>{
@@ -137,10 +117,9 @@ export default function HomeClient(){
  },[reducedMotion])
  const go=(text:string)=>{const v=text.trim();const route=pathname.startsWith('/site3')?'/site3/contato':'/contato';router.push(v?`${route}?desafio=${encodeURIComponent(v.slice(0,300))}`:route)}
  return <>
-  {!pageReady&&<div className="b3-location-intro" role="status" aria-live="polite"><span className="b3-location-intro-symbol">B<span>.</span></span><span className="b3-location-intro-rule"/><strong>PREPARANDO SUA EXPERIÊNCIA</strong><small>{locationResolved?'ORIENTANDO O GLOBO PARA SUA REGIÃO':'IDENTIFICANDO SUA REGIÃO APROXIMADA'}</small><span className="b3-location-intro-loader"/></div>}
   <section className="b3-container b3-home-hero">
    <div className="b3-home-globe">
-    <div className="b3-globe-canvas"><Globe3D location={location} reduceMotion={reducedMotion} onAligned={()=>setGlobeAligned(true)}/></div>
+    <div className="b3-globe-canvas"><Globe3D location={location} reduceMotion={reducedMotion}/></div>
    </div>
    <div className="b3-home-copy">
     <span className="b3-overline">[ BAWERK SOLUTIONS / VOCÊ PODE IR ALÉM DO QUE IMAGINA ]</span>
@@ -154,7 +133,7 @@ export default function HomeClient(){
    </div>
   </section>
   <div className="b3-container b3-scrollhint"><span>CRIANDO O QUE AINDA NÃO EXISTE</span><span>ROLE PARA EXPLORAR <ArrowDown size={13} style={{display:'inline'}}/></span></div>
-  <section ref={cloudRef} className={'b3-container b3-friction'+(cloudLive&&!reducedMotion?' b3-cloud-live':'')+(cloudFading?' b3-cloud-fading':'')} id="diagnostico">
+  <section ref={cloudRef} className={'b3-container b3-friction'+(cloudLive&&!reducedMotion?' b3-cloud-live':'')} id="diagnostico">
    <span className="b3-overline">[ DIAGNÓSTICO / DESAFIOS REAIS ]</span>
    <h2>O que está te <span className="b3-electric">travando?</span></h2>
    <p>Você nomeia o atrito. Nós mapeamos a solução.<br/>Veja o que acontece depois.</p>
@@ -163,7 +142,7 @@ export default function HomeClient(){
     <button type="submit" aria-label="Enviar desafio"><ArrowRight size={18}/></button>
    </form>
    <div className="b3-cloud" aria-label="Desafios comuns. Clique em um para usar no diagnóstico.">
-    {floatingPhrases.map(({index,x,y})=><button type="button" key={index} className="b3-chip-float" style={{'--x':x+'%','--y':y+'%'} as React.CSSProperties} onClick={()=>setFriction(frictions[index][0])}>{frictions[index][0]} <span aria-hidden="true">↗</span></button>)}
+    {floatingPhrases.map(({index,x,y})=><button type="button" key={`${phraseCycle}-${index}`} className="b3-chip-float" style={{'--x':x+'%','--y':y+'%'} as React.CSSProperties} onClick={()=>setFriction(frictions[index][0])}>{frictions[index][0]} <span aria-hidden="true">↗</span></button>)}
    </div>
   </section>
   <section className="b3-container b3-section">
