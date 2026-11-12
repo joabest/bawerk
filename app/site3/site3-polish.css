@@ -16,18 +16,33 @@
   text-transform:uppercase;
   letter-spacing:.095em;
 }
-.b3-root .b3-footer-hero h2 .b3-footer-mission-first{
+.b3-root .b3-footer-hero h2.b3-footer-mission-title{
+  font-size:clamp(37px,5.7vw,84px);
+  line-height:1.12;
+  letter-spacing:-.06em;
+  max-width:1160px;
+  text-wrap:balance;
+}
+.b3-root .b3-footer-mission-title .b3-footer-mission-first{
+  display:block;
   color:#239bff;
+  transition:color .3s ease;
 }
-.b3-root .b3-footer-hero h2 em{
-  color:#d5e5ff;
-  transition:color .35s ease,text-shadow .35s ease;
-}
-.b3-root .b3-footer-hero h2 em:hover,
-.b3-root .b3-footer-hero h2:hover em{
+.b3-root .b3-footer-mission-title .b3-footer-mission-second{
+  display:block;
   color:#fff;
-  text-shadow:0 0 32px rgba(125,179,255,.2);
+  margin-top:.30em;
+  transition:color .3s ease;
 }
+.b3-root .b3-footer-mission-title .b3-footer-mission-second em{
+  color:inherit;
+  font-style:normal;
+  text-shadow:none;
+  transition:none;
+}
+.b3-root .b3-footer-mission-title:hover .b3-footer-mission-first{color:#fff}
+.b3-root .b3-footer-mission-title:hover .b3-footer-mission-second,
+.b3-root .b3-footer-mission-title:hover .b3-footer-mission-second em{color:#239bff;text-shadow:none}
 .b3-root .b3-home-globe .b3-globe-canvas{
   filter:contrast(1.04) saturate(.72) brightness(1.02);
 }
@@ -60,7 +75,7 @@
   inset:-40%;
   z-index:45;
   pointer-events:none;
-  opacity:.072;
+  opacity:.16;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.7' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size:180px 180px;
   mix-blend-mode:screen;
@@ -80,5 +95,46 @@
 @media(max-width:700px){
   .b3-root .b3-contact-headline{line-height:1.13}
   .b3-root .b3-contact-headline>em{margin-top:.18em}
-  .b3-root::after{opacity:.053;animation-duration:1.8s}
+  .b3-root::after{opacity:.11;animation-duration:1.8s}
 }
+
+/* Side reading indicator, present on every public page. */
+.b3-root .b3-scroll-progress{
+  position:fixed;right:15px;top:50%;transform:translateY(-50%);z-index:65;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  color:#d7e9f7;font:600 11px var(--f-mono),monospace;
+  pointer-events:none;text-shadow:0 1px 8px #000c;
+}
+.b3-root .b3-scroll-progress-text{font-size:12px;letter-spacing:.05em}
+.b3-root .b3-scroll-progress-track{height:125px;width:2px;background:#b1d3ef33;border-radius:5px;position:relative;overflow:hidden}
+.b3-root .b3-scroll-progress-track>span{position:absolute;top:0;left:0;right:0;background:#55bfff;transition:height .12s linear;border-radius:5px}
+.b3-root .b3-scroll-progress-caption{font-size:8px;letter-spacing:.18em;writing-mode:vertical-rl;color:#91a6b8}
+@media(max-width:700px){
+  .b3-root .b3-footer-hero h2.b3-footer-mission-title{font-size:clamp(33px,8vw,55px);letter-spacing:-.05em}
+  .b3-root .b3-footer-mission-title .b3-footer-mission-second{margin-top:.28em}
+  .b3-root .b3-scroll-progress{right:5px;gap:7px}
+  .b3-root .b3-scroll-progress-track{height:85px}
+  .b3-root .b3-scroll-progress-text{font-size:9px}
+  .b3-root .b3-scroll-progress-caption{font-size:7px}
+}
+/* Show a branded loading state while the approximate regional IP lookup and globe orientation settle. */
+.b3-location-intro{
+ position:fixed;z-index:10000;inset:0;display:flex;flex-direction:column;gap:18px;
+ align-items:center;justify-content:center;text-align:center;
+ background:radial-gradient(ellipse at 50% 38%,#123b6055,#090d15 68%),#090d15;
+ color:#e6f2fc;padding:24px;font-family:var(--f-mono),monospace;
+}
+.b3-location-intro-symbol{font-size:64px;font-weight:800;letter-spacing:-.12em;line-height:1;color:#f3f7fc}
+.b3-location-intro-symbol>span{color:#349bff}
+.b3-location-intro-rule{display:block;height:1px;width:170px;background:linear-gradient(90deg,transparent,#52a8ed,transparent)}
+.b3-location-intro strong{font-size:13px;letter-spacing:.15em}
+.b3-location-intro small{font-size:10px;letter-spacing:.12em;color:#94afc7;line-height:1.8}
+.b3-location-intro-loader{display:block;width:42px;height:42px;border:2px solid #416d9040;border-top-color:#6dbaff;border-radius:50%;animation:b3-intro-spin .9s linear infinite}
+@keyframes b3-intro-spin{to{transform:rotate(360deg)}}
+body.b3-location-loading{overflow:hidden}
+body.b3-location-loading .b3-root .site3-header,
+body.b3-location-loading .b3-root .b3-main,
+body.b3-location-loading .b3-root .b3-footer,
+body.b3-location-loading .b3-root .b3-scroll-progress{opacity:0}
+body.b3-location-loading .b3-root .b3-location-intro{opacity:1}
+@media(prefers-reduced-motion:reduce){.b3-location-intro-loader{animation:none}}
