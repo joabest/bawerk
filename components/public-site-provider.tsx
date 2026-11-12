@@ -2,7 +2,7 @@
 import { usePathname } from 'next/navigation'
 import Site3Chrome from '@/app/site3/Site3Chrome'
 
-const staticPublicPages = new Set(['/', '/servicos', '/metodo', '/processo', '/projetos', '/blog', '/sobre', '/contato'])
+const staticPublicPages = new Set(['/', '/servicos', '/metodo', '/processo', '/projetos', '/blog', '/sobre', '/contato', '/aplicativos', '/softwares'])
 
 export function PublicSiteProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
