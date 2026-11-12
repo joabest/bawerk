@@ -2,7 +2,7 @@ import type { BlogPost } from './blog-data'
 
 export const engineeringArticles: BlogPost[] = [
 {
- slug:'quanto-custa-criar-aplicativo',title:'Quanto custa criar um aplicativo Android e iOS?',category:'SOFTWARE',theme:'azure',symbol:'APP',readMinutes:9,
+ slug:'quanto-custa-criar-aplicativo',title:'Quanto custa criar um aplicativo Android e iOS?',category:'APLICATIVOS',theme:'azure',symbol:'APP',readMinutes:9,
  summary:'Entenda como funcionalidades, integrações, arquitetura, testes e manutenção determinam o orçamento de um aplicativo.',
  body:[
  {heading:'O que de fato compõe o orçamento',paragraphs:[
@@ -27,7 +27,7 @@ export const engineeringArticles: BlogPost[] = [
  ]}
 ]},
 {
- slug:'flutter-react-native-ou-nativo',title:'Flutter, React Native ou aplicativo nativo: como escolher?',category:'SOFTWARE',theme:'midnight',symbol:'SDK',readMinutes:8,
+ slug:'flutter-react-native-ou-nativo',title:'Flutter, React Native ou aplicativo nativo: como escolher?',category:'APLICATIVOS',theme:'midnight',symbol:'SDK',readMinutes:8,
  summary:'Compare ecossistemas, desempenho, bibliotecas, equipe e manutenção antes de decidir como criar um app.',
  body:[
  {heading:'A primeira pergunta não é qual framework está na moda',paragraphs:[
@@ -77,7 +77,7 @@ export const engineeringArticles: BlogPost[] = [
  ]}
 ]},
 {
- slug:'mvp-aplicativo-primeira-versao',title:'MVP de aplicativo: o que colocar na primeira versão?',category:'SOFTWARE',theme:'azure',symbol:'MVP',readMinutes:7,
+ slug:'mvp-aplicativo-primeira-versao',title:'MVP de aplicativo: o que colocar na primeira versão?',category:'APLICATIVOS',theme:'azure',symbol:'MVP',readMinutes:7,
  summary:'Priorize jornadas essenciais, protótipos e métricas para lançar um app sem construir recursos desnecessários.',
  body:[
  {heading:'MVP não significa aplicativo malfeito',paragraphs:[
@@ -102,7 +102,7 @@ export const engineeringArticles: BlogPost[] = [
  ]}
 ]},
 {
- slug:'app-com-painel-administrativo',title:'Por que seu aplicativo precisa de um painel administrativo?',category:'SOFTWARE',theme:'cyan',symbol:'ADM',readMinutes:7,
+ slug:'app-com-painel-administrativo',title:'Por que seu aplicativo precisa de um painel administrativo?',category:'APLICATIVOS',theme:'cyan',symbol:'ADM',readMinutes:7,
  summary:'Entenda o papel do backoffice para operação, permissões, atendimento, relatórios e auditoria.',
  body:[
  {heading:'O aplicativo mostra apenas uma parte da operação',paragraphs:[
