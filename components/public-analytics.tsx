@@ -95,6 +95,61 @@ export function PublicAnalytics() {
   }
  },[enabled,isPrivate,ready,consent,pathname])
 
+
+ // First-party engagement: record page views and visible reading time only after consent.
+ useEffect(() => {
+  if (!enabled || isPrivate || !ready || consent!=="accepted") return
+  const path = pathname || "/"
+  const id = crypto.randomUUID()
+  let sid = ""
+  try {
+   sid = sessionStorage.getItem("bawerk_engagement_session") || ""
+   if (!/^[a-f0-9-]{36}$/i.test(sid)) {
+    sid = crypto.randomUUID()
+    sessionStorage.setItem("bawerk_engagement_session", sid)
+   }
+  } catch { sid = crypto.randomUUID() }
+  const params = new URLSearchParams(location.search)
+  let source = (params.get("utm_source")||"").slice(0,100)
+  if (!source && document.referrer) {
+   try { source = new URL(document.referrer).hostname.replace(/^www\\./,"") } catch {}
+  }
+  if (!source) source = "Direto"
+  const device = window.innerWidth < 640 ? "Mobile" : window.innerWidth < 1024 ? "Tablet" : "Desktop"
+  let activeStart = document.visibilityState==="visible" ? performance.now() : 0
+  let activeMs = 0
+  let lastSentSeconds = -1
+  const send = (force=false) => {
+   if (activeStart) {
+    const now = performance.now()
+    activeMs += Math.max(0,now-activeStart)
+    activeStart = now
+   }
+   const seconds = Math.min(18000, Math.floor(activeMs/1000))
+   if (!force && seconds===lastSentSeconds) return
+   lastSentSeconds = seconds
+   const payload = JSON.stringify({id,sessionId:sid,path,source,device,seconds})
+   if (!navigator.sendBeacon?.("/api/engagement",new Blob([payload],{type:"application/json"}))) {
+    void fetch("/api/engagement",{method:"POST",headers:{"Content-Type":"application/json"},body:payload,keepalive:true}).catch(()=>{})
+   }
+  }
+  send(true)
+  const onVisibility=()=>{
+   if (document.visibilityState==="hidden") {send(true);activeStart=0}
+   else if (!activeStart) activeStart=performance.now()
+  }
+  const onPageHide=()=>send(true)
+  const interval=window.setInterval(()=>send(),15000)
+  document.addEventListener("visibilitychange",onVisibility)
+  window.addEventListener("pagehide",onPageHide)
+  return ()=>{
+   window.clearInterval(interval)
+   document.removeEventListener("visibilitychange",onVisibility)
+   window.removeEventListener("pagehide",onPageHide)
+   send(true)
+  }
+ },[enabled,isPrivate,ready,consent,pathname])
+
  const choose = useCallback((value: "accepted" | "rejected")=>{
   try { localStorage.setItem(CONSENT_KEY,value) } catch {}
   setConsent(value)
