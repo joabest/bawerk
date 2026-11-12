@@ -44,7 +44,6 @@ export default function HomeClient(){
  const [friction,setFriction]=useState('')
  const [floatingPhrases,setFloatingPhrases]=useState<{index:number;x:number;y:number}[]>([])
  const lastSlots=useRef<number[]>([])
- const [cloudLive,setCloudLive]=useState(false)
  const [phraseCycle,setPhraseCycle]=useState(0)
  const [phrasesHidden,setPhrasesHidden]=useState(false)
  const router=useRouter()
@@ -72,14 +71,6 @@ export default function HomeClient(){
    return ()=>{controller.abort();window.clearTimeout(timeout);if(w.cancelIdleCallback&&w.requestIdleCallback)w.cancelIdleCallback(idle);else window.clearTimeout(idle)}
  },[])
  useEffect(()=>{
-   const el=cloudRef.current
-   if(!el)return
-   const io=new IntersectionObserver(([e])=>setCloudLive(e.isIntersecting),{rootMargin:'-5% 0px'})
-   io.observe(el)
-   return()=>io.disconnect()
- },[])
- useEffect(()=>{
-   if(!cloudLive)return
    // Independent positions across the whole diagnosis canvas, not three fixed rows.
    // The center is intentionally reserved for the heading and input.
    const spots:[number,number][]=[
@@ -134,7 +125,7 @@ export default function HomeClient(){
    }
    schedule(3100,cycle)
    return()=>{stopped=true;timers.forEach(id=>window.clearTimeout(id))}
- },[cloudLive,reducedMotion])
+ },[reducedMotion])
 
  useEffect(()=>{
    const element=stageRef.current
@@ -172,7 +163,7 @@ export default function HomeClient(){
    </div>
   </section>
   <div className="b3-container b3-scrollhint"><span>CRIANDO O QUE AINDA NÃO EXISTE</span><span>ROLE PARA EXPLORAR <ArrowDown size={13} style={{display:'inline'}}/></span></div>
-  <section ref={cloudRef} className={'b3-container b3-friction'+(cloudLive&&!reducedMotion?' b3-cloud-live':'')} id="diagnostico">
+  <section ref={cloudRef} className={'b3-container b3-friction'+(!reducedMotion?' b3-cloud-live':'')} id="diagnostico">
    <span className="b3-overline">[ DIAGNÓSTICO / DESAFIOS REAIS ]</span>
    <h2>O que está te <span className="b3-electric">travando?</span></h2>
    <p>Você nomeia o atrito. Nós mapeamos a solução.<br/>Veja o que acontece depois.</p>
