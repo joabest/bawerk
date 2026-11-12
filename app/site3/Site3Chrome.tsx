@@ -77,7 +77,14 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
   return()=>{window.removeEventListener('scroll',update);window.removeEventListener('resize',update);observer.disconnect();if(frame)cancelAnimationFrame(frame)}
  },[pathname])
  const entries=menu==='services'?serviceCards:menu==='tools'?toolCards:moreCards
- return <div className="b3-root" id="top">
+ const onGlassMouseMove=(e:React.MouseEvent<HTMLDivElement>)=>{
+   const el=(e.target as HTMLElement).closest<HTMLElement>('.b3-card,.b3-blog-card,.site3-mega-card,.b3-footer-contact-links>a,.b3-primary,.b3-secondary,.site3-message-button,.b3-footer-social-links>a')
+   if(!el)return
+   const box=el.getBoundingClientRect()
+   el.style.setProperty('--glass-x',e.clientX-box.left+'px')
+   el.style.setProperty('--glass-y',e.clientY-box.top+'px')
+ }
+ return <div className="b3-root" id="top" onMouseMove={onGlassMouseMove}>
   <div className="b3-dotworld" aria-hidden="true"/>
   <header className="site3-header" onMouseEnter={cancelMenuClose} onMouseLeave={scheduleMenuClose}>
    <nav className="site3-nav" aria-label="Navegação principal">
@@ -92,7 +99,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
     </div>
     <div className="site3-nav-actions">
      <button className="site3-icon-button" aria-label="Pesquisar no site" onClick={()=>{setSearchOpen(true);setMenu(null)}}><Search size={18}/></button>
-     <a className="site3-message-button" href={phone} target="_blank" rel="noopener noreferrer"><span className="site3-live-dot"/> FALE CONOSCO <ArrowUpRight size={15}/></a>
+     <a className="site3-message-button" href={phone} target="_blank" rel="noopener noreferrer"><BrandIcon name="whatsapp" width={15} height={15} aria-hidden="true"/> FALE CONOSCO <ArrowUpRight size={15}/></a>
      <button className="site3-mobile-toggle" aria-label={mobileMenu?'Fechar menu':'Abrir menu'} aria-expanded={mobileMenu} onClick={()=>{setMobileMenu(p=>!p);setMenu(null)}}>{mobileMenu?<X size={22}/>:<Menu size={22}/>}</button>
     </div>
    </nav>
@@ -124,7 +131,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
    <div className="b3-footer-hero">
     <div className="b3-footer-particle-globe" aria-hidden="true" />
     <span className="b3-overline">[ NOSSA MISSÃO ]</span>
-    <h2 className="b3-footer-mission-title"><span className="b3-footer-mission-first">VOCÊ PODE IR ALÉM</span><span className="b3-footer-mission-second">DO QUE <em>IMAGINA.</em></span></h2>
+    <h2 className="b3-footer-mission-title"><span className="b3-footer-mission-first"><span className="b3-mission-blue">VOCÊ</span> <span className="b3-mission-white">PODE IR</span> <span className="b3-mission-blue">ALÉM</span></span><span className="b3-footer-mission-second"><span className="b3-mission-white">DO QUE</span> <span className="b3-mission-blue">IMAGINA</span><span className="b3-mission-dot">.</span></span></h2>
     <p>Bawerk Solutions — você pode ir além do que imagina.</p>
    </div>
    <div className="b3-footer-follow">
