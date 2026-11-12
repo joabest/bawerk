@@ -1,6 +1,7 @@
 'use client'
 import Link from './PublicLink'
 import Image from 'next/image'
+import {createPortal} from 'react-dom'
 import {usePathname} from 'next/navigation'
 import {useCallback,useEffect,useMemo,useRef,useState} from 'react'
 import {ArrowUp,ArrowUpRight,ChevronDown,Menu,Search,X,MessageCircle} from 'lucide-react'
@@ -59,6 +60,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
  const [scrollPercent,setScrollPercent]=useState(0)
  const cursorGlowRef=useRef<HTMLDivElement>(null)
  const [isIdle,setIsIdle]=useState(false)
+ const [cursorPortalReady,setCursorPortalReady]=useState(false)
  const closeNav=useCallback(()=>{cancelMenuClose();setMenu(null);setMobileMenu(false)},[cancelMenuClose])
  const searchResults=useMemo(()=>siteLinks.filter(item=>item.label.toLocaleLowerCase('pt-BR').includes(query.toLocaleLowerCase('pt-BR'))),[query])
  useEffect(()=>{
@@ -79,6 +81,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
   observer.observe(document.documentElement)
   return()=>{window.removeEventListener('scroll',update);window.removeEventListener('resize',update);observer.disconnect();if(frame)cancelAnimationFrame(frame)}
  },[pathname])
+ useEffect(()=>{setCursorPortalReady(true)},[])
  useEffect(()=>{
   if(!window.matchMedia('(hover:hover) and (pointer:fine)').matches)return
   let request=0,mouseX=0,mouseY=0
@@ -129,8 +132,8 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
    el.style.setProperty('--glass-x',e.clientX-box.left+'px')
    el.style.setProperty('--glass-y',e.clientY-box.top+'px')
  }
- return <div className="b3-root" id="top" onMouseMove={onGlassMouseMove} onMouseLeave={()=>{if(cursorGlowRef.current)cursorGlowRef.current.style.opacity="0"}}>
-  <div ref={cursorGlowRef} className="b3-cursor-neon" aria-hidden="true"/>
+ return <>
+ <div className="b3-root" id="top" onMouseMove={onGlassMouseMove}>
   <div className="b3-dotworld" aria-hidden="true"/>
   <header className="site3-header" onMouseEnter={cancelMenuClose} onMouseLeave={scheduleMenuClose}>
    <nav className="site3-nav" aria-label="Navegação principal">
@@ -203,7 +206,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
     <a href="#top" className={"b3-backtop-orbit"+(isIdle?" b3-backtop-idle":"")} aria-label="Voltar ao topo">
       <svg viewBox="0 0 120 120" className="b3-backtop-ring" aria-hidden="true">
        <defs><path id="b3-backtop-circle" d="M60,60m-45,0a45,45 0 1,1 90,0a45,45 0 1,1 -90,0"/></defs>
-       <text><textPath href="#b3-backtop-circle">VOLTAR AO TOPO · VOLTAR AO TOPO · VOLTAR AO TOPO · </textPath></text>
+       <text><textPath href="#b3-backtop-circle">VOLTAR AO TOPO. VOLTAR AO TOPO. VOLTAR AO TOPO. </textPath></text>
       </svg>
       <ArrowUp className="b3-backtop-arrow" size={28} aria-hidden="true"/>
      </a>
@@ -217,4 +220,6 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
    </section>
   </div>}
  </div>
+ {cursorPortalReady&&createPortal(<div ref={cursorGlowRef} className="b3-cursor-neon-portal" aria-hidden="true"/>,document.body)}
+ </>
 }
