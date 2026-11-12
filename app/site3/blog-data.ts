@@ -24,3 +24,6 @@ export const getRelated = (post: BlogPost, count = 3) => [
  ...posts.filter(item => item.slug !== post.slug && item.category === post.category),
  ...posts.filter(item => item.slug !== post.slug && item.category !== post.category)
 ].slice(0, count)
+
+export const getWordCount = (post: BlogPost) => post.body.reduce((n, section) => n + section.paragraphs.join(' ').split(/\\s+/).filter(Boolean).length, 0)
+export const getReadingTime = (post: BlogPost) => Math.max(2, Math.ceil(getWordCount(post) / 175))
