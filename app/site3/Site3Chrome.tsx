@@ -91,7 +91,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
        <span className="site3-mega-index">{item.index} / {item.cat}</span>
        <span className="site3-mega-title">{item.title} <ArrowUpRight size={15}/></span>
        <span className="site3-mega-desc">{item.desc}</span>
-       <span className="site3-mega-glyph" aria-hidden="true">{item.symbol}</span>
+       <span className="site3-mega-art" aria-hidden="true"><span className="site3-mega-art-ring"/><span className="site3-mega-glyph">{item.symbol}</span><span className="site3-mega-art-pips">•••</span></span>
      </Link>)}
     </div>
    </div>}
