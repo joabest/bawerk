@@ -42,7 +42,7 @@ export default function HomeClient(){
  const [location,setLocation]=useState<Location|null>(null)
  const [reducedMotion,setReducedMotion]=useState(false)
  const [friction,setFriction]=useState('')
- const [phrasePositions,setPhrasePositions]=useState<[number,number][]>(()=>frictions.map(([,x,y])=>[x,y]))
+ const [floatingPhrases,setFloatingPhrases]=useState<{index:number;x:number;y:number}[]>(()=>[0,2,4,7,10,12].map((index,i)=>({index,x:i%2===0?3:74,y:16+Math.floor(i/2)*29})))
  const [cloudLive,setCloudLive]=useState(false)
  const router=useRouter()
  const pathname=usePathname()
@@ -78,19 +78,23 @@ export default function HomeClient(){
  useEffect(()=>{
    if(!cloudLive||reducedMotion)return
    const update=()=>{
-     setPhrasePositions(frictions.map(([,x,y],i)=>{
-       const dx=(Math.random()-.5)*24
-       const dy=(Math.random()-.5)*16
-       // Keep phrases in outer lanes, leaving the headline and form readable.
-       const xx=Math.max(1,Math.min(x+dx,84))
-       const yy=Math.max(4,Math.min(y+dy,94))
-       return [xx,yy] as [number,number]
-     }))
+     const indexes=frictions.map((_,i)=>i)
+     for(let i=indexes.length-1;i>0;i--){
+       const j=Math.floor(Math.random()*(i+1))
+       ;[indexes[i],indexes[j]]=[indexes[j],indexes[i]]
+     }
+     // Six at a time, three on each side, with non-overlapping vertical bands.
+     setFloatingPhrases(indexes.slice(0,6).map((index,i)=>({
+       index,
+       x:i%2===0?2+Math.random()*8:72+Math.random()*7,
+       y:10+Math.floor(i/2)*27+Math.random()*10,
+     })))
    }
    update()
-   const timer=window.setInterval(update,5600)
+   const timer=window.setInterval(update,4900)
    return()=>window.clearInterval(timer)
  },[cloudLive,reducedMotion])
+
  useEffect(()=>{
    const element=stageRef.current
    if(!element)return
@@ -136,7 +140,7 @@ export default function HomeClient(){
     <button type="submit" aria-label="Enviar desafio"><ArrowRight size={18}/></button>
    </form>
    <div className="b3-cloud" aria-label="Desafios comuns. Clique em um para usar no diagnóstico.">
-    {frictions.map(([text,x,y],i)=><button type="button" key={text} className="b3-chip-float" style={{'--x':phrasePositions[i][0]+'%','--y':phrasePositions[i][1]+'%','--d':`${-(i*0.83).toFixed(2)}s`} as React.CSSProperties} onClick={()=>{setFriction(text)}}>{text} <span aria-hidden="true">↗</span></button>)}
+    {floatingPhrases.map(({index,x,y})=><button type="button" key={index} className="b3-chip-float" style={{'--x':x+'%','--y':y+'%'} as React.CSSProperties} onClick={()=>setFriction(frictions[index][0])}>{frictions[index][0]} <span aria-hidden="true">↗</span></button>)}
    </div>
   </section>
   <section className="b3-container b3-section">
