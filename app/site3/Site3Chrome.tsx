@@ -10,6 +10,8 @@ const phone='https://wa.me/5511992779039'
 const siteLinks=[
  {label:'Início',href:'/site3'},
  {label:'Serviços',href:'/site3/servicos'},
+ {label:'Aplicativos',href:'/site3/aplicativos'},
+ {label:'Softwares',href:'/site3/softwares'},
  {label:'Método',href:'/site3/metodo'},
  {label:'Projetos',href:'/site3/projetos'},
  {label:'Blog',href:'/site3/blog'},
@@ -18,7 +20,8 @@ const siteLinks=[
 ]
 const serviceCards=[
  {index:'01',cat:'EXPERIÊNCIAS DIGITAIS',title:'Desenvolvimento web',desc:'Sites de alto desempenho, interfaces e experiências digitais.',symbol:'◈',href:'/site3/servicos'},
- {index:'02',cat:'ENGENHARIA',title:'Software sob medida',desc:'Plataformas e sistemas criados para o seu negócio.',symbol:'⌘',href:'/site3/servicos'},
+ {index:'02',cat:'ENGENHARIA',title:'Software sob medida',desc:'Plataformas e sistemas criados para o seu negócio.',symbol:'⌘',href:'/site3/softwares'},
+ {index:'07',cat:'MOBILE',title:'Aplicativos Android e iOS',desc:'Apps para celular personalizados e conectados aos seus sistemas.',symbol:'▣',href:'/site3/aplicativos'},
  {index:'03',cat:'INTELIGÊNCIA',title:'IA e automação',desc:'Fluxos inteligentes e integrações que poupam tempo.',symbol:'✳',href:'/site3/servicos'},
  {index:'04',cat:'NEGÓCIOS',title:'CRM e operações',desc:'Leads, funis de vendas, atendimento e painéis.',symbol:'◎',href:'/site3/servicos'},
  {index:'05',cat:'INFRAESTRUTURA',title:'Nuvem e APIs',desc:'Integração de sistemas, dados e serviços.',symbol:'▦',href:'/site3/servicos'},
@@ -121,7 +124,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
     </div>
    </div>
    <div className="b3-footer-grid b3-footer-navigation">
-    <div><span className="b3-overline">SERVIÇOS</span><Link href="/site3/servicos">Desenvolvimento web</Link><Link href="/site3/servicos">Software sob medida</Link><Link href="/site3/servicos">CRM e automação</Link><Link href="/site3/servicos">Marketing e design</Link></div>
+    <div><span className="b3-overline">SERVIÇOS</span><Link href="/site3/servicos">Desenvolvimento web</Link><Link href="/site3/softwares">Software sob medida</Link><Link href="/site3/aplicativos">Aplicativos Android e iOS</Link><Link href="/site3/servicos">CRM e automação</Link><Link href="/site3/servicos">Marketing e design</Link></div>
     <div><span className="b3-overline">EMPRESA</span><Link href="/site3/sobre">Sobre nós</Link><Link href="/site3/metodo">Nosso método</Link><Link href="/site3/projetos">Projetos</Link><Link href="/site3/contato">Contato</Link></div>
     <div><span className="b3-overline">ACESSO RÁPIDO</span><Link href="/site3/blog">Blog</Link><Link href="/site3/contato">Solicitar orçamento</Link><Link href="/site3/#diagnostico">Diagnóstico digital</Link><Link href="/site3">Página inicial</Link></div>
    </div>
