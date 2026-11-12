@@ -42,10 +42,10 @@ function countryDots() {
   const rand = seededRandom(839211)
   const pos: number[] = []
   const rgb: number[] = []
-  const bright = new THREE.Color('#f2f5f8')
-  const soft = new THREE.Color('#919aa5')
+  const bright = new THREE.Color('#ffffff')
+  const soft = new THREE.Color('#b1b8c0')
   const ocean = new THREE.Color('#222a34')
-  const latStep = .72
+  const latStep = .54
   for (let lat = -89.3, row = 0; lat < 89.3; lat += latStep, row++) {
     const cos = Math.cos(lat * Math.PI / 180)
     const perRow = Math.max(12, Math.round((360 * cos) / latStep))
@@ -53,15 +53,15 @@ function countryDots() {
       const lon = -180 + (col + (row % 2) * .5) * 360 / perRow
       const probability = landProbability(lat, lon)
       const land = rand() < probability
-      if (!land && rand() > .055) continue
+      if (!land && rand() > .017) continue
       const p = spherical(lat + (rand() - .5) * .18, lon + (rand() - .5) * .18, 2.016)
       pos.push(p.x, p.y, p.z)
       if (land) {
-        const factor = .58 + rand() * .42
-        const colr = bright.clone().lerp(soft, rand() * .36)
+        const factor = .70 + rand() * .30
+        const colr = bright.clone().lerp(soft, rand() * .24)
         rgb.push(colr.r * factor, colr.g * factor, colr.b * factor)
       } else {
-        const factor = .30 + rand() * .40
+        const factor = .13 + rand() * .20
         rgb.push(ocean.r * factor, ocean.g * factor, ocean.b * factor)
       }
     }
@@ -98,7 +98,7 @@ const CONNECTIONS: ReadonlyArray<readonly [number, number]> = [
 
 function ConnectionRoutes({ origin }: { origin: [number, number] }) {
   const start = useMemo(() => spherical(origin[0], origin[1], 1).normalize(), [origin[0], origin[1]])
-  const routes = useMemo(() => CONNECTIONS.map(([lat, lon]) => {
+  const routes = useMemo(() => CONNECTIONS.slice(0, 4).map(([lat, lon]) => {
     const end = spherical(lat, lon, 1).normalize()
     const angle = start.angleTo(end)
     if (angle < 0.018) return null
@@ -106,13 +106,13 @@ function ConnectionRoutes({ origin }: { origin: [number, number] }) {
     for (let i = 0; i <= 52; i++) {
       const t = i / 52
       const normal = start.clone().lerp(end, t).normalize()
-      const elevation = Math.sin(Math.PI * t) * (0.11 + 0.28 * angle / Math.PI)
+      const elevation = Math.sin(Math.PI * t) * (0.025 + 0.08 * angle / Math.PI)
       waypoints.push(normal.multiplyScalar(2.046 + elevation))
     }
     const curve = new THREE.CatmullRomCurve3(waypoints)
     return {
-      core: new THREE.TubeGeometry(curve, 72, 0.0075, 5, false),
-      glow: new THREE.TubeGeometry(curve, 72, 0.016, 5, false),
+      core: new THREE.TubeGeometry(curve, 72, 0.0037, 5, false),
+      glow: new THREE.TubeGeometry(curve, 72, 0.0075, 5, false),
     }
   }).filter((r): r is { core: THREE.TubeGeometry; glow: THREE.TubeGeometry } => r !== null), [start])
 
@@ -120,10 +120,10 @@ function ConnectionRoutes({ origin }: { origin: [number, number] }) {
   return <group>
     {routes.map((route, index) => <group key={index}>
       <mesh geometry={route.glow}>
-        <meshBasicMaterial color="#1a78e0" transparent opacity={.14} depthWrite={false} blending={THREE.AdditiveBlending} />
+        <meshBasicMaterial color="#298bff" transparent opacity={.045} depthWrite={false} blending={THREE.AdditiveBlending} />
       </mesh>
       <mesh geometry={route.core}>
-        <meshBasicMaterial color="#76c8ff" transparent opacity={.68} depthWrite={false} blending={THREE.AdditiveBlending} />
+        <meshBasicMaterial color="#9dbad1" transparent opacity={.24} depthWrite={false} blending={THREE.AdditiveBlending} />
       </mesh>
     </group>)}
   </group>
@@ -179,7 +179,7 @@ function NetworkBeaconPoints({ reduceMotion }: { reduceMotion: boolean }) {
 
   return <>
     <points geometry={geometry}>
-      <pointsMaterial size={.048} color="#f7faff" sizeAttenuation transparent opacity={.97} depthWrite={false} />
+      <pointsMaterial size={.034} color="#f7faff" sizeAttenuation transparent opacity={.97} depthWrite={false} />
     </points>
     <points geometry={geometry} material={pulseMaterial} />
   </>
@@ -215,7 +215,7 @@ function World({ location, reduceMotion }: GlobeProps) {
   const origin = useMemo<[number, number]>(() => location ? [location.latitude, location.longitude] : [-23.55, -46.63], [location?.latitude, location?.longitude])
   const targetQuaternion = useMemo(() => {
     const v = spherical(origin[0], origin[1], 1).normalize()
-    return new THREE.Quaternion().setFromUnitVectors(v, new THREE.Vector3(.22, .18, .96).normalize())
+    return new THREE.Quaternion().setFromUnitVectors(v, new THREE.Vector3(.20, .24, .95).normalize())
   }, [origin])
   useFrame((state, delta) => {
     if (pivot.current) pivot.current.quaternion.slerp(targetQuaternion, 1 - Math.exp(-delta * 2.4))
@@ -235,15 +235,15 @@ function World({ location, reduceMotion }: GlobeProps) {
     <group ref={pivot}>
       <group ref={shell}>
       <mesh>
-        <sphereGeometry args={[2.002, 48, 48]} />
-        <meshBasicMaterial color="#090a0c" />
+        <sphereGeometry args={[2.002, 96, 64]} />
+        <meshBasicMaterial color="#111318" />
       </mesh>
       <mesh>
-        <sphereGeometry args={[2.05, 48, 32]} />
-        <meshBasicMaterial color="#e1ebf4" transparent opacity={.055} side={THREE.BackSide} depthWrite={false} />
+        <sphereGeometry args={[2.044, 96, 64]} />
+        <shaderMaterial transparent depthWrite={false} side={THREE.BackSide} vertexShader={"varying vec3 vNormal; varying vec3 vView; void main(){ vec4 mv=modelViewMatrix*vec4(position,1.); vNormal=normalize(normalMatrix*normal); vView=normalize(-mv.xyz); gl_Position=projectionMatrix*mv; }"} fragmentShader={"varying vec3 vNormal; varying vec3 vView; void main(){ float rim=pow(1.0-abs(dot(normalize(vNormal),normalize(vView))),3.1); gl_FragColor=vec4(0.69,0.76,0.83,0.025+rim*0.19); }"} />
       </mesh>
       <points geometry={globeDots}>
-        <shaderMaterial transparent depthWrite={false} depthTest vertexShader={"attribute vec3 color;\nvarying vec3 vColor;\nvarying float vFacing;\nvoid main() {\n  vColor = color;\n  vec4 mv = modelViewMatrix * vec4(position, 1.0);\n  gl_Position = projectionMatrix * mv;\n  vec3 n = normalize(mat3(modelViewMatrix) * position);\n  vFacing = smoothstep(0.04, 0.90, max(0.0, n.z));\n  gl_PointSize = clamp(11.0 / -mv.z, 1.15, 2.9);\n}"} fragmentShader={"varying vec3 vColor;\nvarying float vFacing;\nvoid main() {\n  vec2 pt = gl_PointCoord - vec2(0.5);\n  float softCircle = 1.0 - smoothstep(0.30, 0.52, length(pt));\n  if (softCircle < 0.02) discard;\n  gl_FragColor = vec4(vColor, softCircle * (0.22 + 0.78 * vFacing));\n}"} />
+        <shaderMaterial transparent depthWrite={false} depthTest vertexShader={"attribute vec3 color;\nvarying vec3 vColor;\nvarying float vFacing;\nvoid main() {\n  vColor = color;\n  vec4 mv = modelViewMatrix * vec4(position, 1.0);\n  gl_Position = projectionMatrix * mv;\n  vec3 n = normalize(mat3(modelViewMatrix) * position);\n  vFacing = smoothstep(0.04, 0.90, max(0.0, n.z));\n  gl_PointSize = clamp(9.0 / -mv.z, 0.95, 2.25);\n}"} fragmentShader={"varying vec3 vColor;\nvarying float vFacing;\nvoid main() {\n  vec2 pt = gl_PointCoord - vec2(0.5);\n  float softCircle = 1.0 - smoothstep(0.30, 0.52, length(pt));\n  if (softCircle < 0.02) discard;\n  gl_FragColor = vec4(vColor, softCircle * (0.22 + 0.78 * vFacing));\n}"} />
       </points>
       {location && <Html position={[marker.x, marker.y, marker.z]} center distanceFactor={6.7} zIndexRange={[20, 0]}>
         <div ref={markerLabel} className="site3-globe-marker" aria-label={`Cidade aproximada: ${location.city}`}>
@@ -258,8 +258,8 @@ function World({ location, reduceMotion }: GlobeProps) {
       </mesh>
       </group>
     </group>
-    <OrbitRing tilt={[.42, .2, .2]} color="#425367" speed={reduceMotion ? 0 : .005} />
-    <OrbitRing tilt={[-.32, 1.12, -.33]} radius={2.75} color="#153e6d" speed={reduceMotion ? 0 : -.007} />
+    
+    
     <OrbitControls autoRotate={false} enableZoom enablePan={false} minDistance={5.0} maxDistance={9.0} zoomSpeed={.65} enableDamping dampingFactor={.045} minPolarAngle={.35} maxPolarAngle={Math.PI - .35} touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE }} />
   </>
 }
@@ -278,7 +278,7 @@ export default function Globe3D(props: GlobeProps) {
     return () => { io.disconnect(); document.removeEventListener('visibilitychange', onVis) }
   }, [])
   return <div ref={frame} className="site3-canvas-frame" role="img" aria-label="Globo terrestre interativo. Arraste para girar e use dois dedos para aproximar ou afastar.">
-    <Canvas frameloop={inView && tabVisible ? 'always' : 'never'} dpr={[1, 1.5]} gl={{ antialias: false, alpha: true, powerPreference: 'default' }} camera={{ fov: 43, near: .1, far: 100, position: [0, 0, 6.9] }} style={{ touchAction: 'none' }}>
+    <Canvas frameloop={inView && tabVisible ? 'always' : 'never'} dpr={[1, 1.5]} gl={{ antialias: true, alpha: true, powerPreference: 'default' }} camera={{ fov: 43, near: .1, far: 100, position: [0, 0, 6.9] }} style={{ touchAction: 'none' }}>
       <World {...props} />
     </Canvas>
   </div>
