@@ -80,7 +80,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
     </div>
     <div className="site3-nav-actions">
      <button className="site3-icon-button" aria-label="Pesquisar no site" onClick={()=>{setSearchOpen(true);setMenu(null)}}><Search size={18}/></button>
-     <a className="site3-message-button" href={phone} target="_blank" rel="noopener noreferrer"><span className="site3-live-dot"/> fale conosco <ArrowUpRight size={15}/></a>
+     <a className="site3-message-button" href={phone} target="_blank" rel="noopener noreferrer"><span className="site3-live-dot"/> FALE CONOSCO <ArrowUpRight size={15}/></a>
      <button className="site3-mobile-toggle" aria-label={mobileMenu?'Fechar menu':'Abrir menu'} aria-expanded={mobileMenu} onClick={()=>{setMobileMenu(p=>!p);setMenu(null)}}>{mobileMenu?<X size={22}/>:<Menu size={22}/>}</button>
     </div>
    </nav>
@@ -112,7 +112,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
    <div className="b3-footer-hero">
     <div className="b3-footer-particle-globe" aria-hidden="true" />
     <span className="b3-overline">[ NOSSA MISSÃO ]</span>
-    <h2>E toda empresa<br/>merece <em>evoluir<span className="b3-dot-white">.</span></em></h2>
+    <h2><span className="b3-footer-mission-first">E toda empresa<br/>merece</span> <em>evoluir<span className="b3-dot-white">.</span></em></h2>
     <p>Bawerk Solutions — você pode ir além do que imagina.</p>
    </div>
    <div className="b3-footer-follow">
@@ -129,7 +129,6 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
     <div><span className="b3-overline">ACESSO RÁPIDO</span><Link href="/site3/blog">Blog</Link><Link href="/site3/contato">Solicitar orçamento</Link><Link href="/site3/#diagnostico">Diagnóstico digital</Link><Link href="/site3">Página inicial</Link></div>
    </div>
    <div className="b3-footer-location-strip">
-    <span className="b3-footer-location-badge"><span className="b3-live"/><MapPin size={14}/> SÃO PAULO · BRASIL · BASE BAWERK</span>
     <span className="b3-footer-location-badge">ATENDIMENTO DIGITAL · TODO O BRASIL</span>
     <span className="b3-footer-location-badge">TECNOLOGIA · DESIGN · EVOLUÇÃO</span>
    </div>
