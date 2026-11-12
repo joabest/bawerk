@@ -7,6 +7,7 @@ import { PublicSiteProvider } from '@/components/public-site-provider'
 import { I18nProvider } from '@/lib/i18n'
 import { ScrollEffects } from '@/components/scroll-effects'
 import { TrafficTracker } from '@/components/traffic-tracker'
+import { PublicAnalytics } from '@/components/public-analytics'
 
 const mono = DM_Mono({ subsets: ['latin'], weight: ['400', '500'], display: 'swap', variable: '--f-mono' })
 const sans = Space_Grotesk({ subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap', variable: '--f-sans' })
@@ -37,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="dark" suppressHydrationWarning>
       <body className={`bg-background font-sans text-foreground antialiased ${mono.variable} ${sans.variable}`}>
-        <I18nProvider><ScrollEffects /><TrafficTracker /><PublicSiteProvider>{children}</PublicSiteProvider></I18nProvider>
+        <I18nProvider><ScrollEffects /><TrafficTracker /><PublicAnalytics /><PublicSiteProvider>{children}</PublicSiteProvider></I18nProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
