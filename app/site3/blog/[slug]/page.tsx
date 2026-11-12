@@ -1,16 +1,12 @@
 import type { Metadata } from 'next'
 import Link from '../../PublicLink'
-import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Clock3, Layers3, Share2 } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Clock3 } from 'lucide-react'
 import { notFound } from 'next/navigation'
-import { getPost, getRelated, posts } from '../../blog-data'
+import { getPost, getRelated, posts, getWordCount, getReadingTime } from '../../blog-data'
 import { BlogThumbnail } from '../BlogClient'
 
 type Props = { params: Promise<{ slug: string }> }
-const sectionId = (heading: string) => heading.normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')
-const wordCount = (body: { heading: string; paragraphs: string[] }[]) => body.reduce((count, section) => count + section.paragraphs.join(' ').split(/\s+/).filter(Boolean).length, 0)
-export function estimateMinutes(post: { body: { heading: string; paragraphs: string[] }[] }) {
- return Math.max(2, Math.ceil(wordCount(post.body) / 175))
-}
+const sectionId = (heading: string) => heading.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')
 export function generateStaticParams() { return posts.map(post => ({ slug: post.slug })) }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
  const {slug} = await params
@@ -43,20 +39,20 @@ export default async function ArticlePage({ params }: Props) {
   publisher:{'@type':'Organization',name:'Bawerk Solutions',url:'https://bawerk.solutions/'},
   mainEntityOfPage:'https://bawerk.solutions/blog/' + slug,
   articleSection:post.category,
-  wordCount:wordCount(post.body),
+  wordCount:getWordCount(post),
  }
  return <div className="b3-container b3-article-layout">
   <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(schema).replace(/</g,'\\u003c')}}/>
   <article className="b3-article b3-article-v2">
    <div className="b3-article-navigation">
     <Link className="b3-back" href="/site3/blog"><ArrowLeft size={15}/> VOLTAR AO BLOG</Link>
-    <span className="b3-overline">{post.category} / {estimateMinutes(post)} MIN DE LEITURA</span>
+    <span className="b3-overline">{post.category} / {getReadingTime(post)} MIN DE LEITURA</span>
    </div>
    <header className="b3-article-head">
     <div className="b3-article-kicker"><span>ARTIGO / BAWERK SOLUTIONS</span><span>CONTEÚDO TÉCNICO E DE NEGÓCIOS</span></div>
     <h1>{post.title}</h1>
     <p>{post.summary}</p>
-    <div className="b3-article-byline"><span className="b3-article-author-icon">B.</span><span><strong>Equipe Bawerk Solutions</strong><small>Engenharia digital · Brasil</small></span><span className="b3-article-readtime"><Clock3 size={15}/>{estimateMinutes(post)} min</span></div>
+    <div className="b3-article-byline"><span className="b3-article-author-icon">B.</span><span><strong>Equipe Bawerk Solutions</strong><small>Engenharia digital · Brasil</small></span><span className="b3-article-readtime"><Clock3 size={15}/>{getReadingTime(post)} min</span></div>
    </header>
    <BlogThumbnail post={post}/>
    <div className="b3-article-workspace">
@@ -81,7 +77,7 @@ export default async function ArticlePage({ params }: Props) {
   <section className="b3-related">
    <div className="b3-section-top"><span className="b3-overline">[ CONHECIMENTO APLICADO ]</span><Link href="/site3/blog" className="b3-forward">Todos os artigos <ArrowUpRight size={15}/></Link></div>
    <h2>Continue explorando<span className="b3-dot-blue">.</span></h2>
-   <div className="b3-blog-grid">{related.map(item=><Link key={item.slug} href={'/site3/blog/'+item.slug} className="b3-blog-card"><BlogThumbnail post={item}/><div className="b3-blog-card-body"><span className="b3-card-index">{item.category}</span><h3>{item.title}</h3><p>{item.summary}</p><div className="b3-blog-card-foot"><span>BAWERK · {estimateMinutes(item)} MIN</span><ArrowUpRight size={17}/></div></div></Link>)}</div>
+   <div className="b3-blog-grid">{related.map(item=><Link key={item.slug} href={'/site3/blog/'+item.slug} className="b3-blog-card"><BlogThumbnail post={item}/><div className="b3-blog-card-body"><span className="b3-card-index">{item.category}</span><h3>{item.title}</h3><p>{item.summary}</p><div className="b3-blog-card-foot"><span>BAWERK · {getReadingTime(item)} MIN</span><ArrowUpRight size={17}/></div></div></Link>)}</div>
   </section>
  </div>
 }
