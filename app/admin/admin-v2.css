@@ -1,0 +1,65 @@
+
+/* BA W E R K  /  Control Center — dedicated, isolated admin design */
+.bawerk-admin-v2{--av2-ink:#e8edf8;--av2-muted:#8c96ab;--av2-border:#263044;--av2-accent:#667dff;--av2-bg:#0b0e17;--av2-panel:#141a27;--av2-panel-alt:#101624;color:var(--av2-ink);min-height:100vh;background:radial-gradient(ellipse 760px 460px at 78% -12%,#1a2359 0%,transparent 75%),var(--av2-bg);font-family:Inter,system-ui,sans-serif;font-size:14px}
+.bawerk-admin-v2 *{box-sizing:border-box}
+.bawerk-admin-v2 button{cursor:pointer}
+.bawerk-admin-v2 button:disabled{cursor:not-allowed;opacity:.5}
+.bawerk-admin-v2 .admin-frame{border:0;border-radius:0;background:none;max-width:none;min-height:100vh;margin:0;padding:0;box-shadow:none}
+.bawerk-admin-v2 .admin-sidebar{background:#0e1320!important;border-right:1px solid #273148!important;padding:26px 18px!important;border-radius:0!important;width:265px!important;flex:0 0 265px;min-height:100vh}
+.bawerk-admin-v2 .admin-sidebar-brand{border-bottom:1px solid var(--av2-border)!important;padding-bottom:28px!important;gap:12px}
+.bawerk-admin-v2 .admin-logo-icon{background:linear-gradient(145deg,#547bff,#805eff)!important;box-shadow:0 8px 30px #465fff40!important;width:44px!important;height:44px!important;border-radius:13px!important;letter-spacing:-.06em}
+.bawerk-admin-v2 .admin-brand-name{font-size:19px;font-weight:800;letter-spacing:-.045em}
+.bawerk-admin-v2 .admin-brand-sub{font-size:10px;letter-spacing:.16em;color:#70819d;margin-top:2px}
+.bawerk-admin-v2 .admin-nav-caption{font:600 10px/1.4 ui-monospace,monospace;letter-spacing:.16em;color:#56657e;margin:26px 12px 12px}
+.bawerk-admin-v2 .admin-navigation{display:grid;gap:6px!important;margin-top:0!important}
+.bawerk-admin-v2 .admin-nav-item{width:100%;display:flex;align-items:center;gap:13px;min-height:44px!important;border-radius:11px!important;padding:10px 13px!important;color:#96a1b9!important;font-size:13px;letter-spacing:.005em;text-align:left;border:1px solid transparent;transition:background .18s,color .18s,border-color .18s!important}
+.bawerk-admin-v2 .admin-nav-item:hover{background:#1c2539!important;color:#f6f8ff!important}
+.bawerk-admin-v2 .admin-nav-active{background:linear-gradient(105deg,#334ca6,#282f63)!important;color:#f4f6ff!important;border-color:#6f81fa43!important;box-shadow:inset 3px 0 0 #8593ff,0 6px 20px #151f443b!important}
+.bawerk-admin-v2 .admin-sidebar-bottom{margin-top:auto}
+.bawerk-admin-v2 .admin-side-status{background:linear-gradient(145deg,#192137,#151b2b)!important;border-color:#2b3651!important;padding:17px!important;border-radius:14px!important}
+.bawerk-admin-v2 .admin-side-status .status-dot{display:inline-block;width:8px;height:8px;background:#48dfb3;border-radius:50%;box-shadow:0 0 0 4px #48dfb31b;margin-right:8px}
+.bawerk-admin-v2 .admin-content{background:none!important;min-width:0}
+.bawerk-admin-v2 .admin-topbar{height:82px!important;padding:0 clamp(18px,3vw,50px)!important;background:#111623b8!important;border-bottom:1px solid #263148!important;backdrop-filter:blur(14px)}
+.bawerk-admin-v2 .admin-global-search{background:#1a2131!important;border:1px solid #2a3550!important;border-radius:11px!important;max-width:445px!important;padding:11px 15px!important;transition:border .2s}
+.bawerk-admin-v2 .admin-global-search:focus-within{border-color:#7488ff!important;box-shadow:0 0 0 3px #7586ff16}
+.bawerk-admin-v2 .admin-global-search input{color:#e5ebfa;font-size:13px}
+.bawerk-admin-v2 .admin-bell{background:#1a2131!important;border:1px solid #2b3650!important;border-radius:11px!important}
+.bawerk-admin-v2 .admin-profile-avatar{background:linear-gradient(145deg,#556cdb,#8359d4)!important;color:white!important}
+.bawerk-admin-v2 .admin-scroller{height:calc(100vh - 82px)!important;padding:clamp(24px,3.5vw,52px)!important;scrollbar-color:#344159 #101522}
+.bawerk-admin-v2 .admin-page-title{font-size:clamp(30px,3vw,42px)!important;letter-spacing:-.055em;font-weight:750}
+.bawerk-admin-v2 .admin-page-eyebrow{color:#98a8ff!important;font:600 10px/1.5 ui-monospace,monospace!important;letter-spacing:.14em;text-transform:uppercase}
+.bawerk-admin-v2 .admin-page-description{color:#8e9bb1!important;line-height:1.65}
+.bawerk-admin-v2 .admin-panel,.bawerk-admin-v2 .admin-metric{background:linear-gradient(155deg,#171e2d,#141a27 80%)!important;border:1px solid #2a354d!important;border-radius:17px!important;box-shadow:0 15px 40px #03071027;transition:border-color .2s,transform .2s}
+.bawerk-admin-v2 .admin-metric{min-height:158px;padding:23px!important}
+.bawerk-admin-v2 .admin-metric:hover{border-color:#6274d455!important;transform:translateY(-2px)}
+.bawerk-admin-v2 .admin-metric .admin-metric-value{font-size:clamp(25px,2.3vw,35px)!important;letter-spacing:-.055em;margin-top:19px!important;line-height:1.12}
+.bawerk-admin-v2 .admin-metric .admin-metric-label{font-size:13px;color:#a9b4ca}
+.bawerk-admin-v2 .admin-metric .admin-metric-note{color:#7785a1!important;font-size:11px}
+.bawerk-admin-v2 .admin-metric-icon{background:#6373fc1b!important;color:#91a0ff!important;border-radius:11px!important;padding:10px!important}
+.bawerk-admin-v2 .admin-metric:nth-child(2) .admin-metric-icon{background:#aa81ff19!important;color:#bc9bff!important}
+.bawerk-admin-v2 .admin-metric:nth-child(3) .admin-metric-icon{background:#40d8b419!important;color:#6adbc2!important}
+.bawerk-admin-v2 .admin-metric:nth-child(4) .admin-metric-icon{background:#f2b66d19!important;color:#ffca85!important}
+.bawerk-admin-v2 .admin-panel{padding:24px!important}
+.bawerk-admin-v2 .admin-panel h2{font-size:16px;font-weight:650;letter-spacing:-.02em}
+.bawerk-admin-v2 .admin-panel p{color:#8e9bb1}
+.bawerk-admin-v2 .admin-action{color:#a3adff!important;font-size:12px;font-weight:650}
+.bawerk-admin-v2 .admin-graph{border-radius:13px;background-color:#111a2a!important;background-image:linear-gradient(#ffffff08 1px,transparent 1px)!important}
+.bawerk-admin-v2 .admin-chip{background:#1c2540;border:1px solid #364568;border-radius:99px;padding:7px 12px;font:500 11px ui-monospace,monospace;color:#9eafe3}
+.bawerk-admin-v2 .admin-table{background:linear-gradient(155deg,#171e2d,#141a27)!important;border-color:#2b3650!important}
+.bawerk-admin-v2 .admin-table button:hover{background:#ffffff08}
+.bawerk-admin-v2 .admin-table th{color:#7b8da8;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.bawerk-admin-v2 .admin-table td{color:#c1cce0;font-size:13px}
+.bawerk-admin-v2 .admin-table tr{border-color:#2a354a}
+.bawerk-admin-v2 .admin-avatar{background:linear-gradient(145deg,#2c4585,#483c86)!important;color:#cbd5ff!important}
+.bawerk-admin-v2 .admin-input,.bawerk-admin-v2 .admin-panel input,.bawerk-admin-v2 .admin-panel select{background:#0e1524!important;border:1px solid #2b3955!important;color:white!important}
+.bawerk-admin-v2 .admin-input:focus,.bawerk-admin-v2 input:focus,.bawerk-admin-v2 select:focus{outline:2px solid #687be9;outline-offset:1px}
+.bawerk-admin-v2 .admin-primary-button{background:linear-gradient(100deg,#526ff5,#7858dc)!important;color:#fff!important;border-radius:11px!important;border:1px solid #8b96fd42!important;box-shadow:0 7px 23px #4c5ac52e}
+.bawerk-admin-v2 .admin-primary-button:hover{background:linear-gradient(100deg,#6681ff,#8669e8)!important}
+.bawerk-admin-v2 .admin-settings-card,.bawerk-admin-v2 .admin-dialog{border-color:#32405d!important;background:#141b2a!important}
+.bawerk-admin-v2 .admin-footer-note{font:10px ui-monospace,monospace;letter-spacing:.11em;color:#566886;margin-top:28px;display:flex;justify-content:space-between}
+.bawerk-admin-v2 .admin-zoho-cta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:16px 20px;border:1px solid #455fc052;border-radius:13px;background:linear-gradient(105deg,#24335f9c,#1c2340);margin:0 0 22px}
+.bawerk-admin-v2 .admin-zoho-cta strong{color:#dce4ff}
+.bawerk-admin-v2 .admin-zoho-cta span{color:#a0acc4;font-size:12px;flex:1}
+.bawerk-admin-v2 .admin-zoho-cta button{border-radius:8px;background:#5265d2;color:white;padding:9px 14px;font-size:12px}
+@media(max-width:1024px){.bawerk-admin-v2 .admin-sidebar{position:fixed!important;left:8px;top:8px;bottom:8px;z-index:70;min-height:0;width:260px!important;border-radius:17px!important;box-shadow:0 30px 75px #0009}.bawerk-admin-v2 .admin-content{width:100%}.bawerk-admin-v2 .admin-topbar{height:74px!important}.bawerk-admin-v2 .admin-scroller{height:calc(100vh - 74px)!important}}
+@media(max-width:650px){.bawerk-admin-v2 .admin-scroller{padding:22px 16px!important}.bawerk-admin-v2 .admin-topbar{padding:0 15px!important}.bawerk-admin-v2 .admin-global-search{max-width:100%!important}.bawerk-admin-v2 .admin-page-title{font-size:29px!important}.bawerk-admin-v2 .admin-metric{padding:18px!important;min-height:140px}.bawerk-admin-v2 .admin-panel{padding:18px!important}.bawerk-admin-v2 .admin-footer-note{display:block;line-height:2.2}}
