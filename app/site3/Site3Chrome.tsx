@@ -56,6 +56,7 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
  const [searchOpen,setSearchOpen]=useState(false)
  const [query,setQuery]=useState('')
  const [scrollPercent,setScrollPercent]=useState(0)
+ const cursorGlowRef=useRef<HTMLDivElement>(null)
  const closeNav=useCallback(()=>{cancelMenuClose();setMenu(null);setMobileMenu(false)},[cancelMenuClose])
  const searchResults=useMemo(()=>siteLinks.filter(item=>item.label.toLocaleLowerCase('pt-BR').includes(query.toLocaleLowerCase('pt-BR'))),[query])
  useEffect(()=>{
@@ -78,13 +79,18 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
  },[pathname])
  const entries=menu==='services'?serviceCards:menu==='tools'?toolCards:moreCards
  const onGlassMouseMove=(e:React.MouseEvent<HTMLDivElement>)=>{
+   if(cursorGlowRef.current){
+     cursorGlowRef.current.style.transform=`translate3d(${e.clientX}px,${e.clientY}px,0) translate(-50%,-50%)`
+     cursorGlowRef.current.style.opacity='1'
+   }
    const el=(e.target as HTMLElement).closest<HTMLElement>('.b3-card,.b3-blog-card,.site3-mega-card,.b3-footer-contact-links>a,.b3-primary,.b3-secondary,.site3-message-button,.b3-footer-social-links>a')
    if(!el)return
    const box=el.getBoundingClientRect()
    el.style.setProperty('--glass-x',e.clientX-box.left+'px')
    el.style.setProperty('--glass-y',e.clientY-box.top+'px')
  }
- return <div className="b3-root" id="top" onMouseMove={onGlassMouseMove}>
+ return <div className="b3-root" id="top" onMouseMove={onGlassMouseMove} onMouseLeave={()=>{if(cursorGlowRef.current)cursorGlowRef.current.style.opacity="0"}}>
+  <div ref={cursorGlowRef} className="b3-cursor-neon" aria-hidden="true"/>
   <div className="b3-dotworld" aria-hidden="true"/>
   <header className="site3-header" onMouseEnter={cancelMenuClose} onMouseLeave={scheduleMenuClose}>
    <nav className="site3-nav" aria-label="Navegação principal">
@@ -132,7 +138,6 @@ export default function Site3Chrome({children}:{children:React.ReactNode}){
     <div className="b3-footer-particle-globe" aria-hidden="true" />
     <span className="b3-overline">[ NOSSA MISSÃO ]</span>
     <h2 className="b3-footer-mission-title"><span className="b3-footer-mission-first"><span className="b3-mission-blue">VOCÊ</span> <span className="b3-mission-white">PODE IR</span> <span className="b3-mission-blue">ALÉM</span></span><span className="b3-footer-mission-second"><span className="b3-mission-white">DO QUE</span> <span className="b3-mission-blue">IMAGINA</span><span className="b3-mission-dot">.</span></span></h2>
-    <p>Bawerk Solutions — você pode ir além do que imagina.</p>
    </div>
    <div className="b3-footer-follow">
     <span className="b3-overline">[ ACOMPANHE ]</span>
