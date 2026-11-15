@@ -135,11 +135,6 @@ export default function HomeClient(){
  return <>
   <section className="b3-container b3-home-hero">
    <div className="b3-home-globe">
-    <div className="b3-globe-backdrop-title" aria-label="Você pode ir além do que imagina">
-     <span className="b3-globe-title-line"><span className="b3-mission-blue">VOCÊ</span> <span className="b3-mission-white">PODE IR</span></span>
-     <span className="b3-globe-title-line"><span className="b3-mission-blue">ALÉM</span> <span className="b3-mission-white">DO QUE</span></span>
-     <span className="b3-globe-title-line"><span className="b3-mission-blue">IMAGINA</span><span className="b3-mission-dot">.</span></span>
-    </div>
     <div className="b3-globe-canvas"><Globe3D location={location} reduceMotion={reducedMotion}/></div>
    </div>
    <div className="b3-home-copy">
