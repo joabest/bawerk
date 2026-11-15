@@ -432,38 +432,3 @@
  .b3-root .b3-friction .b3-cloud .b3-chip-float.b3-phrase-independent{animation:none!important;transition:none!important}
 }
 
-
-/* Editorial mission typography behind the existing interactive globe.
-   Reuses the exact footer color map; the globe stays in front of the text. */
-.b3-root .b3-home-hero .b3-home-globe{isolation:isolate}
-.b3-root .b3-home-globe .b3-globe-backdrop-title{
-  position:absolute;
-  left:50%;
-  top:47%;
-  width:min(1180px,94vw);
-  transform:translate(-50%,-50%);
-  z-index:0;
-  pointer-events:none;
-  text-align:center;
-  font:700 clamp(42px,7.3vw,116px)/.98 var(--f-sans),Arial,sans-serif;
-  letter-spacing:-.075em;
-  white-space:nowrap;
-}
-.b3-root .b3-home-globe .b3-globe-title-line{display:block}
-.b3-root .b3-home-globe .b3-globe-canvas{z-index:1;position:absolute;inset:0}
-.b3-root .b3-globe-backdrop-title .b3-mission-blue{color:#0026c0;transition:color .3s ease}
-.b3-root .b3-globe-backdrop-title .b3-mission-white,
-.b3-root .b3-globe-backdrop-title .b3-mission-dot{color:#fff;transition:color .3s ease}
-.b3-root .b3-home-globe:hover .b3-globe-backdrop-title .b3-mission-blue{color:#fff}
-.b3-root .b3-home-globe:hover .b3-globe-backdrop-title .b3-mission-white,
-.b3-root .b3-home-globe:hover .b3-globe-backdrop-title .b3-mission-dot{color:#0026c0}
-@media(max-width:700px){
- .b3-root .b3-home-globe .b3-globe-backdrop-title{
-  font-size:clamp(30px,8.1vw,55px);
-  width:98vw;
-  top:49%;
- }
-}
-@media(prefers-reduced-motion:reduce){
- .b3-root .b3-globe-backdrop-title span{transition:none!important}
-}
