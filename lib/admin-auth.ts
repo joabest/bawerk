@@ -10,7 +10,7 @@ function adminSecret(): string | null {
 export function adminConfigured(): boolean {
   const password = process.env.ADMIN_PASSWORD
   const hash = process.env.ADMIN_PASSWORD_HASH
-  return !!adminSecret() && (!!(hash && /^[a-f\d]{32,128}:[a-f\d]{128}$/i.test(hash)) || !!(password && password.length >= 12))
+  return !!adminSecret() && (!!(hash && /^[a-f\d]{32,128}:[a-f\d]{128}$/i.test(hash)) || !!(password && password.length >= 10))
 }
 function equal(a: string, b: string): boolean {
   const first = Buffer.from(a)
