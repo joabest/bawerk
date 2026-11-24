@@ -23,10 +23,112 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   twitter:{card:'summary',title:post.title,description:post.summary},
  }
 }
+
+// Approved contextual SEO links. Keep source text intact; skip missing phrases
+// (including editorial overrides) and never link the introduction or headings.
+const contextualLinks: ReadonlyArray<readonly [string, string, string]> = [
+  [
+    "quanto-custa-criar-aplicativo",
+    "arquitetura multiplataforma",
+    "flutter-react-native-ou-nativo"
+  ],
+  [
+    "quanto-custa-criar-aplicativo",
+    "produto mínimo utilizável",
+    "mvp-aplicativo-primeira-versao"
+  ],
+  [
+    "quanto-custa-criar-aplicativo",
+    "painel administrativo",
+    "app-com-painel-administrativo"
+  ],
+  [
+    "flutter-react-native-ou-nativo",
+    "painel administrativo web",
+    "app-com-painel-administrativo"
+  ],
+  [
+    "software-sob-medida-ou-saas",
+    "controle de ordens de serviço",
+    "automacao-ordens-servico-agendamentos"
+  ],
+  [
+    "mvp-aplicativo-primeira-versao",
+    "painel administrativo",
+    "app-com-painel-administrativo"
+  ],
+  [
+    "nextjs-ou-wordpress",
+    "arquitetura de hospedagem",
+    "hospedagem-vercel-supabase-arquitetura"
+  ],
+  [
+    "agentes-ia-atendimento-empresas",
+    "recuperação de documentos",
+    "rag-base-conhecimento-corporativa"
+  ],
+  [
+    "agentes-ia-atendimento-empresas",
+    "integrar sistemas",
+    "integracao-api-erp-crm"
+  ],
+  [
+    "landing-page-ou-site-institucional",
+    "desenvolvimento de aplicativos",
+    "quanto-custa-criar-aplicativo"
+  ],
+  [
+    "estrategia-conteudo-blog-empresa",
+    "desenvolvimento sob medida",
+    "software-sob-medida-ou-saas"
+  ],
+  [
+    "como-planejar-site-institucional",
+    "SEO técnico",
+    "seo-site-empresa-guia"
+  ],
+  [
+    "como-planejar-site-institucional",
+    "proteção do formulário",
+    "ux-formularios-conversao"
+  ],
+  [
+    "como-planejar-site-institucional",
+    "manutenção",
+    "manutencao-site-sistemas-checklist"
+  ],
+  [
+    "design-sistema-visual-marca",
+    "Animações",
+    "microinteracoes-animacoes-web"
+  ]
+]
+function contextualParagraphs(post: NonNullable<Awaited<ReturnType<typeof getBlogPost>>>) {
+ const used = new Set<string>()
+ const rules = contextualLinks.filter(([source, , target]) => source === post.slug && target !== post.slug && posts.some(p => p.slug === target))
+ return post.body.map((section, i) => section.paragraphs.map(paragraph => {
+  if (i === 0 || used.size >= 5) return paragraph
+  const matches: {start:number; end:number; target:string}[] = []
+  for (const [, anchor, target] of rules) {
+   if (used.has(target) || used.size >= 5) continue
+   const start = paragraph.indexOf(anchor)
+   if (start < 0) continue
+   const end = start + anchor.length
+   if (matches.some(m => start < m.end && end > m.start)) continue
+   matches.push({start,end,target})
+   used.add(target)
+  }
+  if (!matches.length) return paragraph
+  matches.sort((a,b) => a.start-b.start)
+  return <>{matches.map((m,j) => <span key={m.target}>{paragraph.slice(j ? matches[j-1].end : 0,m.start)}<a href={'/blog/'+m.target} style={{textDecoration:'underline',textUnderlineOffset:'0.2em'}}>{paragraph.slice(m.start,m.end)}</a></span>)}{paragraph.slice(matches[matches.length-1].end)}</>
+ }))
+}
+
 export default async function ArticlePage({ params }: Props) {
  const { slug } = await params
  const post = await getBlogPost(slug)
  if (!post) notFound()
+ const linkedParagraphs = contextualParagraphs(post)
  const related = getRelated(post)
  const current = posts.findIndex(item => item.slug === slug)
  const next = posts[(current + 1) % posts.length]
@@ -65,7 +167,7 @@ export default async function ArticlePage({ params }: Props) {
     </aside>
     <div className="b3-article-content">
      <div className="b3-article-intro"><span className="b3-overline">[ VISÃO GERAL ]</span><p>{post.summary} A seguir, veja os pontos que realmente merecem atenção, os riscos mais comuns e as decisões que ajudam a transformar a ideia em um projeto bem definido.</p></div>
-     {post.body.map((section,i)=><section key={section.heading} id={sectionId(section.heading)} className="b3-article-section"><span className="b3-overline">[{String(i+1).padStart(2,'0')} / {String(post.body.length).padStart(2,'0')}]</span><h2>{section.heading}</h2>{section.paragraphs.map((paragraph,j)=><p key={j}>{paragraph}</p>)}</section>)}
+     {post.body.map((section,i)=><section key={section.heading} id={sectionId(section.heading)} className="b3-article-section"><span className="b3-overline">[{String(i+1).padStart(2,'0')} / {String(post.body.length).padStart(2,'0')}]</span><h2>{section.heading}</h2>{linkedParagraphs[i].map((paragraph,j)=><p key={j}>{paragraph}</p>)}</section>)}
      <div className="b3-article-conclusion">
       <span className="b3-overline">[ PRÓXIMO PASSO ]</span>
       <h2>Vamos transformar isso<br/><span className="b3-electric">em uma solução real<span className="b3-dot-white">.</span></span></h2>
