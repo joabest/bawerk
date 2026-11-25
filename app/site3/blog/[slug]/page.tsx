@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from '../../PublicLink'
 import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Clock3 } from 'lucide-react'
 import { notFound } from 'next/navigation'
-import { getRelated, posts, getWordCount, getReadingTime } from '../../blog-data'
+import { getRelated, posts, getPublishedPosts, getWordCount, getReadingTime } from '../../blog-data'
 import {getBlogPost} from '@/lib/blog-edits'
 import { BlogThumbnail } from '../BlogClient'
 
@@ -130,8 +130,9 @@ export default async function ArticlePage({ params }: Props) {
  if (!post) notFound()
  const linkedParagraphs = contextualParagraphs(post)
  const related = getRelated(post)
- const current = posts.findIndex(item => item.slug === slug)
- const next = posts[(current + 1) % posts.length]
+ const publishedPosts = getPublishedPosts()
+ const current = publishedPosts.findIndex(item => item.slug === slug)
+ const next = publishedPosts[(current + 1) % publishedPosts.length]
  const schema = {
   '@context':'https://schema.org',
   '@type':'BlogPosting',
@@ -156,7 +157,7 @@ export default async function ArticlePage({ params }: Props) {
     <div className="b3-article-kicker"><span>ARTIGO / BAWERK SOLUTIONS</span><span>CONTEÚDO TÉCNICO E DE NEGÓCIOS</span></div>
     <h1>{post.title}</h1>
     <p>{post.summary}</p>
-    <div className="b3-article-byline"><span className="b3-article-author-icon">B.</span><span><strong>Equipe Bawerk Solutions</strong><small>Engenharia digital · Brasil</small></span><span className="b3-article-readtime"><Clock3 size={15}/>{getReadingTime(post)} min</span></div>
+    <div className="b3-article-byline"><span className="b3-article-author-icon">B.</span><span><strong>Equipe Bawerk Solutions</strong><small>Engenharia digital · Brasil</small></span><span className="b3-article-readtime"><Clock3 size={15}/>{getReadingTime(post)} min</span>{post.publishedAt&&<time dateTime={post.publishedAt}>{new Date(post.publishedAt).toLocaleDateString("pt-BR",{day:"numeric",month:"long",year:"numeric",timeZone:"America/Sao_Paulo"})}</time>}</div>
    </header>
    <BlogThumbnail post={post}/>
    <div className="b3-article-workspace">
