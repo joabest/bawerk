@@ -21,10 +21,12 @@ export type BlogPost = {
 // Individual posts live in category-specific modules for simpler reviews and maintenance.
 export const posts: BlogPost[] = [...newArticles, ...engineeringArticles, ...intelligenceArticles, ...growthArticles]
 export const categories = ['TODOS','IA','SOFTWARE','APLICATIVOS','CRM','DESIGN','MARKETING','INSIGHTS'] as const
-export const getPost = (slug: string) => posts.find(post => post.slug === slug)
+export const isBlogPostPublished = (post: BlogPost, now = Date.now()) => !post.publishedAt || Date.parse(post.publishedAt) <= now
+export const getPublishedPosts = (now = Date.now()) => posts.filter(post => isBlogPostPublished(post, now))
+export const getPost = (slug: string) => getPublishedPosts().find(post => post.slug === slug)
 export const getRelated = (post: BlogPost, count = 3) => [
- ...posts.filter(item => item.slug !== post.slug && item.category === post.category),
- ...posts.filter(item => item.slug !== post.slug && item.category !== post.category)
+ ...getPublishedPosts().filter(item => item.slug !== post.slug && item.category === post.category),
+ ...getPublishedPosts().filter(item => item.slug !== post.slug && item.category !== post.category)
 ].slice(0, count)
 
 export const getWordCount = (post: BlogPost) => post.body.reduce((n, section) => n + section.paragraphs.join(' ').split(' ').filter(Boolean).length, 0)
