@@ -1,9 +1,9 @@
 import type { BlogPost } from './blog-data'
 
-// Edição de 25/11/2026. Guias originais da Bawerk com foco em decisões práticas.
+// Publicação escalonada: 1 artigo/dia às 09h de Brasília, de 26/11 a 01/12/2026.
 export const newArticles: BlogPost[] = [
 {
- slug:'seguranca-apis-autenticacao-rate-limit',title:'Segurança de APIs: autenticação, permissões e limites de acesso',category:'SOFTWARE',theme:'azure',symbol:'API',readMinutes:7,publishedAt:'2026-11-25',
+ slug:'seguranca-apis-autenticacao-rate-limit',title:'Segurança de APIs: autenticação, permissões e limites de acesso',category:'SOFTWARE',theme:'azure',symbol:'API',readMinutes:7,publishedAt:'2026-11-26T09:00:00-03:00',
  summary:'Um guia para proteger integrações empresariais com autenticação adequada, autorização por recurso, limites de requisições e registros úteis.',
  body:[
   {heading:'Autenticar não é autorizar',paragraphs:[
@@ -25,7 +25,7 @@ export const newArticles: BlogPost[] = [
  ]
 },
 {
- slug:'acessibilidade-sites-empresariais',title:'Acessibilidade em sites empresariais: melhorias que beneficiam todos',category:'DESIGN',theme:'violet',symbol:'UX',readMinutes:7,publishedAt:'2026-11-25',
+ slug:'acessibilidade-sites-empresariais',title:'Acessibilidade em sites empresariais: melhorias que beneficiam todos',category:'DESIGN',theme:'violet',symbol:'UX',readMinutes:7,publishedAt:'2026-11-27T09:00:00-03:00',
  summary:'Contraste, navegação por teclado, formulários e conteúdo legível: como criar experiências inclusivas sem sacrificar a identidade visual.',
  body:[
   {heading:'Acessibilidade começa na estrutura',paragraphs:[
@@ -47,7 +47,7 @@ export const newArticles: BlogPost[] = [
  ]
 },
 {
- slug:'observabilidade-sites-sistemas-alertas',title:'Monitoramento de sites e sistemas: o que medir antes de surgir uma falha',category:'SOFTWARE',theme:'blue',symbol:'OPS',readMinutes:7,publishedAt:'2026-11-25',
+ slug:'observabilidade-sites-sistemas-alertas',title:'Monitoramento de sites e sistemas: o que medir antes de surgir uma falha',category:'SOFTWARE',theme:'blue',symbol:'OPS',readMinutes:7,publishedAt:'2026-11-28T09:00:00-03:00',
  summary:'Aprenda a diferenciar métricas, logs, rastreamento e alertas para descobrir problemas de produção antes que prejudiquem clientes.',
  body:[
   {heading:'Estar online não significa funcionar bem',paragraphs:[
@@ -69,7 +69,7 @@ export const newArticles: BlogPost[] = [
  ]
 },
 {
- slug:'automacao-orcamentos-follow-up-vendas',title:'Automação de orçamentos: como acompanhar propostas sem perder oportunidades',category:'CRM',theme:'green',symbol:'CRM',readMinutes:7,publishedAt:'2026-11-25',
+ slug:'automacao-orcamentos-follow-up-vendas',title:'Automação de orçamentos: como acompanhar propostas sem perder oportunidades',category:'CRM',theme:'green',symbol:'CRM',readMinutes:7,publishedAt:'2026-11-29T09:00:00-03:00',
  summary:'Organize a passagem do formulário ao CRM, defina responsáveis e automatize lembretes de acompanhamento sem pressionar clientes.',
  body:[
   {heading:'O orçamento precisa ter um histórico único',paragraphs:[
@@ -91,7 +91,7 @@ export const newArticles: BlogPost[] = [
  ]
 },
 {
- slug:'custo-total-software-manutencao',title:'Custo total de um software: o que considerar depois do desenvolvimento',category:'INSIGHTS',theme:'orange',symbol:'TCO',readMinutes:7,publishedAt:'2026-11-25',
+ slug:'custo-total-software-manutencao',title:'Custo total de um software: o que considerar depois do desenvolvimento',category:'INSIGHTS',theme:'orange',symbol:'TCO',readMinutes:7,publishedAt:'2026-11-30T09:00:00-03:00',
  summary:'Hospedagem, suporte, integrações, evolução e segurança fazem parte do investimento; veja como planejar custos além do orçamento inicial.',
  body:[
   {heading:'O lançamento é uma etapa, não a linha de chegada',paragraphs:[
@@ -113,7 +113,7 @@ export const newArticles: BlogPost[] = [
  ]
 },
 {
- slug:'ia-dados-internos-permissoes-qualidade',title:'IA com dados internos da empresa: como preparar informações e permissões',category:'IA',theme:'violet',symbol:'DATA',readMinutes:7,publishedAt:'2026-11-25',
+ slug:'ia-dados-internos-permissoes-qualidade',title:'IA com dados internos da empresa: como preparar informações e permissões',category:'IA',theme:'violet',symbol:'DATA',readMinutes:7,publishedAt:'2026-12-01T09:00:00-03:00',
  summary:'Antes de conectar um assistente de IA ao CRM e aos documentos, organize fontes, controles de acesso, qualidade de dados e avaliação de respostas.',
  body:[
   {heading:'O problema costuma começar antes do modelo',paragraphs:[
