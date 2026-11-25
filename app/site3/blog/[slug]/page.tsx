@@ -138,7 +138,7 @@ export default async function ArticlePage({ params }: Props) {
   headline:post.title,
   description:post.summary,
   inLanguage:'pt-BR',
-  datePublished:'2026-11-12',
+  datePublished:post.publishedAt || '2026-11-12',
   author:{'@type':'Organization',name:'Bawerk Solutions',url:'https://bawerk.solutions/'},
   publisher:{'@type':'Organization',name:'Bawerk Solutions',url:'https://bawerk.solutions/'},
   mainEntityOfPage:'https://bawerk.solutions/blog/' + slug,
