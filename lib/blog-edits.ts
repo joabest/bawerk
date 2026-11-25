@@ -1,6 +1,6 @@
 import "server-only"
 import { neon } from "@neondatabase/serverless"
-import { posts } from "@/app/site3/blog-data"
+import { posts, isBlogPostPublished } from "@/app/site3/blog-data"
 import type { BlogPost, BlogCategory, BlogSection } from "@/app/site3/blog-data"
 
 function db(){
@@ -42,7 +42,7 @@ export function validateBlogEdit(input:unknown):BlogPost{
  })
  return {...original,title,summary,category,body}
 }
-export async function getAllBlogPosts():Promise<BlogPost[]>{
+export async function getAllBlogPosts(includeScheduled=false):Promise<BlogPost[]>{
  const sql=await table()
  const rows=await sql`SELECT slug,post FROM bawerk_blog_edits`
  const overrides=new Map<string,BlogPost>()
@@ -51,15 +51,15 @@ export async function getAllBlogPosts():Promise<BlogPost[]>{
   if(original&&row.post&&typeof row.post==="object")
     overrides.set(original.slug,{...original,...(row.post as object),slug:original.slug} as BlogPost)
  }
- return posts.map(p=>overrides.get(p.slug)||p)
+ return posts.map(p=>({...overrides.get(p.slug)||p,publishedAt:p.publishedAt})).filter(p=>includeScheduled||isBlogPostPublished(p))
 }
 export async function getBlogPost(slug:string):Promise<BlogPost|undefined>{
  const original=posts.find(p=>p.slug===slug)
- if(!original)return undefined
+ if(!original || !isBlogPostPublished(original))return undefined
  try{
   const sql=await table()
   const rows=await sql`SELECT post FROM bawerk_blog_edits WHERE slug=${slug} LIMIT 1`
-  return rows[0]?.post?{...original,...(rows[0].post as object),slug:original.slug} as BlogPost:original
+  return rows[0]?.post?{...original,...(rows[0].post as object),slug:original.slug,publishedAt:original.publishedAt} as BlogPost:original
  }catch{return original}
 }
 export async function saveBlogEdit(input:unknown):Promise<BlogPost>{
