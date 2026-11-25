@@ -51,7 +51,7 @@ export default function BlogClient(){
   <section className="b3-section" style={{paddingTop:30}}>
    <span className="b3-overline">[ EXPLORE POR CATEGORIA ]</span>
    <h2 className="b3-category-heading">Escolha um tema<span className="b3-dot-blue">.</span><br/>Explore o conteúdo<span className="b3-dot-blue">.</span></h2>
-   <div className="b3-blog-intro-bar"><span>30 ARTIGOS ORIGINAIS · 7 CATEGORIAS</span><span>CONTEÚDO TÉCNICO / NEGÓCIOS / EXPERIÊNCIAS DIGITAIS</span></div>
+   <div className="b3-blog-intro-bar"><span>{posts.length} ARTIGOS ORIGINAIS · 7 CATEGORIAS</span><span>CONTEÚDO TÉCNICO / NEGÓCIOS / EXPERIÊNCIAS DIGITAIS</span></div>
    <div className="b3-blog-controls">
     <div className="b3-chips" role="group" aria-label="Filtrar categorias">
      {categories.map(cat=><button key={cat} className={'b3-chip'+(category===cat?' b3-selected':'')} aria-pressed={category===cat} onClick={()=>{setCategory(cat);setLimit(9)}}>{cat} <small>{cat==='TODOS'?posts.length:posts.filter(p=>p.category===cat).length}</small></button>)}
