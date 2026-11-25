@@ -7,7 +7,7 @@ export const dynamic="force-dynamic"
 async function authorized(){return validToken((await cookies()).get(COOKIE)?.value)}
 export async function GET(){
  if(!await authorized())return NextResponse.json({error:"Não autorizado"},{status:401})
- try{return NextResponse.json({posts:await getAllBlogPosts()},{headers:{"Cache-Control":"no-store"}})}
+ try{return NextResponse.json({posts:await getAllBlogPosts(true)},{headers:{"Cache-Control":"no-store"}})}
  catch(e){return NextResponse.json({error:e instanceof Error?e.message:"Falha ao carregar artigos"},{status:503})}
 }
 export async function PUT(req:Request){
