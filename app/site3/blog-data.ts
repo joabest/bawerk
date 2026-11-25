@@ -1,6 +1,7 @@
 import { engineeringArticles } from './blog-engineering'
 import { intelligenceArticles } from './blog-intelligence'
 import { growthArticles } from './blog-growth'
+import { newArticles } from './blog-new-2026-11'
 
 export type BlogCategory = 'IA' | 'SOFTWARE' | 'APLICATIVOS' | 'CRM' | 'DESIGN' | 'MARKETING' | 'INSIGHTS'
 export type BlogSection = { heading: string; paragraphs: string[] }
@@ -12,12 +13,13 @@ export type BlogPost = {
  theme: string
  symbol: string
  readMinutes: number
+ publishedAt?: string
  body: BlogSection[]
 }
 
 // Curated editorial collection: practical, original guides to Bawerk's capabilities.
 // Individual posts live in category-specific modules for simpler reviews and maintenance.
-export const posts: BlogPost[] = [...engineeringArticles, ...intelligenceArticles, ...growthArticles]
+export const posts: BlogPost[] = [...newArticles, ...engineeringArticles, ...intelligenceArticles, ...growthArticles]
 export const categories = ['TODOS','IA','SOFTWARE','APLICATIVOS','CRM','DESIGN','MARKETING','INSIGHTS'] as const
 export const getPost = (slug: string) => posts.find(post => post.slug === slug)
 export const getRelated = (post: BlogPost, count = 3) => [
