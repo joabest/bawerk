@@ -2,7 +2,7 @@
 import {useEffect,useMemo,useState} from 'react'
 import Link from '../PublicLink'
 import {ArrowUpRight,Grid2X2,List,Search} from 'lucide-react'
-import {categories,posts as originalPosts,getReadingTime} from '../blog-data'
+import {categories,posts as originalPosts,getReadingTime,isBlogPostPublished} from '../blog-data'
 import type {BlogPost} from '../blog-data'
 
 export function BlogThumbnail({post}:{post:BlogPost}){
@@ -35,8 +35,8 @@ export function BlogThumbnail({post}:{post:BlogPost}){
  </div>
 }
 export default function BlogClient(){
- const [posts,setPosts]=useState<BlogPost[]>(originalPosts)
- useEffect(()=>{let alive=true;fetch('/api/blog',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(v=>{if(alive&&Array.isArray(v?.posts))setPosts(v.posts)}).catch(()=>{});return()=>{alive=false}},[])
+ const [posts,setPosts]=useState<BlogPost[]>(()=>originalPosts.filter(post=>isBlogPostPublished(post)))
+ useEffect(()=>{let alive=true;fetch('/api/blog',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(v=>{if(alive&&Array.isArray(v?.posts))setPosts(v.posts.filter((post:BlogPost)=>isBlogPostPublished(post)))}).catch(()=>{});return()=>{alive=false}},[])
  const [category,setCategory]=useState<string>('TODOS')
  const [search,setSearch]=useState('')
  const [view,setView]=useState<'grade'|'lista'>('grade')
@@ -61,7 +61,7 @@ export default function BlogClient(){
    <div className="b3-section-top" style={{marginTop:46}}><span className="b3-overline">[ ARTIGOS ]</span><span className="b3-overline">{filtered.length} ARTIGOS · {view==='grade'?'GRADE':'LISTA'}</span></div>
    {visible.length>0?<div className={'b3-blog-grid'+(view==='lista'?' b3-blog-list':'')}>{visible.map(post=><Link key={post.slug} href={'/site3/blog/'+post.slug} className="b3-blog-card">
      <BlogThumbnail post={post}/>
-     <div className="b3-blog-card-body"><span className="b3-card-index">{post.category}</span><h3>{post.title}</h3><p>{post.summary}</p><div className="b3-blog-card-foot"><span>BAWERK · {getReadingTime(post)} MIN DE LEITURA</span><ArrowUpRight size={17}/></div></div>
+     <div className="b3-blog-card-body"><span className="b3-card-index">{post.category}</span><h3>{post.title}</h3><p>{post.summary}</p><div className="b3-blog-card-foot"><span>BAWERK · {post.publishedAt?new Date(post.publishedAt).toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric",timeZone:"America/Sao_Paulo"})+" · ":""}{getReadingTime(post)} MIN DE LEITURA</span><ArrowUpRight size={17}/></div></div>
     </Link>)}</div>:<div className="b3-card" style={{marginTop:20,textAlign:'center'}}>Nenhum artigo encontrado. Experimente outra categoria ou termo.</div>}
    {limit<filtered.length&&<div className="b3-pagination"><button onClick={()=>setLimit(v=>v+6)}>CARREGAR MAIS ARTIGOS ↓</button></div>}
   </section>
