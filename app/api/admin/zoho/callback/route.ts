@@ -1,7 +1,7 @@
 import { cookies } from "next/headers"
 import { timingSafeEqual } from "node:crypto"
 import { NextResponse } from "next/server"
-import { COOKIE, validToken } from "@/lib/admin-auth"
+import { adminSessionValid } from "@/lib/require-admin"
 import { exchangeCode, findMailboxAccount, saveConnection } from "@/lib/zoho-mail"
 
 function equal(a: string, b: string) {
@@ -13,7 +13,7 @@ export async function GET(request: Request) {
   const cookieStore = await cookies()
   const storedState = cookieStore.get("bawerk_zoho_oauth")?.value || ""
   const receivedState = url.searchParams.get("state") || ""
-  const authorized = validToken(cookieStore.get(COOKIE)?.value)
+  const authorized = await adminSessionValid()
   const redirect = new URL("/admin", url.origin)
   const failure = (reason: string) => {
     redirect.searchParams.set("zoho", reason)
