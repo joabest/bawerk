@@ -16,7 +16,12 @@ export function AdminDashboard(){
   const [password,setPassword]=useState(""),[error,setError]=useState(""),[query,setQuery]=useState(""),[selected,setSelected]=useState<Lead|null>(null)
   const [view,setView]=useState<View>(()=>typeof window!=="undefined"&&new URLSearchParams(window.location.search).has("zoho")?"email":"overview"),[menu,setMenu]=useState(false),[clientForm,setClientForm]=useState<Partial<Client>|null>(null),[chargeForm,setChargeForm]=useState<Partial<Charge>|null>(null),[eventForm,setEventForm]=useState<Partial<AgendaEvent>|null>(null),[setup,setSetup]=useState(false)
   async function load(){const [lr,ar,cr,fr,er,or]=await Promise.all([fetch("/api/admin/leads"),fetch("/api/admin/analytics"),fetch("/api/admin/clients"),fetch("/api/admin/charges"),fetch("/api/admin/agenda"),fetch("/api/admin/crm-overview")]);if(!lr.ok){setLeads(null);return}const ld=await lr.json();setLeads(ld.leads);setSetup(!!ld.setup);if(ar.ok)setAnalytics(await ar.json());if(cr.ok)setClients((await cr.json()).clients||[]);if(fr.ok)setCharges((await fr.json()).charges||[]);if(er.ok)setEvents((await er.json()).events||[]);if(or.ok)setCrm(await or.json())}
-  useEffect(()=>{load()},[])
+  useEffect(()=>{
+    // Defer the initial load; cancel queued work on unmount.
+    const controller = new AbortController()
+    void Promise.resolve().then(()=>{if(!controller.signal.aborted) return load()})
+    return ()=>controller.abort()
+  },[])
   async function logout(){await fetch("/api/admin/logout",{method:"POST"});setLeads(null);setPassword("");setError("");setMenu(false)}
   async function login(e:React.FormEvent){e.preventDefault();const r=await fetch("/api/admin/login",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({password})});if(r.ok)load();else setError((await r.json()).error||"Acesso administrativo indisponível.")}
   async function updateLead(id:number,data:{status?:string;important?:boolean}){await fetch("/api/admin/leads",{method:"PATCH",headers:{"content-type":"application/json"},body:JSON.stringify({id,...data})});await load();setSelected(s=>s?.id===id?{...s,...data}:s)}
