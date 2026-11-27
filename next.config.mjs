@@ -20,6 +20,8 @@ const cspReportOnly = [
   "frame-src 'self'",
   "media-src 'self' blob: data:",
   "manifest-src 'self'",
+  "report-uri /api/csp-report",
+  "report-to csp-endpoint",
 ].join("; ")
 
 /** @type {import('next').NextConfig} */
@@ -37,6 +39,7 @@ const nextConfig = {
           { key: "Strict-Transport-Security", value: "max-age=31536000" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), payment=()" },
           { key: "Content-Security-Policy-Report-Only", value: cspReportOnly },
+          { key: "Reporting-Endpoints", value: 'csp-endpoint="/api/csp-report"' },
         ],
       },
     ]
