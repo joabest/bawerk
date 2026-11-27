@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server"
 import { COOKIE } from "@/lib/admin-auth"
+import { adminOriginValid } from "@/lib/require-admin"
 
 export async function POST(request: Request) {
-  const origin = request.headers.get("origin")
-  if (origin && origin !== new URL(request.url).origin) {
+  if (!adminOriginValid(request)) {
     return NextResponse.json({ error: "Origem não permitida" }, { status: 403 })
   }
   const response = NextResponse.json({ ok: true })
