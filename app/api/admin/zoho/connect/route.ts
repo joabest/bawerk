@@ -1,11 +1,10 @@
-import { cookies } from "next/headers"
+import { requireAdmin } from "@/lib/require-admin"
 import { randomBytes } from "node:crypto"
 import { NextResponse } from "next/server"
-import { COOKIE, validToken } from "@/lib/admin-auth"
 import { authorizationUrl, zohoMissingConfig } from "@/lib/zoho-mail"
 
 export async function GET(request: Request) {
-  if (!validToken((await cookies()).get(COOKIE)?.value)) return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
+  const denied=await requireAdmin();if(denied)return denied;
   const missing = zohoMissingConfig()
   if (missing.length) return NextResponse.json({ error: "Configure as variáveis da Zoho na Vercel", missing }, { status: 503 })
   const state = randomBytes(32).toString("hex")
