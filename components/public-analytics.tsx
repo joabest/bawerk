@@ -1,7 +1,7 @@
 "use client"
 
 import { usePathname } from "next/navigation"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react"
 import { Cookie, ShieldCheck, Settings2, X } from "lucide-react"
 
 const CONSENT_KEY = "bawerk_analytics_consent_v1"
@@ -67,23 +67,25 @@ function trackPageView() {
  window.gtag("event", "page_view", { page_location: currentPage(), page_path: location.pathname, page_title: document.title })
 }
 
+const hydrationSubscribe = () => () => {}
+const hydrated = () => true
+const serverHydrated = () => false
+
 export function PublicAnalytics() {
  const pathname = usePathname()
- const [consent,setConsent] = useState<Consent>(null)
- const [ready,setReady] = useState(false)
+ const [consent,setConsent] = useState<Consent>(() => {
+  if (typeof window === "undefined") return null
+  try {
+   const stored = window.localStorage.getItem(CONSENT_KEY)
+   return stored === "accepted" || stored === "rejected" ? stored : null
+  } catch { return null }
+ })
+ // The server snapshot stays false during hydration; the browser activates after mount.
+ const ready = useSyncExternalStore(hydrationSubscribe, hydrated, serverHydrated)
  const [settingsOpen,setSettingsOpen] = useState(false)
  const previousPath = useRef<string | null>(null)
  const isPrivate = pathname.startsWith("/admin")
  const enabled = gaValid || clarityValid
-
- useEffect(() => {
-  if (!enabled || isPrivate) return
-  try {
-   const stored = window.localStorage.getItem(CONSENT_KEY)
-   setConsent(stored==="accepted" || stored==="rejected" ? stored : null)
-  } catch { setConsent(null) }
-  setReady(true)
- },[enabled,isPrivate])
 
  useEffect(() => {
   if (!enabled || isPrivate || !ready || consent!=="accepted") return
