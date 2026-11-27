@@ -20,6 +20,7 @@ export async function GET(request: Request) {
       folderId: inbox, start, limit, mailbox: "contato@bawerk.solutions",
     }, { headers: { "Cache-Control": "no-store" } })
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Não foi possível consultar os e-mails." }, { status: 502 })
+    console.error("ZOHO_REQUEST_FAILED", error instanceof Error ? error.name : "Unknown")
+    return NextResponse.json({ error: "Não foi possível consultar o serviço de e-mail" }, { status: 502 })
   }
 }
