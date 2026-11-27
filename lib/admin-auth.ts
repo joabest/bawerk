@@ -1,5 +1,5 @@
 import "server-only"
-import { createHmac, scryptSync, timingSafeEqual } from "node:crypto"
+import { createHash, createHmac, scryptSync, timingSafeEqual } from "node:crypto"
 
 const COOKIE = "bawerk_admin"
 const SESSION_SECONDS = 12 * 60 * 60
@@ -33,7 +33,7 @@ export function validPassword(value: string): boolean {
     return equalBuffers(computed, Buffer.from(expectedHex, "hex"))
   }
   const legacy = process.env.ADMIN_PASSWORD
-  return !!legacy && equalBuffers(Buffer.from(value, "utf8"), Buffer.from(legacy, "utf8"))
+  return !!legacy && equalBuffers(createHash("sha256").update(value, "utf8").digest(), createHash("sha256").update(legacy, "utf8").digest())
 }
 
 function sign(payload: string, secret: string) {
