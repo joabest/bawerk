@@ -1,10 +1,9 @@
-import { cookies } from "next/headers"
+import { requireAdmin } from "@/lib/require-admin"
 import { NextResponse } from "next/server"
-import { COOKIE, validToken } from "@/lib/admin-auth"
 import { authenticatedConnection, inboxFolderId, listMailboxFolders, zohoFetch } from "@/lib/zoho-mail"
 
 export async function GET(request: Request) {
-  if (!validToken((await cookies()).get(COOKIE)?.value)) return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
+  const denied=await requireAdmin();if(denied)return denied;
   try {
     const { accountId, accessToken } = await authenticatedConnection()
     const folders = await listMailboxFolders(accountId, accessToken)

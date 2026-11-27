@@ -1,10 +1,9 @@
-import { cookies } from "next/headers"
+import { requireAdmin } from "@/lib/require-admin"
 import { NextResponse } from "next/server"
-import { COOKIE, validToken } from "@/lib/admin-auth"
 import { MAILBOX_ADDRESS, readConnection, zohoMissingConfig } from "@/lib/zoho-mail"
 
 export async function GET() {
-  if (!validToken((await cookies()).get(COOKIE)?.value)) return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
+  const denied=await requireAdmin();if(denied)return denied;
   const missing = zohoMissingConfig()
   if (missing.length) return NextResponse.json({ connected: false, address: MAILBOX_ADDRESS, missing }, { headers: { "Cache-Control": "no-store" } })
   try {
