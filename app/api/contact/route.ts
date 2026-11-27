@@ -16,6 +16,28 @@ const schema = z.object({
   turnstileToken: z.string().min(1).max(2048),
 }).strict()
 
+function allowedTurnstileHostnames(): Set<string> {
+  const allowed = new Set(["bawerk.solutions", "www.bawerk.solutions"])
+  const preview = process.env.VERCEL_URL
+  if (preview && /^[a-z0-9.-]+\.vercel\.app$/i.test(preview)) allowed.add(preview.toLowerCase())
+  // Explicit preview aliases only; never derive the allowlist from Host headers.
+  for (const entry of (process.env.TURNSTILE_ALLOWED_HOSTNAMES || "").split(",")) {
+    const name = entry.trim().toLowerCase()
+    if (/^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(name)) allowed.add(name)
+  }
+  return allowed
+}
+
+function matchesTurnstileSiteverify(value: unknown): boolean {
+  if (!value || typeof value !== "object") return false
+  const data = value as Record<string, unknown>
+  if (data.success !== true || typeof data.hostname !== "string") return false
+  if (!allowedTurnstileHostnames().has(data.hostname.toLowerCase())) return false
+  const expectedAction = process.env.TURNSTILE_EXPECTED_ACTION
+  if (expectedAction && data.action !== expectedAction) return false
+  return true
+}
+
 async function verifyTurnstile(token: string): Promise<boolean> {
   const secret = process.env.TURNSTILE_SECRET_KEY
   if (!secret) return false
@@ -26,7 +48,7 @@ async function verifyTurnstile(token: string): Promise<boolean> {
     })
     if (!response.ok) return false
     const result: unknown = await response.json()
-    return !!result && typeof result === "object" && "success" in result && result.success === true
+    return matchesTurnstileSiteverify(result)
   } catch { return false }
 }
 
