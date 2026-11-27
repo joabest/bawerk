@@ -4,3 +4,13 @@ node_modules/
 
 AGENTS.md
 CLAUDE.md
+
+# Environment files and private keys
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.vercel/
