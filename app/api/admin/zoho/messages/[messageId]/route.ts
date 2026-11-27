@@ -1,6 +1,5 @@
-import { cookies } from "next/headers"
+import { requireAdmin } from "@/lib/require-admin"
 import { NextResponse } from "next/server"
-import { COOKIE, validToken } from "@/lib/admin-auth"
 import { authenticatedConnection, inboxFolderId, listMailboxFolders, zohoFetch } from "@/lib/zoho-mail"
 
 function plainText(html: string) {
@@ -14,7 +13,7 @@ function plainText(html: string) {
     .replace(/\n{3,}/g, "\n\n").trim().slice(0, 100000)
 }
 export async function GET(_request: Request, { params }: { params: Promise<{ messageId: string }> }) {
-  if (!validToken((await cookies()).get(COOKIE)?.value)) return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
+  const denied=await requireAdmin();if(denied)return denied;
   const { messageId } = await params
   if (!/^\d{1,30}$/.test(messageId)) return NextResponse.json({ error: "Mensagem inválida" }, { status: 400 })
   try {
