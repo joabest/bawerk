@@ -1,13 +1,35 @@
 'use client'
 import {useEffect,useRef,useState} from 'react'
+import Script from 'next/script'
 import Link from '../PublicLink'
 import {ArrowUpRight,CheckCircle2,Mail,MapPin,Phone,Send} from 'lucide-react'
 
 type Status='idle'|'sending'|'sent'|'error'
 const phone='https://wa.me/5511992779039'
+const siteKey=process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''
+type TurnstileApi = {
+ render: (target: HTMLElement, options: {sitekey:string;callback:(token:string)=>void;'expired-callback':()=>void;'error-callback':()=>void}) => string
+ reset: (widgetId:string)=>void
+ remove: (widgetId:string)=>void
+}
+declare global {interface Window {turnstile?:TurnstileApi}}
 export default function ContactPage(){
  const [status,setStatus]=useState<Status>('idle')
  const [error,setError]=useState('')
+ const [turnstileToken,setTurnstileToken]=useState('')
+ const widgetRef=useRef<HTMLDivElement>(null)
+ const widgetId=useRef<string|null>(null)
+ const [scriptReady,setScriptReady]=useState(false)
+ useEffect(()=>{
+  if(!scriptReady||!siteKey||!widgetRef.current||!window.turnstile||widgetId.current)return
+  widgetId.current=window.turnstile.render(widgetRef.current,{
+   sitekey:siteKey,
+   callback:setTurnstileToken,
+   'expired-callback':()=>setTurnstileToken(''),
+   'error-callback':()=>setTurnstileToken(''),
+  })
+  return ()=>{if(widgetId.current&&window.turnstile){window.turnstile.remove(widgetId.current);widgetId.current=null}}
+ },[scriptReady])
  const messageRef=useRef<HTMLTextAreaElement>(null)
  useEffect(()=>{
   const desafio=new URLSearchParams(window.location.search).get('desafio')
@@ -27,20 +49,25 @@ export default function ContactPage(){
    service:String(data.get('service')||'').trim(),
    message:String(data.get('message')||'').trim(),
    budget:'A definir — Site 3',
+   website:String(data.get('website')||''),
+   turnstileToken,
   }
+  if(!siteKey||!turnstileToken){setError('Conclua a verificação de segurança.');setStatus('error');return}
   if(!body.phone){setError('Informe um telefone ou WhatsApp para contato.');setStatus('error');return}
   setStatus('sending');setError('')
   try{
    const response=await fetch('/api/contact',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)})
    const json=await response.json()
    if(!response.ok)throw Error(json.error||'Não foi possível enviar sua mensagem.')
-   setStatus('sent');form.reset()
+   setStatus('sent');form.reset();setTurnstileToken('');if(widgetId.current)window.turnstile?.reset(widgetId.current)
   }catch(e){
+   setTurnstileToken('');if(widgetId.current)window.turnstile?.reset(widgetId.current)
    setError(e instanceof Error?e.message:'Falha na comunicação. Tente novamente ou use o WhatsApp.')
    setStatus('error')
   }
  }
  return <div className="b3-container">
+  {siteKey&&<Script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" strategy="afterInteractive" onReady={()=>setScriptReady(true)}/>}
   <header className="b3-page-head"><span className="b3-overline">[ CONTATO / INICIE SUA IDEIA ]</span><h1 className="b3-contact-headline"><span>Conte sua ideia<span className="b3-dot-blue">.</span></span><em>Vamos construir<span className="b3-dot-white">.</span></em></h1><p>Envie o briefing da sua empresa. Seu contato entra diretamente no sistema de atendimento da Bawerk.</p></header>
   <div className="b3-contact-grid">
    <aside className="b3-contact-info">
@@ -64,8 +91,10 @@ export default function ContactPage(){
     <label className="b3-field"><span>Serviço de interesse</span><select name="service" defaultValue=""><option value="" disabled>Selecione uma opção</option><option>Website ou landing page</option><option>Software sob medida</option><option>CRM</option><option>Automação e inteligência artificial</option><option>Marketing digital</option><option>Design e identidade visual</option><option>Outro / ainda não sei</option></select></label>
     <label className="b3-field"><span>Conte sobre o projeto *</span><textarea ref={messageRef} name="message" minLength={10} maxLength={2500} required placeholder="O que você quer criar, melhorar ou automatizar?" rows={6}/></label>
     <div style={{display:'none'}} aria-hidden="true"><label>Não preencha<input name="website" tabIndex={-1} autoComplete="off"/></label></div>
+    <div ref={widgetRef} aria-label="Verificação Cloudflare Turnstile" style={{minHeight:65}} />
+    {!siteKey&&<p className="b3-form-status" role="alert">Formulário temporariamente indisponível.</p>}
     <p className="b3-form-note">Seus dados serão usados apenas para responder ao seu contato. O envio é feito diretamente pelo formulário da Bawerk.</p>
-    <button className="b3-primary" type="submit" disabled={status==='sending'} style={{marginTop:22,width:'100%'}}>{status==='sending'?'ENVIANDO...':'ENVIAR SOLICITAÇÃO'} <Send size={16}/></button>
+    <button className="b3-primary" type="submit" disabled={status==='sending'||!siteKey||!turnstileToken} style={{marginTop:22,width:'100%'}}>{status==='sending'?'ENVIANDO...':'ENVIAR SOLICITAÇÃO'} <Send size={16}/></button>
     {status==='sent'&&<p className="b3-form-status" role="status"><CheckCircle2 size={16} style={{display:'inline',marginRight:8}}/>Mensagem enviada. A Bawerk entrará em contato.</p>}
     {status==='error'&&<p className="b3-form-status" role="alert">{error} <a href={phone} target="_blank" rel="noreferrer">Conversar pelo WhatsApp <ArrowUpRight size={13}/></a></p>}
    </form>

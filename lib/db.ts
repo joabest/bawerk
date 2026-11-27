@@ -1,3 +1,4 @@
+import "server-only"
 import { neon } from "@neondatabase/serverless"
 export type Lead={id:number;name:string;email:string;phone:string|null;company:string|null;service:string|null;budget:string|null;message:string;status:string;important:boolean;created_at:string;updated_at:string}
 export type AdminUser={id:number;name:string;email:string;role:string;avatar_url:string|null;status:string;created_at:string}

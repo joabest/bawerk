@@ -1,24 +1,29 @@
-import { NextResponse } from "next/server"
+import { z } from "zod"
 import { recordEngagement } from "@/lib/page-engagement"
+import { limitPublicRequest, readLimitedJSON } from "@/lib/public-api-security"
+
 export const runtime = "nodejs"
+const schema = z.object({
+  id: z.uuid(),
+  sessionId: z.uuid(),
+  path: z.string().startsWith("/").max(240).refine(v => !v.startsWith("/admin") && !v.startsWith("/api")),
+  source: z.string().max(100),
+  device: z.enum(["Mobile", "Tablet", "Desktop"]),
+  seconds: z.number().int().min(0).max(18000),
+}).strict()
+
 export async function POST(request: Request) {
- try {
-  if ((Number(request.headers.get("content-length"))||0)>1600) return new Response(null,{status:413})
-  const origin = request.headers.get("origin")
-  if (origin && new URL(origin).origin !== new URL(request.url).origin) return new Response(null,{status:403})
-  const d=await request.json() as Record<string,unknown>
-  if (typeof d.id!=="string" || !/^[0-9a-f-]{36}$/i.test(d.id) ||
-      typeof d.sessionId!=="string" || !/^[0-9a-f-]{36}$/i.test(d.sessionId) ||
-      typeof d.path!=="string" || !d.path.startsWith("/") || d.path.length>240 ||
-      d.path.startsWith("/admin") || d.path.startsWith("/api") ||
-      typeof d.seconds!=="number" || !Number.isFinite(d.seconds) || d.seconds<0 || d.seconds>18000) {
-   return new Response(null,{status:400})
+  const body = await readLimitedJSON(request, 2048)
+  if (!body.ok) return body.response
+  const parsed = schema.safeParse(body.value)
+  if (!parsed.success) return Response.json({ error: "Dados inválidos" }, { status: 400 })
+  const denied = await limitPublicRequest(request, "engagement")
+  if (denied) return denied
+  try {
+    await recordEngagement(parsed.data)
+    return new Response(null, { status: 204, headers: { "Cache-Control": "no-store" } })
+  } catch (error) {
+    console.error("ENGAGEMENT_FAILED", error instanceof Error ? error.name : "Unknown")
+    return Response.json({ error: "Registro indisponível" }, { status: 503 })
   }
-  const source=String(d.source||"Direto").slice(0,100)
-  const device=["Mobile","Tablet","Desktop"].includes(String(d.device))?String(d.device):"Desktop"
-  await recordEngagement({id:d.id,sessionId:d.sessionId,path:d.path,source,device,seconds:Math.floor(d.seconds)})
-  return new Response(null,{status:204,headers:{"Cache-Control":"no-store"}})
- } catch {
-  return NextResponse.json({error:"Registro indisponível"},{status:503})
- }
 }
