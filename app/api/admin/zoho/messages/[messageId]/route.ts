@@ -29,6 +29,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ mes
     const raw = typeof (content.data as { content?: unknown } | undefined)?.content === "string" ? (content.data as { content: string }).content : ""
     return NextResponse.json({ detail: detail.data, content: plainText(raw), folderId: inbox }, { headers: { "Cache-Control": "no-store" } })
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Erro ao abrir mensagem" }, { status: 502 })
+    console.error("ZOHO_REQUEST_FAILED", error instanceof Error ? error.name : "Unknown")
+    return NextResponse.json({ error: "Não foi possível consultar o serviço de e-mail" }, { status: 502 })
   }
 }
