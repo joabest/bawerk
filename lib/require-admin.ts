@@ -8,6 +8,17 @@ function allowedOrigins(): Set<string> {
   const allowed = new Set(["https://bawerk.solutions", "https://www.bawerk.solutions"])
   const preview = process.env.VERCEL_URL
   if (preview && /^[a-z0-9.-]+\.vercel\.app$/i.test(preview)) allowed.add("https://" + preview)
+  // Explicit, reviewed preview aliases only. Never trust Host or X-Forwarded-Host.
+  for (const candidate of (process.env.ADMIN_ALLOWED_ORIGINS || "").split(",")) {
+    const value = candidate.trim()
+    if (!value) continue
+    try {
+      const url = new URL(value)
+      if (url.origin === value && url.protocol === "https:" && !url.username && !url.password && !url.search && !url.hash) {
+        allowed.add(url.origin)
+      }
+    } catch { /* Invalid or non-HTTPS alias intentionally ignored. */ }
+  }
   if (process.env.NODE_ENV !== "production") {
     allowed.add("http://localhost:3000")
     allowed.add("http://127.0.0.1:3000")
@@ -17,7 +28,7 @@ function allowedOrigins(): Set<string> {
 
 export function adminOriginValid(request: Request): boolean {
   const origin = request.headers.get("origin")
-  if (!origin) return false // fail closed for unsafe requests
+  if (!origin) return false // Writes without Origin are explicitly denied (fail closed).
   try {
     const url = new URL(origin)
     return url.origin === origin && allowedOrigins().has(url.origin)
