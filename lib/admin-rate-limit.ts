@@ -5,10 +5,10 @@ import { Redis } from "@upstash/redis"
 
 // Vercel overwrites its forwarding headers. Never use an untrusted raw
 // x-forwarded-for supplied by arbitrary callers or an arbitrary fallback.
-function clientIdentifier(request: Request): string {
+function clientIdentifier(request: Request): string | null {
   if (process.env.NODE_ENV !== "production") return "development"
   const forwarded = request.headers.get("x-vercel-forwarded-for")?.trim() || ""
-  return isIP(forwarded) ? forwarded : "unidentified-client"
+  return isIP(forwarded) ? forwarded : null
 }
 
 let limiter: Ratelimit | undefined
@@ -26,11 +26,17 @@ function getLimiter(): Ratelimit | null {
 
 export type LoginLimit = { allowed: true } | { allowed: false; retryAfter: number; unavailable?: boolean }
 export async function checkAdminLoginLimit(request: Request): Promise<LoginLimit> {
+  const client = clientIdentifier(request)
+  // Fail closed if the Vercel-supplied IP is missing; never coalesce all visitors.
+  if (!client) {
+    console.warn("ADMIN_LOGIN_IP_UNAVAILABLE")
+    return { allowed: false, retryAfter: 60, unavailable: true }
+  }
   const rateLimit = getLimiter()
   // Fail closed when the persistent store is unavailable; no bypass of login defenses.
   if (!rateLimit) return { allowed: false, retryAfter: 60, unavailable: true }
   try {
-    const result = await rateLimit.limit(clientIdentifier(request))
+    const result = await rateLimit.limit(client)
     if (result.success) return { allowed: true }
     return { allowed: false, retryAfter: Math.max(1, Math.ceil((result.reset - Date.now()) / 1000)) }
   } catch {
